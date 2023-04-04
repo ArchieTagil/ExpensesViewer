@@ -16,8 +16,10 @@ import javafx.util.converter.IntegerStringConverter;
 import ru.viewer.expensesviewer.model.Car;
 
 import java.security.Key;
+import java.sql.Connection;
 
 public class ExpensesController {
+    Connection connection;
     @FXML
     private TableView<Car> myTable;
     @FXML
@@ -96,5 +98,9 @@ public class ExpensesController {
                         Integer.parseInt(newDistance.getText()),
                         Double.parseDouble(newPrice.getText())
                 ));
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 }
