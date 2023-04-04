@@ -1,7 +1,5 @@
-package ru.viewer.expensesviewer;
+package ru.viewer.expensesviewer.controller;
 
-import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -9,17 +7,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.*;
 import javafx.scene.layout.StackPane;
-import javafx.util.Callback;
-import javafx.util.StringConverter;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
+import ru.viewer.expensesviewer.HelloApplication;
 import ru.viewer.expensesviewer.model.Car;
-
-import java.security.Key;
 
 public class ExpensesController {
     @FXML
-    private TableView<Car> myTable;
+    private TableView<Car> incomeTable;
     @FXML
     private TableColumn<Car, String> myColumn1;
     @FXML
@@ -53,12 +48,12 @@ public class ExpensesController {
 
     public void setApplication(HelloApplication application) {
         this.application = application;
-        myTable.setItems(application.getList());
+        incomeTable.setItems(application.getList());
     }
 
     @FXML
     public void initialize() {
-        myTable.setEditable(true);
+        incomeTable.setEditable(true);
         myColumn1.setCellFactory(TextFieldTableCell.forTableColumn());
         myColumn2.setCellFactory(TextFieldTableCell.forTableColumn());
         myColumn3.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
