@@ -1,6 +1,7 @@
 module ru.viewer.expensesviewer {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
 
 
     opens ru.viewer.expensesviewer to javafx.fxml;

@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ru.viewer.expensesviewer.controller.ExpensesController;
 import ru.viewer.expensesviewer.model.Car;
+import java.sql.*;
 
 import java.io.IOException;
 
@@ -25,6 +26,8 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        System.out.println("Hello world");
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("expenses.fxml"));
         this.scene = new Scene(loader.load());
         ExpensesController controller = loader.getController();
