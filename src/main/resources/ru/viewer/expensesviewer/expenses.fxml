@@ -20,7 +20,7 @@
             <content>
                <VBox>
                   <children>
-                     <TableView fx:id="incomeTable" prefHeight="329.0" prefWidth="600.0">
+                     <TableView fx:id="myTable" prefHeight="329.0" prefWidth="600.0">
                        <columns>
                          <TableColumn fx:id="myColumn1" prefWidth="75.0" text="Make" />
                          <TableColumn fx:id="myColumn2" prefWidth="75.0" text="Model" />

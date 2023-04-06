@@ -1,38 +1,26 @@
 package ru.viewer.expensesviewer;
 
+
 import javafx.application.Application;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import ru.viewer.expensesviewer.controller.ExpensesController;
 import ru.viewer.expensesviewer.model.Car;
-
-import java.sql.*;
+import ru.viewer.expensesviewer.model.IncomeModel;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class HelloApplication extends Application {
-
-    private static final String URL = "jdbc:mysql://localhost:3306/people";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "12345678";
-
-    private static Connection connection;
-
-//    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 //
-//    public HelloApplication() {
-//        this.dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-//        this.dataSource.setUrl("jdbc:mysql://localhost:3306/people");
-//        this.dataSource.setUsername("root");
-//        this.dataSource.setPassword("12345678");
-//    }
+//    private static final String URL = "jdbc:mysql://localhost:3306/simpleexpensesmanager";
+//    private static final String USERNAME = "root";
+//    private static final String PASSWORD = "12345678";
+
+//    private static Connection connection;
 
     private Scene scene;
     private ObservableList<Car> list = FXCollections.observableArrayList(
@@ -46,32 +34,18 @@ public class HelloApplication extends Application {
     );
 
     @Override
-    public void start(Stage stage) throws IOException {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+    public void start(Stage stage) throws IOException, SQLException, ClassNotFoundException {
+        IncomeModel incomeModel = new IncomeModel();
+        incomeModel.execute();
 
-            Statement statement = connection.createStatement();
-
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM person;");
-
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString("name"));
-            }
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("expenses.fxml"));
-            this.scene = new Scene(loader.load());
-            ExpensesController controller = loader.getController();
-            controller.setApplication(this);
-            controller.setConnection(connection);
-            scene.getStylesheets().add(getClass().getResource("bootstrap3.css").toExternalForm());
-            stage.setScene(scene);
-            stage.show();
-            connection.close();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("expenses.fxml"));
+        this.scene = new Scene(loader.load());
+        ExpensesController controller = loader.getController();
+        controller.setApplication(this);
+        //controller.setConnection(connection);
+        scene.getStylesheets().add(getClass().getResource("bootstrap3.css").toExternalForm());
+        stage.setScene(scene);
+        stage.show();
     }
 
     public static void main(String[] args) {
