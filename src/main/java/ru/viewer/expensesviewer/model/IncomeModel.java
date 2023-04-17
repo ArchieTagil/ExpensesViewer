@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +27,11 @@ public class IncomeModel {
         //ResultSet resultSet = statement.executeQuery("SELECT * FROM wallets_list;");
         ResultSet resultSet = statement.executeQuery(queryGetAllIncome);
         List<IncomeTable> incomeTableList = new ArrayList<>();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         while (resultSet.next()) {
             incomeTableList.add(new IncomeTable(
-                    //LocalDateTime.ofInstant(resultSet.getDate("income.date").toInstant(), ZoneId.systemDefault()),
-                    LocalDateTime.now(),
+                    LocalDateTime.parse(resultSet.getString("income.date"), dtf),
                     resultSet.getString("wallets_list.wallet_name"),
                     resultSet.getString("income_category_name"),
                     resultSet.getInt("income.amount"),
