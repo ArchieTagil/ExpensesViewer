@@ -6,10 +6,10 @@ public class IncomeTable {
     private LocalDateTime date;
     private String wallet_name;
     private String income_category;
-    private int amount;
+    private double amount;
     private String comment;
 
-    public IncomeTable(LocalDateTime date, String wallet_name, String income_category, int amount, String comment) {
+    public IncomeTable(LocalDateTime date, String wallet_name, String income_category, double amount, String comment) {
         this.date = date;
         this.wallet_name = wallet_name;
         this.income_category = income_category;

@@ -1,6 +1,5 @@
 package ru.viewer.expensesviewer;
 
-
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,19 +8,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ru.viewer.expensesviewer.controller.ExpensesController;
 import ru.viewer.expensesviewer.model.Car;
-import ru.viewer.expensesviewer.model.IncomeModel;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class HelloApplication extends Application {
-//
-//    private static final String URL = "jdbc:mysql://localhost:3306/simpleexpensesmanager";
-//    private static final String USERNAME = "root";
-//    private static final String PASSWORD = "12345678";
-
-//    private static Connection connection;
-
     private Scene scene;
     private ObservableList<Car> list = FXCollections.observableArrayList(
             new Car("Nissan", "Skyline", 350000, 17000.00),
@@ -34,15 +24,11 @@ public class HelloApplication extends Application {
     );
 
     @Override
-    public void start(Stage stage) throws IOException, SQLException, ClassNotFoundException {
-        IncomeModel incomeModel = new IncomeModel();
-        incomeModel.execute();
-
+    public void start(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("expenses.fxml"));
         this.scene = new Scene(loader.load());
         ExpensesController controller = loader.getController();
         controller.setApplication(this);
-        //controller.setConnection(connection);
         scene.getStylesheets().add(getClass().getResource("bootstrap3.css").toExternalForm());
         stage.setScene(scene);
         stage.show();

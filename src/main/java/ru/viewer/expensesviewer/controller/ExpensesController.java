@@ -17,8 +17,10 @@ import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import ru.viewer.expensesviewer.HelloApplication;
 import ru.viewer.expensesviewer.model.Car;
+import ru.viewer.expensesviewer.model.IncomeModel;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class ExpensesController {
     Connection connection;
@@ -61,14 +63,15 @@ public class ExpensesController {
     }
 
     @FXML
-    public void initialize() {
+    public void initialize() throws SQLException, ClassNotFoundException {
+        IncomeModel incomeModel = new IncomeModel();
+        incomeModel.execute();
+
         myTable.setEditable(true);
         myColumn1.setCellFactory(TextFieldTableCell.forTableColumn());
         myColumn2.setCellFactory(TextFieldTableCell.forTableColumn());
         myColumn3.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         myColumn4.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-
-
 
         KeyCodeCombination altT = new KeyCodeCombination(KeyCode.T, KeyCombination.ALT_DOWN);
         KeyCodeCombination ctrlEnter = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.SHORTCUT_DOWN);

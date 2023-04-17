@@ -2,6 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -13,14 +15,14 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane fx:id="mainStackPane" alignment="CENTER" prefHeight="400.0" prefWidth="900.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.ExpensesController">
+<StackPane fx:id="mainStackPane" alignment="CENTER" prefHeight="413.0" prefWidth="1203.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.ExpensesController">
    <TabPane prefHeight="400.0" prefWidth="861.0" tabClosingPolicy="UNAVAILABLE">
      <tabs>
        <Tab text="Доходы">
             <content>
                <VBox>
                   <children>
-                     <TableView fx:id="myTable" prefHeight="329.0" prefWidth="600.0">
+                     <TableView fx:id="myTable" prefHeight="329.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
                        <columns>
                          <TableColumn fx:id="myColumn1" prefWidth="75.0" text="Make" />
                          <TableColumn fx:id="myColumn2" prefWidth="75.0" text="Model" />
@@ -30,29 +32,17 @@
                      </TableView>
                      <HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="context-menu">
                         <children>
-                           <Label text="Make:">
+                           <Label text="Дата:">
                               <HBox.margin>
                                  <Insets left="10.0" />
                               </HBox.margin></Label>
-                           <TextField fx:id="newMake" promptText="make">
-                              <opaqueInsets>
-                                 <Insets />
-                              </opaqueInsets>
-                              <HBox.margin>
-                                 <Insets />
-                              </HBox.margin></TextField>
-                           <Label text="Model:">
+                           <DatePicker />
+                           <Label text="Кошелек:">
                               <HBox.margin>
                                  <Insets left="10.0" />
                               </HBox.margin></Label>
-                           <TextField fx:id="newModel" promptText="model">
-                              <opaqueInsets>
-                                 <Insets />
-                              </opaqueInsets>
-                              <HBox.margin>
-                                 <Insets />
-                              </HBox.margin></TextField>
-                           <Label text="Distance:">
+                           <ChoiceBox prefWidth="150.0" />
+                           <Label text="Категория:">
                               <HBox.margin>
                                  <Insets left="10.0" />
                               </HBox.margin></Label>
@@ -63,18 +53,24 @@
                               <HBox.margin>
                                  <Insets />
                               </HBox.margin></TextField>
-                           <Label text="Price:">
+                           <Label text="Сумма:">
                               <HBox.margin>
                                  <Insets left="10.0" />
                               </HBox.margin></Label>
-                           <TextField fx:id="newPrice" promptText="price">
+                           <TextField fx:id="newPrice" promptText="0р.">
                               <opaqueInsets>
                                  <Insets />
                               </opaqueInsets>
                               <HBox.margin>
                                  <Insets />
                               </HBox.margin></TextField>
-                           <Button fx:id="addButton" mnemonicParsing="false" prefHeight="32.0" prefWidth="78.0" text="Add car" onAction="#addNewCar">
+                           <Label layoutX="625.0" layoutY="19.0" text="Комментарий:" />
+                           <TextField fx:id="newPrice2" layoutX="667.0" layoutY="17.0" promptText="комментарий">
+                              <opaqueInsets>
+                                 <Insets />
+                              </opaqueInsets>
+                           </TextField>
+                           <Button fx:id="addButton" mnemonicParsing="false" onAction="#addNewCar" prefHeight="32.0" prefWidth="78.0" text="Add car">
                               <opaqueInsets>
                                  <Insets />
                               </opaqueInsets>
@@ -96,9 +92,88 @@
                </VBox>
             </content></Tab>
        <Tab text="Расходы">
-         <content>
-           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-         </content>
+            <content>
+               <VBox>
+                  <children>
+                     <TableView fx:id="ExpenceTable" prefHeight="180.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
+                       <columns>
+                         <TableColumn prefWidth="75.0" text="C1" />
+                         <TableColumn prefWidth="75.0" text="C2" />
+                       </columns>
+                     </TableView>
+                     <HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="context-menu">
+                        <children>
+                           <Label text="Make:">
+                              <HBox.margin>
+                                 <Insets left="10.0" />
+                              </HBox.margin>
+                           </Label>
+                           <TextField fx:id="newMake1" promptText="make">
+                              <opaqueInsets>
+                                 <Insets />
+                              </opaqueInsets>
+                              <HBox.margin>
+                                 <Insets />
+                              </HBox.margin>
+                           </TextField>
+                           <Label text="Model:">
+                              <HBox.margin>
+                                 <Insets left="10.0" />
+                              </HBox.margin>
+                           </Label>
+                           <TextField fx:id="newModel1" promptText="model">
+                              <opaqueInsets>
+                                 <Insets />
+                              </opaqueInsets>
+                              <HBox.margin>
+                                 <Insets />
+                              </HBox.margin>
+                           </TextField>
+                           <Label text="Distance:">
+                              <HBox.margin>
+                                 <Insets left="10.0" />
+                              </HBox.margin>
+                           </Label>
+                           <TextField fx:id="newDistance1" promptText="distance">
+                              <opaqueInsets>
+                                 <Insets />
+                              </opaqueInsets>
+                              <HBox.margin>
+                                 <Insets />
+                              </HBox.margin>
+                           </TextField>
+                           <Label text="Price:">
+                              <HBox.margin>
+                                 <Insets left="10.0" />
+                              </HBox.margin>
+                           </Label>
+                           <TextField fx:id="newPrice1" promptText="price">
+                              <opaqueInsets>
+                                 <Insets />
+                              </opaqueInsets>
+                              <HBox.margin>
+                                 <Insets />
+                              </HBox.margin>
+                           </TextField>
+                           <Button fx:id="addButton1" mnemonicParsing="false" onAction="#addNewCar" prefHeight="32.0" prefWidth="78.0" text="Add car">
+                              <opaqueInsets>
+                                 <Insets />
+                              </opaqueInsets>
+                              <HBox.margin>
+                                 <Insets />
+                              </HBox.margin>
+                           </Button>
+                        </children>
+                        <opaqueInsets>
+                           <Insets />
+                        </opaqueInsets>
+                        <padding>
+                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        </padding>
+                     </HBox>
+                  </children>
+               </VBox>
+            </content>
        </Tab>
        <Tab text="Перемещения">
              <content>
