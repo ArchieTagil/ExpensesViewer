@@ -1,4 +1,4 @@
-package ru.viewer.expensesviewer.model;
+package ru.viewer.expensesviewer.model.objects;
 
 import javafx.beans.property.*;
 

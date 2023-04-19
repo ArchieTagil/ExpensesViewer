@@ -1,6 +1,6 @@
 package ru.viewer.expensesviewer.model;
 
-import ru.viewer.expensesviewer.model.objects.IncomeTable;
+import ru.viewer.expensesviewer.model.objects.IncomeEntity;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -18,25 +18,30 @@ public class IncomeModel {
     }
 
     public void execute() throws SQLException {
+        System.out.println(getIncomeList());
+    }
+
+    public List<IncomeEntity> getIncomeList() throws SQLException {
         Statement statement = connection.createStatement();
-        String queryGetAllIncome = "SELECT income.date, wallets_list.wallet_name, income_category_name, income.amount, income.comment FROM income\n" +
+        String queryGetAllIncome = "SELECT income_id, income.date, wallets_list.wallet_name, income_category_name, income.amount, income.comment FROM income\n" +
                 "        LEFT JOIN wallets_list on wallets_list.wallet_id = income.wallet_id\n" +
                 "        LEFT JOIN income_category on income.income_category_id = income_category.income_category_id;";
 
         ResultSet resultSet = statement.executeQuery(queryGetAllIncome);
-        List<IncomeTable> incomeTableList = new ArrayList<>();
+        List<IncomeEntity> incomeEntityList = new ArrayList<>();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         while (resultSet.next()) {
-            incomeTableList.add(new IncomeTable(
+            incomeEntityList.add(new IncomeEntity(
                     //LocalDateTime.ofInstant(resultSet.getDate("income.date").toInstant(), ZoneId.systemDefault()),
+                    resultSet.getInt("income_id"),
                     LocalDateTime.parse(resultSet.getString("income.date"), dtf),
                     resultSet.getString("wallets_list.wallet_name"),
                     resultSet.getString("income_category_name"),
                     resultSet.getDouble("income.amount"),
                     resultSet.getString("income.comment")
             ));
-            System.out.println(incomeTableList);
         }
+        return incomeEntityList;
     }
 }

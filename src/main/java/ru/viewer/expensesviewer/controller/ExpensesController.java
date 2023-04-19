@@ -16,8 +16,9 @@ import javafx.scene.layout.StackPane;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import ru.viewer.expensesviewer.HelloApplication;
-import ru.viewer.expensesviewer.model.Car;
+import ru.viewer.expensesviewer.model.objects.Car;
 import ru.viewer.expensesviewer.model.IncomeModel;
+import ru.viewer.expensesviewer.model.objects.IncomeEntity;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -26,6 +27,8 @@ public class ExpensesController {
     Connection connection;
     @FXML
     private TableView<Car> myTable;
+    @FXML
+    private TableView<IncomeEntity> incomeTable;
     @FXML
     private TableColumn<Car, String> myColumn1;
     @FXML

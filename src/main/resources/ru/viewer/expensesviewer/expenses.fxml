@@ -15,19 +15,21 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane fx:id="mainStackPane" alignment="CENTER" prefHeight="413.0" prefWidth="1203.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.ExpensesController">
+<StackPane fx:id="mainStackPane" alignment="CENTER" prefHeight="413.0" prefWidth="1203.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.IncomeController">
    <TabPane prefHeight="400.0" prefWidth="861.0" tabClosingPolicy="UNAVAILABLE">
      <tabs>
        <Tab text="Доходы">
             <content>
                <VBox>
                   <children>
-                     <TableView fx:id="myTable" prefHeight="329.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+                     <TableView fx:id="incomeTable" prefHeight="329.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
                        <columns>
-                         <TableColumn fx:id="myColumn1" prefWidth="75.0" text="Make" />
-                         <TableColumn fx:id="myColumn2" prefWidth="75.0" text="Model" />
-                         <TableColumn fx:id="myColumn3" prefWidth="75.0" text="Distance" />
-                         <TableColumn fx:id="myColumn4" prefWidth="75.0" text="Price USD" />
+                         <TableColumn fx:id="incomeId" prefWidth="51.999969482421875" text="id" />
+                         <TableColumn fx:id="incomeDate" onEditCommit="#dateEditCommit" prefWidth="171.0" text="Дата" />
+                         <TableColumn fx:id="incomeWallet" minWidth="0.0" onEditCommit="#walletEditCommit" prefWidth="283.0" text="Кошелёк" />
+                         <TableColumn fx:id="incomeCategory" onEditCommit="#categoryEditCommit" prefWidth="269.0" text="Категория доходов" />
+                           <TableColumn fx:id="incomeSum" onEditCommit="#sumEditCommit" prefWidth="151.0" text="Сумма" />
+                           <TableColumn fx:id="incomeComment" onEditCommit="#commentEditCommit" prefWidth="276.0" text="Комментарий" />
                        </columns>
                      </TableView>
                      <HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="context-menu">
@@ -70,12 +72,12 @@
                                  <Insets />
                               </opaqueInsets>
                            </TextField>
-                           <Button fx:id="addButton" mnemonicParsing="false" onAction="#addNewCar" prefHeight="32.0" prefWidth="78.0" text="Add car">
+                           <Button fx:id="addButton" mnemonicParsing="false" onAction="#addNewCar" prefHeight="32.0" prefWidth="78.0" text="Добавить">
                               <opaqueInsets>
                                  <Insets />
                               </opaqueInsets>
                               <HBox.margin>
-                                 <Insets />
+                                 <Insets left="10.0" />
                               </HBox.margin></Button>
                         </children>
                         <opaqueInsets>
@@ -95,7 +97,7 @@
             <content>
                <VBox>
                   <children>
-                     <TableView fx:id="ExpenceTable" prefHeight="180.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
+                     <TableView fx:id="myTable" prefHeight="180.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
                        <columns>
                          <TableColumn prefWidth="75.0" text="C1" />
                          <TableColumn prefWidth="75.0" text="C2" />
