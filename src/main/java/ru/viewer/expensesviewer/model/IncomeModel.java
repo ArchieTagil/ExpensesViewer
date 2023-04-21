@@ -9,7 +9,9 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IncomeModel {
     private Connection connection = DbConnection.getInstance().getConnection();
@@ -43,5 +45,23 @@ public class IncomeModel {
             ));
         }
         return incomeEntityList;
+    }
+
+    public Map<Integer, String> getWalletList() throws SQLException {
+        Statement statement = connection.createStatement();
+        String qGetWalletList = "SELECT `wallet_id`, `wallet_name` FROM `wallets_list`;";
+        ResultSet resultSet = statement.executeQuery(qGetWalletList);
+        Map<Integer, String> walletList = new HashMap<>();
+
+        while (resultSet.next()) {
+            walletList.put(resultSet.getInt("wallet_id"), resultSet.getString("wallet_name"));
+        }
+        return walletList;
+    }
+
+    public void doEditWalletField(int id, int newWalletId) throws SQLException {
+        Statement statement = connection.createStatement();
+        String queryUpdate = "UPDATE `income` set `wallet_id` = " + newWalletId + " WHERE `income_id` = " + id;
+        statement.executeUpdate(queryUpdate);
     }
 }

@@ -19,10 +19,10 @@ import ru.viewer.expensesviewer.model.objects.IncomeEntity;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 public class IncomeController {
     Connection connection;
@@ -31,6 +31,7 @@ public class IncomeController {
     IncomeModel incomeModel = new IncomeModel();
 
     List<IncomeEntity> incomeEntityList;
+    Map<Integer, String> walletList;
 
     @FXML
     private TableView<IncomeEntity> incomeTable;
@@ -61,6 +62,7 @@ public class IncomeController {
     public void initialize() throws SQLException {
         System.out.println("Init");
         incomeEntityList = incomeModel.getIncomeList();
+        walletList = incomeModel.getWalletList();
 
         incomeTable.setEditable(true);
         incomeId.setCellValueFactory(new PropertyValueFactory<IncomeEntity, Integer>("id"));
@@ -85,7 +87,7 @@ public class IncomeController {
         incomeDate.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateTimeStringConverter()));
         incomeDate.setCellValueFactory(new PropertyValueFactory<>("date"));
 
-        ObservableList<String> walletObservableList = FXCollections.observableArrayList("w1", "w2", "w3");
+        ObservableList<String> walletObservableList = FXCollections.observableArrayList(FXCollections.observableArrayList(walletList.values()));
         incomeWallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(walletObservableList));
         incomeWallet.setCellValueFactory(new PropertyValueFactory<>("wallet_name"));
 
@@ -115,8 +117,10 @@ public class IncomeController {
     }
 
     public void walletEditCommit(TableColumn.CellEditEvent<IncomeEntity, String> incomeEntityStringCellEditEvent) throws SQLException {
-        IncomeEntity currentIncomeEntity = incomeEntityStringCellEditEvent.getRowValue();
-        doUpdateField("wallet", currentIncomeEntity.getId(), incomeEntityStringCellEditEvent.getNewValue());
+        int currentIncomeRowId = incomeEntityStringCellEditEvent.getRowValue().getId();
+        int newWalletId = walletList.entrySet().stream().filter(e -> e.getValue().equals(incomeEntityStringCellEditEvent.getNewValue())).findFirst().get().getKey();
+        incomeModel.doEditWalletField(currentIncomeRowId, newWalletId);
+        initialize();
     }
 
     public void categoryEditCommit(TableColumn.CellEditEvent<IncomeEntity, String> incomeEntityStringCellEditEvent) {
@@ -126,13 +130,5 @@ public class IncomeController {
     }
 
     public void commentEditCommit(TableColumn.CellEditEvent<IncomeEntity, String> incomeEntityStringCellEditEvent) {
-    }
-
-    private void doUpdateField(String columnName, int id, String newValue) throws SQLException {
-        System.out.println(id + "\t" + columnName + "\t" + newValue);
-        Statement statement = connection.createStatement();
-        String queryUpdate = "UPDATE `income` set `wallet_id` = 3 WHERE `income_id` = " + id;
-        statement.executeUpdate(queryUpdate);
-        initialize();
     }
 }
