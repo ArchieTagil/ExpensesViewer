@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-public class IncomeController extends MainController{
+public class IncomeController {
 
     IncomeModel incomeModel = new IncomeModel();
 

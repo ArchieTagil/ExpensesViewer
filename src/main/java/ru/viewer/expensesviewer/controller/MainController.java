@@ -24,7 +24,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            AnchorPane anchorPaneIncomeTab = new FXMLLoader(getClass().getResource("IncomeTab.fxml")).load();
+            AnchorPane anchorPaneIncomeTab = new FXMLLoader(HelloApplication.class.getResource("IncomeTab.fxml")).load();
             incomeTab.setContent(anchorPaneIncomeTab);
         } catch (IOException e) {
             System.out.println("File not found");
