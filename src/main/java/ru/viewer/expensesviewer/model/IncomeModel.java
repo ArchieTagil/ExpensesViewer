@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class IncomeModel {
-    private Connection connection = DbConnection.getInstance().getConnection();
+    private final Connection connection = DbConnection.getInstance().getConnection();
 
     public IncomeModel() throws SQLException, ClassNotFoundException {
     }

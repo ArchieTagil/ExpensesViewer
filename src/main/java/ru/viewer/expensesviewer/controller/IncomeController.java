@@ -12,21 +12,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.LocalDateTimeStringConverter;
-import ru.viewer.expensesviewer.HelloApplication;
-import ru.viewer.expensesviewer.model.DbConnection;
 import ru.viewer.expensesviewer.model.IncomeModel;
 import ru.viewer.expensesviewer.model.objects.IncomeEntity;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-public class IncomeController {
-    Connection connection;
-    HelloApplication Application;
+public class IncomeController extends MainController{
 
     IncomeModel incomeModel = new IncomeModel();
 
@@ -52,11 +47,7 @@ public class IncomeController {
     }
 
 
-    public void setApplication(HelloApplication helloApplication) throws SQLException, ClassNotFoundException {
-        this.Application = helloApplication;
-        connection = DbConnection.getInstance().getConnection();
-        System.out.println("setApplication");
-    }
+
 
     @FXML
     public void initialize() throws SQLException {

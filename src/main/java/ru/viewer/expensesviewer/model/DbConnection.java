@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class DbConnection {
     private static DbConnection instance;
-    private Connection connection;
+    private final Connection connection;
 
     private static final String URL = "jdbc:mysql://localhost:3306/simpleexpensesmanager";
     private static final String USERNAME = "root";

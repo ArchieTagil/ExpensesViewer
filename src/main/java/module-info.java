@@ -3,6 +3,7 @@ module ru.viewer.expensesviewer {
     requires javafx.fxml;
     requires spring.jdbc;
     requires java.sql;
+    requires mysql.connector.j;
 
 
     opens ru.viewer.expensesviewer to javafx.fxml;

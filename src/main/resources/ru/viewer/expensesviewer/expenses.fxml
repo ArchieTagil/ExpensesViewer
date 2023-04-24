@@ -15,182 +15,23 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane fx:id="mainStackPane" alignment="CENTER" prefHeight="413.0" prefWidth="1203.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.IncomeController">
+<StackPane fx:id="mainStackPane" alignment="CENTER" prefHeight="413.0" prefWidth="1203.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.MainController">
    <TabPane prefHeight="400.0" prefWidth="861.0" tabClosingPolicy="UNAVAILABLE">
      <tabs>
-       <Tab text="Доходы">
-            <content>
-               <VBox>
-                  <children>
-                     <TableView fx:id="incomeTable" prefHeight="329.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
-                       <columns>
-                         <TableColumn fx:id="incomeId" prefWidth="51.999969482421875" text="id" />
-                         <TableColumn fx:id="incomeDate" onEditCommit="#dateEditCommit" prefWidth="171.0" text="Дата" />
-                         <TableColumn fx:id="incomeWallet" minWidth="0.0" onEditCommit="#walletEditCommit" prefWidth="283.0" text="Кошелёк" />
-                         <TableColumn fx:id="incomeCategory" onEditCommit="#categoryEditCommit" prefWidth="269.0" text="Категория доходов" />
-                           <TableColumn fx:id="incomeSum" onEditCommit="#sumEditCommit" prefWidth="151.0" text="Сумма" />
-                           <TableColumn fx:id="incomeComment" onEditCommit="#commentEditCommit" prefWidth="276.0" text="Комментарий" />
-                       </columns>
-                     </TableView>
-                     <HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="context-menu">
-                        <children>
-                           <Label text="Дата:">
-                              <HBox.margin>
-                                 <Insets left="10.0" />
-                              </HBox.margin></Label>
-                           <DatePicker />
-                           <Label text="Кошелек:">
-                              <HBox.margin>
-                                 <Insets left="10.0" />
-                              </HBox.margin></Label>
-                           <ChoiceBox prefWidth="150.0" />
-                           <Label text="Категория:">
-                              <HBox.margin>
-                                 <Insets left="10.0" />
-                              </HBox.margin></Label>
-                           <TextField fx:id="newDistance" promptText="distance">
-                              <opaqueInsets>
-                                 <Insets />
-                              </opaqueInsets>
-                              <HBox.margin>
-                                 <Insets />
-                              </HBox.margin></TextField>
-                           <Label text="Сумма:">
-                              <HBox.margin>
-                                 <Insets left="10.0" />
-                              </HBox.margin></Label>
-                           <TextField fx:id="newPrice" promptText="0р.">
-                              <opaqueInsets>
-                                 <Insets />
-                              </opaqueInsets>
-                              <HBox.margin>
-                                 <Insets />
-                              </HBox.margin></TextField>
-                           <Label layoutX="625.0" layoutY="19.0" text="Комментарий:" />
-                           <TextField fx:id="newPrice2" layoutX="667.0" layoutY="17.0" promptText="комментарий">
-                              <opaqueInsets>
-                                 <Insets />
-                              </opaqueInsets>
-                           </TextField>
-                           <Button fx:id="addButton" mnemonicParsing="false" onAction="#addNewCar" prefHeight="32.0" prefWidth="78.0" text="Добавить">
-                              <opaqueInsets>
-                                 <Insets />
-                              </opaqueInsets>
-                              <HBox.margin>
-                                 <Insets left="10.0" />
-                              </HBox.margin></Button>
-                        </children>
-                        <opaqueInsets>
-                           <Insets />
-                        </opaqueInsets>
-                        <VBox.margin>
-                           <Insets />
-                        </VBox.margin>
-                        <padding>
-                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </padding>
-                     </HBox>
-                  </children>
-               </VBox>
-            </content></Tab>
+       <Tab text="Доходы" fx:id="incomeTab">
+               <!-- Income tab include -->
+       </Tab>
        <Tab text="Расходы">
-            <content>
-               <VBox>
-                  <children>
-                     <TableView fx:id="myTable" prefHeight="180.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
-                       <columns>
-                         <TableColumn prefWidth="75.0" text="C1" />
-                         <TableColumn prefWidth="75.0" text="C2" />
-                       </columns>
-                     </TableView>
-                     <HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="context-menu">
-                        <children>
-                           <Label text="Make:">
-                              <HBox.margin>
-                                 <Insets left="10.0" />
-                              </HBox.margin>
-                           </Label>
-                           <TextField fx:id="newMake1" promptText="make">
-                              <opaqueInsets>
-                                 <Insets />
-                              </opaqueInsets>
-                              <HBox.margin>
-                                 <Insets />
-                              </HBox.margin>
-                           </TextField>
-                           <Label text="Model:">
-                              <HBox.margin>
-                                 <Insets left="10.0" />
-                              </HBox.margin>
-                           </Label>
-                           <TextField fx:id="newModel1" promptText="model">
-                              <opaqueInsets>
-                                 <Insets />
-                              </opaqueInsets>
-                              <HBox.margin>
-                                 <Insets />
-                              </HBox.margin>
-                           </TextField>
-                           <Label text="Distance:">
-                              <HBox.margin>
-                                 <Insets left="10.0" />
-                              </HBox.margin>
-                           </Label>
-                           <TextField fx:id="newDistance1" promptText="distance">
-                              <opaqueInsets>
-                                 <Insets />
-                              </opaqueInsets>
-                              <HBox.margin>
-                                 <Insets />
-                              </HBox.margin>
-                           </TextField>
-                           <Label text="Price:">
-                              <HBox.margin>
-                                 <Insets left="10.0" />
-                              </HBox.margin>
-                           </Label>
-                           <TextField fx:id="newPrice1" promptText="price">
-                              <opaqueInsets>
-                                 <Insets />
-                              </opaqueInsets>
-                              <HBox.margin>
-                                 <Insets />
-                              </HBox.margin>
-                           </TextField>
-                           <Button fx:id="addButton1" mnemonicParsing="false" onAction="#addNewCar" prefHeight="32.0" prefWidth="78.0" text="Add car">
-                              <opaqueInsets>
-                                 <Insets />
-                              </opaqueInsets>
-                              <HBox.margin>
-                                 <Insets />
-                              </HBox.margin>
-                           </Button>
-                        </children>
-                        <opaqueInsets>
-                           <Insets />
-                        </opaqueInsets>
-                        <padding>
-                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </padding>
-                     </HBox>
-                  </children>
-               </VBox>
-            </content>
+
        </Tab>
        <Tab text="Перемещения">
-             <content>
-                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-             </content>
+
        </Tab>
        <Tab text="Отчёты">
-             <content>
-                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-             </content>
+
        </Tab>
          <Tab text="Справочники">
-             <content>
-                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-             </content>
+
          </Tab>
      </tabs>
    </TabPane>
