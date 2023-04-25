@@ -14,7 +14,7 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException, SQLException, ClassNotFoundException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("expenses.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
         this.scene = new Scene(loader.load());
         MainController controller = loader.getController();
         controller.setApplication(this);

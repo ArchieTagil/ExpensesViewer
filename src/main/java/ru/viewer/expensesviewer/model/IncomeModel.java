@@ -64,4 +64,11 @@ public class IncomeModel {
         String queryUpdate = "UPDATE `income` set `wallet_id` = " + newWalletId + " WHERE `income_id` = " + id;
         statement.executeUpdate(queryUpdate);
     }
+
+    public String getDefaultWallet() throws SQLException {
+        Statement statement = connection.createStatement();
+        String getValue = "SELECT `wallet_name` FROM `wallets_list` WHERE `wallet_default` = true";
+        ResultSet resultSet = statement.executeQuery(getValue);
+        return resultSet.getString(1);
+    }
 }

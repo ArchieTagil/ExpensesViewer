@@ -47,19 +47,6 @@ public class IncomeEntity {
         this.date = date;
     }
 
-//    public String getWallet_name() {
-//        return wallet_name.get();
-//    }
-//
-//    public SimpleStringProperty wallet_nameProperty() {
-//        return wallet_name;
-//    }
-//
-//    public void setWallet_name(String wallet_name) {
-//        this.wallet_name.set(wallet_name);
-//    }
-
-
     public String getWallet_name() {
         return wallet_name;
     }
