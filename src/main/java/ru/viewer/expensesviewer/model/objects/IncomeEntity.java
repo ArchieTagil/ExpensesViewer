@@ -1,16 +1,16 @@
 package ru.viewer.expensesviewer.model.objects;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class IncomeEntity {
     private int id;
-    private LocalDateTime date;
+    private LocalDate date;
     private String wallet_name;
     private String income_category;
     private double amount;
     private String comment;
 
-    public IncomeEntity(int id, LocalDateTime date, String wallet_name, String income_category, double amount, String comment) {
+    public IncomeEntity(int id, LocalDate date, String wallet_name, String income_category, double amount, String comment) {
         this.id = id;
         this.date = date;
         this.wallet_name = wallet_name;
@@ -39,11 +39,11 @@ public class IncomeEntity {
         this.id = id;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

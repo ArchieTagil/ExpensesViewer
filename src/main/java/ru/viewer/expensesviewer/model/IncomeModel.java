@@ -2,11 +2,8 @@ package ru.viewer.expensesviewer.model;
 
 import ru.viewer.expensesviewer.model.objects.IncomeEntity;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDateTime;
+import java.sql.*;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,9 +32,8 @@ public class IncomeModel {
 
         while (resultSet.next()) {
             incomeEntityList.add(new IncomeEntity(
-                    //LocalDateTime.ofInstant(resultSet.getDate("income.date").toInstant(), ZoneId.systemDefault()),
                     resultSet.getInt("income_id"),
-                    LocalDateTime.parse(resultSet.getString("income.date"), dtf),
+                    LocalDate.parse(resultSet.getString("income.date"), dtf),
                     resultSet.getString("wallets_list.wallet_name"),
                     resultSet.getString("income_category_name"),
                     resultSet.getDouble("income.amount"),
@@ -59,6 +55,26 @@ public class IncomeModel {
         return walletList;
     }
 
+    public Map<Integer, String> getIncomeCategoryList() throws SQLException {
+        Statement statement = connection.createStatement();
+        String qGetIncomeList = "SELECT `income_category_id`, `income_category_name` FROM `income_category`;";
+        ResultSet resultSet = statement.executeQuery(qGetIncomeList);
+        Map<Integer, String> incomeCategoryList = new HashMap<>();
+
+        while (resultSet.next()) {
+            incomeCategoryList.put(resultSet.getInt("income_category_id"), resultSet.getString("income_category_name"));
+        }
+        return incomeCategoryList;
+    }
+
+    public void updateIncomeDate(int id, LocalDate newDate) throws SQLException {
+        String sql = "UPDATE `income` SET `date` = ? WHERE `income_id` = ?;";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setDate(1, Date.valueOf(newDate));
+        preparedStatement.setInt(2, id);
+        preparedStatement.executeUpdate();
+    }
+
     public void doEditWalletField(int id, int newWalletId) throws SQLException {
         Statement statement = connection.createStatement();
         String queryUpdate = "UPDATE `income` set `wallet_id` = " + newWalletId + " WHERE `income_id` = " + id;
@@ -67,8 +83,43 @@ public class IncomeModel {
 
     public String getDefaultWallet() throws SQLException {
         Statement statement = connection.createStatement();
-        String getValue = "SELECT `wallet_name` FROM `wallets_list` WHERE `wallet_default` = true";
+        String getValue = "SELECT `wallet_name` FROM `wallets_list` WHERE `wallet_default` = true;";
         ResultSet resultSet = statement.executeQuery(getValue);
-        return resultSet.getString(1);
+        while (resultSet.next()) {
+            return resultSet.getString("wallet_name");
+        }
+        return "";
     }
+
+    public void doEditIncomeCategoryField(int id, int newIncomeCategoryId) throws SQLException {
+        Statement statement = connection.createStatement();
+        String queryUpdate = "UPDATE `income` set `income_category_id` = " + newIncomeCategoryId + " WHERE `income_id` = " + id;
+        statement.executeUpdate(queryUpdate);
+    }
+
+    public String getDefaultIncomeCategory() throws SQLException {
+        Statement statement = connection.createStatement();
+        String getValue = "SELECT `income_category_name` FROM `income_category` WHERE `income_default` = true;";
+        ResultSet resultSet = statement.executeQuery(getValue);
+        while (resultSet.next()) {
+            return resultSet.getString("income_category_name");
+        }
+        return "";
+    }
+
+    public boolean addNewIncomeRow(LocalDate date, int walletId, int categoryId, double amount, String comment) throws SQLException {
+        System.out.println("Data will be send to database!");
+        PreparedStatement preparedStatement =
+                connection.prepareStatement("INSERT INTO `income` (date, wallet_id, income_category_id, amount, comment) VALUES (?, ?, ?, ?, ?);");
+        preparedStatement.setDate(1, Date.valueOf(date));
+        preparedStatement.setInt(2, walletId);
+        preparedStatement.setInt(3, categoryId);
+        preparedStatement.setDouble(4, amount);
+        preparedStatement.setString(5, comment);
+        int result = preparedStatement.executeUpdate();
+        System.out.println(result);
+        return result > 0;
+    }
+
+
 }
