@@ -107,8 +107,23 @@ public class IncomeModel {
         return "";
     }
 
+    public boolean doEditIncomeAmountField(int id, double amount) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `income` SET `amount` = ? WHERE `income_id` = ?;");
+        preparedStatement.setDouble(1, amount);
+        preparedStatement.setInt(2, id);
+        int result = preparedStatement.executeUpdate();
+        return result > 0;
+    }
+
+    public boolean doEditIncomeCommentField(int id, String newText) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `income` SET `comment` = ? WHERE `income_id` = ?;");
+        preparedStatement.setString(1, newText);
+        preparedStatement.setInt(2, id);
+        int result = preparedStatement.executeUpdate();
+        return result > 0;
+    }
+
     public boolean addNewIncomeRow(LocalDate date, int walletId, int categoryId, double amount, String comment) throws SQLException {
-        System.out.println("Data will be send to database!");
         PreparedStatement preparedStatement =
                 connection.prepareStatement("INSERT INTO `income` (date, wallet_id, income_category_id, amount, comment) VALUES (?, ?, ?, ?, ?);");
         preparedStatement.setDate(1, Date.valueOf(date));
@@ -117,7 +132,6 @@ public class IncomeModel {
         preparedStatement.setDouble(4, amount);
         preparedStatement.setString(5, comment);
         int result = preparedStatement.executeUpdate();
-        System.out.println(result);
         return result > 0;
     }
 

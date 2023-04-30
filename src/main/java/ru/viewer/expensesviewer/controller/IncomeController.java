@@ -14,7 +14,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.converter.DoubleStringConverter;
+import javafx.util.Callback;
 import javafx.util.converter.LocalDateStringConverter;
 import ru.viewer.expensesviewer.model.IncomeModel;
 import ru.viewer.expensesviewer.model.objects.IncomeEntity;
@@ -36,8 +36,8 @@ public class IncomeController {
     private ObservableList<String> walletObservableList;
     private Map<Integer, String> incomeCategoryList;
     private ObservableList<String> incomeCategoryObservableList;
-    private TextFormatter<String> textFormatter;
 
+    private UnaryOperator<TextFormatter.Change> textFieldOnlyDigitsFilter;
 
     @FXML
     private TableView<IncomeEntity> incomeTable;
@@ -107,7 +107,74 @@ public class IncomeController {
         incomeCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(incomeCategoryObservableList));
         incomeCategory.setCellValueFactory(new PropertyValueFactory<>("income_category"));
 
-        incomeSum.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+//        incomeSum.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        incomeSum.setCellFactory(new Callback<TableColumn<IncomeEntity, Double>, TableCell<IncomeEntity, Double>>() {
+            @Override
+            public TableCell<IncomeEntity, Double> call(TableColumn<IncomeEntity, Double> incomeEntityDoubleTableColumn) {
+                return new TableCell<>() {
+                    private TextField textField;
+
+                    @Override
+                    public void startEdit() {
+                        super.startEdit();
+                        setText(null);
+                        createTextField();
+                        setGraphic(textField);
+                        textField.setText(getItem().toString());
+                        textField.selectAll();
+                    }
+
+                    @Override
+                    public void cancelEdit() {
+                        super.cancelEdit();
+                        setGraphic(null);
+                        setText(getItem().toString());
+                    }
+
+                    @Override
+                    protected void updateItem(Double aDouble, boolean empty) {
+                        super.updateItem(aDouble, empty);
+                        if (empty) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            if (isEditing()) {
+                                if (textField != null) {
+                                    textField.setText(getItem().toString());
+                                }
+                                setText(null);
+                                setGraphic(textField);
+                            } else {
+                                setText(getItem().toString());
+                                setGraphic(null);
+                            }
+                        }
+                    }
+
+                    private void createTextField() {
+                        textField = new TextField(getItem().toString());
+                        textField.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+                            if (keyEvent.getCode() == KeyCode.ENTER) {
+                                commitEdit(Double.parseDouble(textField.getText()));
+                                keyEvent.consume();
+                            }
+                        });
+
+                        textField.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
+                            if (!t1) {
+                                try {
+                                    commitEdit(Double.valueOf(textField.getText()));
+                                } catch (NumberFormatException ignore) {
+                                    cancelEdit();
+                                }
+                            }
+                        });
+
+                        textField.setTextFormatter(new TextFormatter<Object>(textFieldOnlyDigitsFilter));
+                    }
+                };
+            }
+        });
         incomeSum.setCellValueFactory(new PropertyValueFactory<>("amount"));
 
         incomeComment.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -149,7 +216,7 @@ public class IncomeController {
         selectNewIncomeWallet.setValue(incomeModel.getDefaultWallet());
         selectNewIncomeCategory.setValue(incomeModel.getDefaultIncomeCategory());
 
-        UnaryOperator<TextFormatter.Change> filter = change -> {
+        textFieldOnlyDigitsFilter = change -> {
             String text = change.getText();
 
             if (text.matches("[0-9,/.]*")) {
@@ -157,7 +224,7 @@ public class IncomeController {
             }
             return null;
         };
-        textFormatter = new TextFormatter<String>(filter);
+        TextFormatter<String> textFormatter = new TextFormatter<String>(textFieldOnlyDigitsFilter);
         newIncomeAmount.setTextFormatter(textFormatter);
     }
 
@@ -182,10 +249,22 @@ public class IncomeController {
         initialize();
     }
 
-    public void sumEditCommit(TableColumn.CellEditEvent<IncomeEntity, Double> incomeEntityDoubleCellEditEvent) {
+    public void sumEditCommit(TableColumn.CellEditEvent<IncomeEntity, Double> incomeEntityDoubleCellEditEvent) throws SQLException {
+        int currentIncomeRowId = incomeEntityDoubleCellEditEvent.getRowValue().getId();
+        double newAmount = incomeEntityDoubleCellEditEvent.getNewValue();
+        boolean incomeWasChanged = incomeModel.doEditIncomeAmountField(currentIncomeRowId, newAmount);
+        if (!incomeWasChanged) {
+            Popup.display("Income amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
+        }
     }
 
-    public void commentEditCommit(TableColumn.CellEditEvent<IncomeEntity, String> incomeEntityStringCellEditEvent) {
+    public void commentEditCommit(TableColumn.CellEditEvent<IncomeEntity, String> incomeEntityStringCellEditEvent) throws SQLException {
+        int currentIncomeRowId = incomeEntityStringCellEditEvent.getRowValue().getId();
+        String newText = incomeEntityStringCellEditEvent.getNewValue();
+        boolean commentWasChanged = incomeModel.doEditIncomeCommentField(currentIncomeRowId, newText);
+        if (!commentWasChanged) {
+            Popup.display("Income comment edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
+        }
     }
 
     public void addNewIncome(ActionEvent actionEvent) throws SQLException {
@@ -204,6 +283,7 @@ public class IncomeController {
             initialize();
             System.out.println("income was successfully added");
         } else {
+            Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
             System.out.println("income wasn't added");
         }
     }
