@@ -26,10 +26,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class IncomeController {
 
     private final IncomeModel incomeModel = new IncomeModel();
+    private static Logger LOGGER = LogManager.getLogger(IncomeController.class);
 
     private List<IncomeEntity> incomeEntityList;
     private Map<Integer, String> walletList;
@@ -69,6 +72,10 @@ public class IncomeController {
     AnchorPane incomeAnchorPane;
 
     public IncomeController() throws SQLException, ClassNotFoundException {
+        LOGGER.debug("Object IncomeController was created.");
+        LOGGER.error("Object IncomeController was created.");
+        LOGGER.info("Object IncomeController was created.");
+        LOGGER.trace("Object IncomeController was created.");
     }
 
     @FXML
