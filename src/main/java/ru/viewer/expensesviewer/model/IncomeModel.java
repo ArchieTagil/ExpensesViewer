@@ -16,10 +16,6 @@ public class IncomeModel {
     public IncomeModel() throws SQLException, ClassNotFoundException {
     }
 
-    public void execute() throws SQLException {
-        System.out.println(getIncomeList());
-    }
-
     public List<IncomeEntity> getIncomeList() throws SQLException {
         Statement statement = connection.createStatement();
         String queryGetAllIncome = "SELECT income_id, income.date, wallets_list.wallet_name, income_category_name, income.amount, income.comment FROM income\n" +
@@ -85,10 +81,8 @@ public class IncomeModel {
         Statement statement = connection.createStatement();
         String getValue = "SELECT `wallet_name` FROM `wallets_list` WHERE `wallet_default` = true;";
         ResultSet resultSet = statement.executeQuery(getValue);
-        while (resultSet.next()) {
-            return resultSet.getString("wallet_name");
-        }
-        return "";
+        resultSet.next();
+        return resultSet.getString("wallet_name");
     }
 
     public void doEditIncomeCategoryField(int id, int newIncomeCategoryId) throws SQLException {
@@ -101,10 +95,8 @@ public class IncomeModel {
         Statement statement = connection.createStatement();
         String getValue = "SELECT `income_category_name` FROM `income_category` WHERE `income_default` = true;";
         ResultSet resultSet = statement.executeQuery(getValue);
-        while (resultSet.next()) {
-            return resultSet.getString("income_category_name");
-        }
-        return "";
+        resultSet.next();
+        return resultSet.getString("income_category_name");
     }
 
     public boolean doEditIncomeAmountField(int id, double amount) throws SQLException {

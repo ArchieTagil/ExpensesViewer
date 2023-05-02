@@ -4,21 +4,23 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ru.viewer.expensesviewer.controller.MainController;
-
 import java.io.IOException;
-import java.sql.SQLException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import ru.viewer.expensesviewer.controller.IncomeController;
 
 public class HelloApplication extends Application {
-    private Scene scene;
+    private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
 
     @Override
-    public void start(Stage stage) throws IOException, SQLException, ClassNotFoundException {
+    public void start(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
-        this.scene = new Scene(loader.load());
-        MainController controller = loader.getController();
-        controller.setApplication(this);
-        scene.getStylesheets().add(getClass().getResource("bootstrap3.css").toExternalForm());
+        Scene scene = new Scene(loader.load());
+        try {
+            scene.getStylesheets().add(getClass().getResource("bootstrap3.css").toExternalForm());
+        } catch (NullPointerException e) {
+            LOGGER.error("bootstrap3.css wasn't upload");
+        }
         stage.setScene(scene);
         stage.show();
     }

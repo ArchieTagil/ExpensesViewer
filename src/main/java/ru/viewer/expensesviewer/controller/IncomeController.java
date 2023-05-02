@@ -2,7 +2,6 @@ package ru.viewer.expensesviewer.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -32,9 +31,7 @@ import org.apache.logging.log4j.Logger;
 public class IncomeController {
 
     private final IncomeModel incomeModel = new IncomeModel();
-    private static Logger LOGGER = LogManager.getLogger(IncomeController.class);
-
-    private List<IncomeEntity> incomeEntityList;
+    private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
     private Map<Integer, String> walletList;
     private ObservableList<String> walletObservableList;
     private Map<Integer, String> incomeCategoryList;
@@ -72,38 +69,29 @@ public class IncomeController {
     AnchorPane incomeAnchorPane;
 
     public IncomeController() throws SQLException, ClassNotFoundException {
-        LOGGER.debug("Object IncomeController was created.");
-        LOGGER.error("Object IncomeController was created.");
-        LOGGER.info("Object IncomeController was created.");
-        LOGGER.trace("Object IncomeController was created.");
     }
 
     @FXML
     public void initialize() throws SQLException {
-        System.out.println("Init");
         initHotKeys();
-        incomeEntityList = incomeModel.getIncomeList();
         initInsertFieldsSettings();
+        drawIncomeList();
 
         incomeTable.setEditable(true);
         incomeId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        incomeDate.setCellFactory(column -> {
-            TableCell<IncomeEntity, LocalDate> cell = new TableCell<>() {
-                private final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        incomeDate.setCellFactory(column -> new TableCell<>() {
+            private final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-                @Override
-                protected void updateItem(LocalDate localDate, boolean b) {
-                    super.updateItem(localDate, b);
-                    if (localDate == null) {
-                        setText(null);
-                    } else {
-                        this.setText(localDate.format(format));
-                    }
-
+            @Override
+            protected void updateItem(LocalDate localDate, boolean b) {
+                super.updateItem(localDate, b);
+                if (localDate == null) {
+                    setText(null);
+                } else {
+                    this.setText(localDate.format(format));
                 }
-            };
 
-            return cell;
+            }
         });
         incomeDate.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateStringConverter()));
         incomeDate.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -113,9 +101,7 @@ public class IncomeController {
 
         incomeCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(incomeCategoryObservableList));
         incomeCategory.setCellValueFactory(new PropertyValueFactory<>("income_category"));
-
-//        incomeSum.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-        incomeSum.setCellFactory(new Callback<TableColumn<IncomeEntity, Double>, TableCell<IncomeEntity, Double>>() {
+        incomeSum.setCellFactory(new Callback<>() {
             @Override
             public TableCell<IncomeEntity, Double> call(TableColumn<IncomeEntity, Double> incomeEntityDoubleTableColumn) {
                 return new TableCell<>() {
@@ -177,7 +163,7 @@ public class IncomeController {
                             }
                         });
 
-                        textField.setTextFormatter(new TextFormatter<Object>(textFieldOnlyDigitsFilter));
+                        textField.setTextFormatter(new TextFormatter<>(textFieldOnlyDigitsFilter));
                     }
                 };
             }
@@ -186,30 +172,28 @@ public class IncomeController {
 
         incomeComment.setCellFactory(TextFieldTableCell.forTableColumn());
         incomeComment.setCellValueFactory(new PropertyValueFactory<>("comment"));
-
+    }
+    private void drawIncomeList() throws SQLException {
+        List<IncomeEntity> incomeEntityList = incomeModel.getIncomeList();
         ObservableList<IncomeEntity> observableList = FXCollections.observableArrayList(incomeEntityList);
-        System.out.println(observableList);
         incomeTable.setItems(observableList);
     }
-
-    public void initHotKeys() {
+    private void initHotKeys() {
         KeyCodeCombination alt1 = new KeyCodeCombination(KeyCode.DIGIT1, KeyCombination.ALT_DOWN);
         KeyCodeCombination ctrlEnter = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.SHORTCUT_DOWN);
 
-        EventHandler<KeyEvent> filter = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (ctrlEnter.match(event)) {
-                    incomeAddButton.fire();
-                } else if (alt1.match(event)) {
-                    newIncomeDate.requestFocus();
-                }
+        EventHandler<KeyEvent> filter = event -> {
+            if (ctrlEnter.match(event)) {
+                incomeAddButton.fire();
+                LOGGER.debug("Add button was fired.");
+            } else if (alt1.match(event)) {
+                newIncomeDate.requestFocus();
             }
         };
         incomeAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, filter);
     }
 
-    public void initInsertFieldsSettings() throws SQLException {
+    private void initInsertFieldsSettings() throws SQLException {
         newIncomeDate.setValue(LocalDate.now());
         walletList = incomeModel.getWalletList();
         incomeCategoryList = incomeModel.getIncomeCategoryList();
@@ -231,7 +215,7 @@ public class IncomeController {
             }
             return null;
         };
-        TextFormatter<String> textFormatter = new TextFormatter<String>(textFieldOnlyDigitsFilter);
+        TextFormatter<String> textFormatter = new TextFormatter<>(textFieldOnlyDigitsFilter);
         newIncomeAmount.setTextFormatter(textFormatter);
     }
 
@@ -239,21 +223,31 @@ public class IncomeController {
         LocalDate newDate = incomeEntityLocalDateCellEditEvent.getNewValue();
         int id = incomeEntityLocalDateCellEditEvent.getRowValue().getId();
         incomeModel.updateIncomeDate(id, newDate);
-        initialize();
+        drawIncomeList();
     }
 
     public void walletEditCommit(TableColumn.CellEditEvent<IncomeEntity, String> incomeEntityStringCellEditEvent) throws SQLException {
         int currentIncomeRowId = incomeEntityStringCellEditEvent.getRowValue().getId();
-        int newWalletId = walletList.entrySet().stream().filter(e -> e.getValue().equals(incomeEntityStringCellEditEvent.getNewValue())).findFirst().get().getKey();
+        int newWalletId = walletList.entrySet().stream().
+                filter(e -> e.getValue().equals(incomeEntityStringCellEditEvent.getNewValue())).
+                findFirst().orElseThrow(() -> {
+                    LOGGER.fatal("walletEditCommit gets null");
+                    return new NullPointerException("walletEditCommit gets null");
+                }).getKey();
         incomeModel.doEditWalletField(currentIncomeRowId, newWalletId);
-        initialize();
+        drawIncomeList();
     }
 
     public void categoryEditCommit(TableColumn.CellEditEvent<IncomeEntity, String> incomeEntityStringCellEditEvent) throws SQLException {
         int currentIncomeRowId = incomeEntityStringCellEditEvent.getRowValue().getId();
-        int newIncomeCategoryId = incomeCategoryList.entrySet().stream().filter(e -> e.getValue().equals(incomeEntityStringCellEditEvent.getNewValue())).findFirst().get().getKey();
+        int newIncomeCategoryId = incomeCategoryList.entrySet().stream().
+                filter(e -> e.getValue().equals(incomeEntityStringCellEditEvent.getNewValue())).
+                findFirst().orElseThrow(() -> {
+                    LOGGER.fatal("categoryEditCommit gets null");
+                    return new NullPointerException("categoryEditCommit get null");
+                }).getKey();
         incomeModel.doEditIncomeCategoryField(currentIncomeRowId, newIncomeCategoryId);
-        initialize();
+        drawIncomeList();
     }
 
     public void sumEditCommit(TableColumn.CellEditEvent<IncomeEntity, Double> incomeEntityDoubleCellEditEvent) throws SQLException {
@@ -261,6 +255,7 @@ public class IncomeController {
         double newAmount = incomeEntityDoubleCellEditEvent.getNewValue();
         boolean incomeWasChanged = incomeModel.doEditIncomeAmountField(currentIncomeRowId, newAmount);
         if (!incomeWasChanged) {
+            LOGGER.error("Income amount edit error during a change in database.");
             Popup.display("Income amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
         }
     }
@@ -270,14 +265,23 @@ public class IncomeController {
         String newText = incomeEntityStringCellEditEvent.getNewValue();
         boolean commentWasChanged = incomeModel.doEditIncomeCommentField(currentIncomeRowId, newText);
         if (!commentWasChanged) {
+            LOGGER.error("Income comment edit error during a change in database.");
             Popup.display("Income comment edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
         }
     }
 
-    public void addNewIncome(ActionEvent actionEvent) throws SQLException {
+    public void addNewIncome() throws SQLException {
         LocalDate date = newIncomeDate.getValue();
-        int walletId = walletList.entrySet().stream().filter(s -> s.getValue() == selectNewIncomeWallet.getValue()).findFirst().get().getKey();
-        int categoryId = incomeCategoryList.entrySet().stream().filter(s -> s.getValue() == selectNewIncomeCategory.getValue()).findFirst().get().getKey();
+        int walletId = walletList.entrySet().stream().filter(s -> s.getValue().equals(selectNewIncomeWallet.getValue())).
+                findFirst().orElseThrow(() -> {
+                    LOGGER.fatal("walletEditCommit gets null");
+                    return new NullPointerException("walletEditCommit gets null");
+                }).getKey();
+        int categoryId = incomeCategoryList.entrySet().stream().filter(s -> s.getValue().equals(selectNewIncomeCategory.getValue())).
+                findFirst().orElseThrow(() -> {
+                    LOGGER.fatal("categoryEditCommit gets null");
+                    return new NullPointerException("categoryEditCommit get null");
+                }).getKey();
         double amount = 0;
         try {
             amount = Double.parseDouble(newIncomeAmount.getText());
@@ -286,12 +290,11 @@ public class IncomeController {
         }
         String comment = newIncomeComment.getText();
         boolean incomeRowWasAdded = incomeModel.addNewIncomeRow(date, walletId, categoryId, amount, comment);
-        if (incomeRowWasAdded == true) {
-            initialize();
-            System.out.println("income was successfully added");
+        if (incomeRowWasAdded) {
+            drawIncomeList();
         } else {
             Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
-            System.out.println("income wasn't added");
+            LOGGER.error("income wasn't added");
         }
     }
 }

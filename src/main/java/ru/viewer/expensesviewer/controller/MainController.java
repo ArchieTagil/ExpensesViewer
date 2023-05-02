@@ -1,6 +1,5 @@
 package ru.viewer.expensesviewer.controller;
 
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,18 +12,16 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.HelloApplication;
-import ru.viewer.expensesviewer.model.DbConnection;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
-    private Connection connection;
-    private HelloApplication Application;
+    private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
     @FXML
     Tab incomeTab;
     @FXML
@@ -36,12 +33,9 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         KeyCodeCombination altQ = new KeyCodeCombination(KeyCode.Q, KeyCombination.ALT_DOWN);
-        EventHandler filter = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (altQ.match(event)) {
-                    exit.fire();
-                }
+        EventHandler<KeyEvent> filter = event -> {
+            if (altQ.match(event)) {
+                exit.fire();
             }
         };
         mainStackPane.addEventFilter(KeyEvent.KEY_PRESSED, filter);
@@ -50,17 +44,11 @@ public class MainController implements Initializable {
             AnchorPane anchorPaneIncomeTab = new FXMLLoader(HelloApplication.class.getResource("IncomeTab.fxml")).load();
             incomeTab.setContent(anchorPaneIncomeTab);
         } catch (IOException e) {
-            System.out.println("File not found");
+            LOGGER.fatal("IncomeTab.fxml wasn't loaded");
         }
     }
 
-    public void setApplication(HelloApplication helloApplication) throws SQLException, ClassNotFoundException {
-        this.Application = helloApplication;
-        connection = DbConnection.getInstance().getConnection();
-        System.out.println("setApplication");
-    }
-
-    public void exit(ActionEvent actionEvent) {
+    public void exit() {
         System.exit(0);
     }
 }
