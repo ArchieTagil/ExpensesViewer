@@ -1,5 +1,6 @@
 package ru.viewer.expensesviewer.model;
 
+import ru.viewer.expensesviewer.controller.IncomeController;
 import ru.viewer.expensesviewer.model.objects.IncomeEntity;
 
 import java.sql.*;
@@ -9,9 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class IncomeModel {
     private final Connection connection = DbConnection.getInstance().getConnection();
+    private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
 
     public IncomeModel() throws SQLException, ClassNotFoundException {
     }
@@ -116,16 +120,56 @@ public class IncomeModel {
     }
 
     public boolean addNewIncomeRow(LocalDate date, int walletId, int categoryId, double amount, String comment) throws SQLException {
+        double currentWalletBalance = getWalletBalance(walletId);
+        int balanceWasUpdated = updateWalletBalance(walletId, currentWalletBalance + amount);
+
         PreparedStatement preparedStatement =
-                connection.prepareStatement("INSERT INTO `income` (date, wallet_id, income_category_id, amount, comment) VALUES (?, ?, ?, ?, ?);");
+            connection.prepareStatement("INSERT INTO `income` (date, wallet_id, income_category_id, amount, comment) VALUES (?, ?, ?, ?, ?);");
         preparedStatement.setDate(1, Date.valueOf(date));
         preparedStatement.setInt(2, walletId);
         preparedStatement.setInt(3, categoryId);
         preparedStatement.setDouble(4, amount);
         preparedStatement.setString(5, comment);
         int result = preparedStatement.executeUpdate();
-        return result > 0;
+        if (result > 0 && balanceWasUpdated > 0) {
+            return true;
+        } else {
+            if (balanceWasUpdated <= 0) LOGGER.error("Метод добавления дохода выполнился с ошибкой, балланс не обновился");
+            if (result <= 0) LOGGER.error("Метод добавления дохода выполнился с ошибкой, новый доход не был добавлен в таблицу Income");
+            return false;
+        }
     }
 
+    public boolean deleteIncome(int incomeId, int walletId, double amount) throws SQLException {
+        double currentWalletBalance = getWalletBalance(walletId);
+        int balanceWasUpdated = updateWalletBalance(walletId, currentWalletBalance - amount);
 
+        Statement statement = connection.createStatement();
+        String query = "DELETE FROM `income` WHERE `income_id` = " + incomeId + ";";
+        int result = statement.executeUpdate(query);
+        if (balanceWasUpdated > 0 && result > 0) {
+            return true;
+        } else {
+            if (balanceWasUpdated <=0) LOGGER.error("Метод удаления дохода выполнился с ошибкой, балланс не был обновлён после удаления. ID = " + walletId);
+            if (result <= 0) LOGGER.error("Метод удаления дохода выполнился с ошибкой, строка не была удалена из БД. ID = " + incomeId);
+            return false;
+        }
+    }
+
+    public double getWalletBalance(int id) throws SQLException {
+        Statement statement = connection.createStatement();
+        String query = "SELECT `wallet_balance` FROM `wallets_list` WHERE wallet_id = " + id + ";";
+        ResultSet resultSet = statement.executeQuery(query);
+        double currentWalletBalance = 0;
+        if (resultSet.next()) currentWalletBalance = resultSet.getDouble("wallet_balance");
+        return currentWalletBalance;
+    }
+
+    public int updateWalletBalance(int id, double newValue) throws SQLException {
+        PreparedStatement preparedStatementUpdateWalletBalance =
+                connection.prepareStatement("UPDATE `wallets_list` SET `wallet_balance` = ? WHERE `wallet_id` = ?;");
+        preparedStatementUpdateWalletBalance.setDouble(1, newValue);
+        preparedStatementUpdateWalletBalance.setInt(2, id);
+        return preparedStatementUpdateWalletBalance.executeUpdate();
+    }
 }
