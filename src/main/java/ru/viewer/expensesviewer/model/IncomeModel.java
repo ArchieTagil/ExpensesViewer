@@ -1,6 +1,7 @@
 package ru.viewer.expensesviewer.model;
 
 import ru.viewer.expensesviewer.controller.IncomeController;
+import ru.viewer.expensesviewer.controller.MainController;
 import ru.viewer.expensesviewer.model.objects.IncomeEntity;
 
 import java.sql.*;
@@ -16,9 +17,6 @@ import org.apache.logging.log4j.Logger;
 public class IncomeModel {
     private final Connection connection = DbConnection.getInstance().getConnection();
     private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
-
-    public IncomeModel() throws SQLException, ClassNotFoundException {
-    }
 
     public List<IncomeEntity> getIncomeList() throws SQLException {
         Statement statement = connection.createStatement();
@@ -41,18 +39,6 @@ public class IncomeModel {
             ));
         }
         return incomeEntityList;
-    }
-
-    public Map<Integer, String> getWalletList() throws SQLException {
-        Statement statement = connection.createStatement();
-        String qGetWalletList = "SELECT `wallet_id`, `wallet_name` FROM `wallets_list`;";
-        ResultSet resultSet = statement.executeQuery(qGetWalletList);
-        Map<Integer, String> walletList = new HashMap<>();
-
-        while (resultSet.next()) {
-            walletList.put(resultSet.getInt("wallet_id"), resultSet.getString("wallet_name"));
-        }
-        return walletList;
     }
 
     public Map<Integer, String> getIncomeCategoryList() throws SQLException {
@@ -79,14 +65,6 @@ public class IncomeModel {
         Statement statement = connection.createStatement();
         String queryUpdate = "UPDATE `income` set `wallet_id` = " + newWalletId + " WHERE `income_id` = " + id;
         statement.executeUpdate(queryUpdate);
-    }
-
-    public String getDefaultWallet() throws SQLException {
-        Statement statement = connection.createStatement();
-        String getValue = "SELECT `wallet_name` FROM `wallets_list` WHERE `wallet_default` = true;";
-        ResultSet resultSet = statement.executeQuery(getValue);
-        resultSet.next();
-        return resultSet.getString("wallet_name");
     }
 
     public void doEditIncomeCategoryField(int id, int newIncomeCategoryId) throws SQLException {
@@ -119,9 +97,10 @@ public class IncomeModel {
         return result > 0;
     }
 
+    @SuppressWarnings("Duplicates")
     public boolean addNewIncomeRow(LocalDate date, int walletId, int categoryId, double amount, String comment) throws SQLException {
-        double currentWalletBalance = getWalletBalance(walletId);
-        int balanceWasUpdated = updateWalletBalance(walletId, currentWalletBalance + amount);
+        double currentWalletBalance = MainController.getWalletBalanceById(walletId);
+        int balanceWasUpdated = MainController.updateWalletBalanceById(walletId, currentWalletBalance + amount);
 
         PreparedStatement preparedStatement =
             connection.prepareStatement("INSERT INTO `income` (date, wallet_id, income_category_id, amount, comment) VALUES (?, ?, ?, ?, ?);");
@@ -140,9 +119,10 @@ public class IncomeModel {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     public boolean deleteIncome(int incomeId, int walletId, double amount) throws SQLException {
-        double currentWalletBalance = getWalletBalance(walletId);
-        int balanceWasUpdated = updateWalletBalance(walletId, currentWalletBalance - amount);
+        double currentWalletBalance = MainController.getWalletBalanceById(walletId);
+        int balanceWasUpdated = MainController.updateWalletBalanceById(walletId, currentWalletBalance - amount);
 
         Statement statement = connection.createStatement();
         String query = "DELETE FROM `income` WHERE `income_id` = " + incomeId + ";";
@@ -154,22 +134,5 @@ public class IncomeModel {
             if (result <= 0) LOGGER.error("Метод удаления дохода выполнился с ошибкой, строка не была удалена из БД. ID = " + incomeId);
             return false;
         }
-    }
-
-    public double getWalletBalance(int id) throws SQLException {
-        Statement statement = connection.createStatement();
-        String query = "SELECT `wallet_balance` FROM `wallets_list` WHERE wallet_id = " + id + ";";
-        ResultSet resultSet = statement.executeQuery(query);
-        double currentWalletBalance = 0;
-        if (resultSet.next()) currentWalletBalance = resultSet.getDouble("wallet_balance");
-        return currentWalletBalance;
-    }
-
-    public int updateWalletBalance(int id, double newValue) throws SQLException {
-        PreparedStatement preparedStatementUpdateWalletBalance =
-                connection.prepareStatement("UPDATE `wallets_list` SET `wallet_balance` = ? WHERE `wallet_id` = ?;");
-        preparedStatementUpdateWalletBalance.setDouble(1, newValue);
-        preparedStatementUpdateWalletBalance.setInt(2, id);
-        return preparedStatementUpdateWalletBalance.executeUpdate();
     }
 }

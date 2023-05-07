@@ -1,68 +1,268 @@
 package ru.viewer.expensesviewer.controller;
 
-import ru.viewer.expensesviewer.HelloApplication;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.ChoiceBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.util.Callback;
+import javafx.util.converter.LocalDateStringConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import ru.viewer.expensesviewer.model.ExpensesModel;
+import ru.viewer.expensesviewer.model.IncomeModel;
+import ru.viewer.expensesviewer.model.objects.ExpenseEntity;
+import ru.viewer.expensesviewer.model.objects.IncomeEntity;
+import ru.viewer.expensesviewer.model.objects.Popup;
 
-import java.sql.Connection;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.function.UnaryOperator;
 
 public class ExpensesController {
-    Connection connection;
+    private MainController mainController;
+    private ExpensesModel expensesModel = new ExpensesModel();
+    private static final Logger LOGGER = LogManager.getLogger(ExpensesController.class);
+    private Map<Integer, String> walletList;
+    private ObservableList<String> walletObservableList;
+    private Map<Integer, String> expensesCategoryList;
+    private ObservableList<String> expensesCategoryObservableList;
+    @FXML
+    private AnchorPane expensesAnchorPane;
+    @FXML
+    private TableView<ExpenseEntity> expensesTable;
+    @FXML
+    private TableColumn<ExpenseEntity, Integer> expenseId;
+    @FXML
+    private TableColumn<ExpenseEntity, LocalDate> expenseDate;
+    @FXML
+    private TableColumn<ExpenseEntity, String> Wallet;
+    @FXML
+    private TableColumn<ExpenseEntity, String> expensesCategory;
+    @FXML
+    private TableColumn<ExpenseEntity, Double> expenseAmount;
+    @FXML
+    private TableColumn<ExpenseEntity, String> expenseComment;
+    @FXML
+    private DatePicker expenseDateNewRow;
+    @FXML
+    private ChoiceBox<String> selectExpenseWalletNewRow;
+    @FXML
+    private ChoiceBox<String> selectExpenseCategoryNewRow;
+    @FXML
+    private TextField expenseAmountNewRow;
+    @FXML
+    private TextField expenseCommentNewRow;
+    @FXML
+    private Button expenseAddButton;
 
-    private HelloApplication application;
+    @FXML
+    @SuppressWarnings("Duplicates")
+    private void initialize() {
+        initHotKeys();
 
-//    @FXML
-//    public void exit() {
-//        System.exit(0);
-//    }
-//
-//    public void setApplication(HelloApplication application) {
-//        this.application = application;
-//        myTable.setItems(application.getList());
-//    }
-//
-//    @FXML
-//    public void initialize() throws SQLException, ClassNotFoundException {
-//        IncomeModel incomeModel = new IncomeModel();
-//        incomeModel.execute();
-//
-//        myTable.setEditable(true);
-//        myColumn1.setCellFactory(TextFieldTableCell.forTableColumn());
-//        myColumn2.setCellFactory(TextFieldTableCell.forTableColumn());
-//        myColumn3.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-//        myColumn4.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-//
-//        KeyCodeCombination altT = new KeyCodeCombination(KeyCode.T, KeyCombination.ALT_DOWN);
-//        KeyCodeCombination ctrlEnter = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.SHORTCUT_DOWN);
-//        KeyCodeCombination altEscape = new KeyCodeCombination(KeyCode.ESCAPE, KeyCombination.ALT_DOWN);
-//        EventHandler filter = new EventHandler<KeyEvent>() {
-//            @Override
-//            public void handle(KeyEvent event) {
-//                if (altEscape.match(event)) {
-//                    exit.fire();
-//                } else if (ctrlEnter.match(event)) {
-//                    addButton.fire();
-//                } else if (altT.match(event)) {
-//                    newMake.requestFocus();
-//                }
-//            }
-//        };
-//        mainStackPane.addEventFilter(KeyEvent.KEY_PRESSED, filter);
-//        myColumn1.setCellValueFactory(new PropertyValueFactory<Car, String>("make"));
-//        myColumn2.setCellValueFactory(new PropertyValueFactory<Car, String>("model"));
-//        myColumn3.setCellValueFactory(new PropertyValueFactory<Car, Integer>("distance"));
-//        myColumn4.setCellValueFactory(new PropertyValueFactory<Car, Double>("price"));
-//    }
-//    @FXML
-//    public void addNewCar() {
-//        application.getList().add(
-//                new Car(
-//                        newMake.getText(),
-//                        newModel.getText(),
-//                        Integer.parseInt(newDistance.getText()),
-//                        Double.parseDouble(newPrice.getText())
-//                ));
-//    }
-//
-//    public void setConnection(Connection connection) {
-//        this.connection = connection;
-//    }
+        initInsertFieldsSettings();
+        drawExpensesList();
+
+        expensesTable.setEditable(true);
+        expensesTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        expenseId.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        expenseDate.setCellFactory(MainController.dateCallbackForExpenses);
+        expenseDate.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateStringConverter()));
+        expenseDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+
+        Wallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(walletObservableList));
+        Wallet.setCellValueFactory(new PropertyValueFactory<>("wallet_name"));
+
+        expensesCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(expensesCategoryObservableList));
+        expensesCategory.setCellValueFactory(new PropertyValueFactory<>("expense_category"));
+
+        expenseAmount.setCellFactory(MainController.amountCallbackForExpenses);
+        expenseAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
+
+        expenseComment.setCellFactory(TextFieldTableCell.forTableColumn());
+        expenseComment.setCellValueFactory(new PropertyValueFactory<>("comment"));
+    }
+
+    public void dateEditCommit(TableColumn.CellEditEvent<ExpenseEntity, LocalDate> cellEditEvent) {
+        LocalDate newDate = cellEditEvent.getNewValue();
+        int id = cellEditEvent.getRowValue().getId();
+        expensesModel.updateExpenseRowDate(id, newDate);
+        drawExpensesList();
+    }
+
+    @SuppressWarnings("Duplicates")
+    public void walletEditCommit(TableColumn.CellEditEvent<ExpenseEntity, String> cellEditEvent) {
+        int currentIncomeRowId = cellEditEvent.getRowValue().getId();
+        double amountInCurrentRow = cellEditEvent.getRowValue().getAmount();
+
+        LOGGER.debug("Old wallet name: " + cellEditEvent.getOldValue());
+        LOGGER.debug("New wallet name: " + cellEditEvent.getNewValue());
+
+        int newWalletId = getWalletIdByName(cellEditEvent.getNewValue());
+        int oldWalletId = getWalletIdByName(cellEditEvent.getOldValue());
+
+        double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
+        double newWalletBalance = MainController.getWalletBalanceById(newWalletId);
+
+        MainController.updateWalletBalanceById(oldWalletId, oldWalletBalance + amountInCurrentRow);
+        MainController.updateWalletBalanceById(newWalletId, newWalletBalance - amountInCurrentRow);
+        expensesModel.doEditWalletField(currentIncomeRowId, newWalletId);
+        drawExpensesList();
+        mainController.initBalance();
+    }
+
+    @SuppressWarnings("Duplicates")
+    public void categoryEditCommit(TableColumn.CellEditEvent<ExpenseEntity, String> cellEditEvent) {
+        int currentExpenseRowId = cellEditEvent.getRowValue().getId();
+        int newExpenseCategoryId = expensesCategoryList.entrySet().stream().
+                filter(e -> e.getValue().equals(cellEditEvent.getNewValue())).
+                findFirst().orElseThrow(() -> {
+                    LOGGER.fatal("categoryEditCommit gets null");
+                    return new NullPointerException("categoryEditCommit get null");
+                }).getKey();
+        expensesModel.doEditExpensesCategoryField(currentExpenseRowId, newExpenseCategoryId);
+        drawExpensesList();
+    }
+
+    @SuppressWarnings("Duplicates")
+    public void sumEditCommit(TableColumn.CellEditEvent<ExpenseEntity, Double> cellEditEvent) {
+        int walletId = getWalletIdByName(cellEditEvent.getRowValue().getWallet_name());
+        double walletBalance = MainController.getWalletBalanceById(walletId);
+        int currentExpenseRowId = cellEditEvent.getRowValue().getId();
+        double oldAmount = cellEditEvent.getOldValue();
+        double newAmount = cellEditEvent.getNewValue();
+        MainController.updateWalletBalanceById(walletId, walletBalance - (newAmount - oldAmount));
+        boolean expenseWasChanged = expensesModel.doEditExpenseAmountField(currentExpenseRowId, newAmount);
+        if (!expenseWasChanged) {
+            LOGGER.error("Expense amount edit error during a change in database.");
+            Popup.display("Expense amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
+        } else {
+            drawExpensesList();
+            mainController.initBalance();
+        }
+    }
+
+    public void commentEditCommit(TableColumn.CellEditEvent<ExpenseEntity, String> cellEditEvent) {
+        int currentExpensesRowId = cellEditEvent.getRowValue().getId();
+        String newText = cellEditEvent.getNewValue();
+        boolean commentWasChanged = expensesModel.doEditExpensesCommentField(currentExpensesRowId, newText);
+        if (!commentWasChanged) {
+            LOGGER.error("Expenses comment edit error during a change in database.");
+            Popup.display("Expenses comment edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
+        }
+    }
+
+    public void addNewExpense(ActionEvent actionEvent) {
+        LocalDate date = expenseDateNewRow.getValue();
+        int walletId = getWalletIdByName(selectExpenseWalletNewRow.getValue());
+        int categoryId = getCategoryIdByName(selectExpenseCategoryNewRow.getValue());
+
+        double amount = 0;
+        try {
+            amount = Double.parseDouble(expenseAmountNewRow.getText());
+        } catch (RuntimeException NumberFormatException) {
+            Popup.display("Wrong amount", "Вы ввели некорретное число.");
+        }
+        String comment = expenseCommentNewRow.getText();
+        LOGGER.debug("Будет добавлена:");
+        LOGGER.debug("Дата: " + date);
+        LOGGER.debug("Кошелёк: " + walletId);
+        LOGGER.debug("Категория: " + categoryId);
+        LOGGER.debug("Сумма: " + amount);
+        LOGGER.debug("Комментарий: " + comment);
+        boolean incomeRowWasAdded = expensesModel.addNewExpensesRow(date, walletId, categoryId, amount, comment);
+        if (incomeRowWasAdded) {
+            drawExpensesList();
+            mainController.initBalance();
+        } else {
+            Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
+            LOGGER.error("income wasn't added");
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    public void deleteRows(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.DELETE) {
+            ObservableList<ExpenseEntity> list = expensesTable.getSelectionModel().getSelectedItems();
+            for (ExpenseEntity entity : list) {
+                boolean isDeleted = expensesModel.deleteExpense(entity.getId(), getWalletIdByName(entity.getWallet_name()), entity.getAmount());
+                if (!isDeleted) LOGGER.debug("id: " + entity.getId() + " was failed to delete.");
+            }
+            mainController.initBalance();
+            drawExpensesList();
+        }
+    }
+
+    private int getWalletIdByName(String name) {
+        return walletList.entrySet().stream().
+                filter(e -> e.getValue().equals(name)).findFirst().orElseThrow(() -> {
+                    LOGGER.fatal("walletEditCommit gets null");
+                    return new NullPointerException("walletEditCommit gets null");
+                }).getKey();
+    }
+
+    private int getCategoryIdByName(String name) {
+        return expensesCategoryList.entrySet().stream().
+                filter(s -> s.getValue().equals(name)).
+                findFirst().orElseThrow(() -> {
+                    LOGGER.fatal("categoryEditCommit gets null");
+                    return new NullPointerException("categoryEditCommit get null");
+                }).getKey();
+    }
+
+    private void drawExpensesList() {
+        List<ExpenseEntity> expenseEntityList = expensesModel.getExpensesList();
+        ObservableList<ExpenseEntity> observableList = FXCollections.observableArrayList(expenseEntityList);
+        expensesTable.setItems(observableList);
+    }
+    @SuppressWarnings("Duplicates")
+    private void initInsertFieldsSettings() {
+        expenseDateNewRow.setValue(LocalDate.now());
+        walletList = MainController.getWalletList();
+        expensesCategoryList = expensesModel.getExpensesCategoryList();
+
+        walletObservableList = FXCollections.observableArrayList(walletList.values());
+        expensesCategoryObservableList = FXCollections.observableArrayList(expensesCategoryList.values());
+
+        selectExpenseWalletNewRow.setItems(walletObservableList);
+        selectExpenseCategoryNewRow.setItems(expensesCategoryObservableList);
+
+        selectExpenseWalletNewRow.setValue(MainController.getDefaultWalletName());
+        selectExpenseCategoryNewRow.setValue(expensesModel.getDefaultExpenseCategory());
+
+        expenseAmountNewRow.setTextFormatter(MainController.getOnlyDigitsTextFormatter());
+    }
+
+    @SuppressWarnings("Duplicates")
+    private void initHotKeys() {
+        KeyCodeCombination alt1 = new KeyCodeCombination(KeyCode.DIGIT1, KeyCombination.ALT_DOWN);
+        KeyCodeCombination ctrlEnter = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.SHORTCUT_DOWN);
+
+        EventHandler<KeyEvent> filter = event -> {
+            if (ctrlEnter.match(event)) {
+                expenseAddButton.fire();
+            } else if (alt1.match(event)) {
+                expenseDateNewRow.requestFocus();
+            }
+        };
+        expensesAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, filter);
+    }
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 }

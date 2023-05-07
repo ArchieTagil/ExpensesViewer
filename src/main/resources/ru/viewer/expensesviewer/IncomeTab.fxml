@@ -13,70 +13,78 @@
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane fx:id="incomeAnchorPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.IncomeController">
-    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <children>
-            <TableView fx:id="incomeTable" onKeyPressed="#deleteRows" prefHeight="329.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="incomeId" prefWidth="51.999969482421875" text="id" />
-                    <TableColumn fx:id="incomeDate" onEditCommit="#dateEditCommit" prefWidth="171.0" text="Дата" />
-                    <TableColumn fx:id="incomeWallet" minWidth="0.0" onEditCommit="#walletEditCommit" prefWidth="283.0" text="Кошелёк" />
-                    <TableColumn fx:id="incomeCategory" onEditCommit="#categoryEditCommit" prefWidth="269.0" text="Категория доходов" />
-                    <TableColumn fx:id="incomeSum" onEditCommit="#sumEditCommit" prefWidth="151.0" text="Сумма" />
-                    <TableColumn fx:id="incomeComment" onEditCommit="#commentEditCommit" prefWidth="276.0" text="Комментарий" />
-                </columns>
-            </TableView>
-            <HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="context-menu">
-                <children>
-                    <Label text="Дата:">
-                        <HBox.margin>
-                            <Insets left="10.0" />
-                        </HBox.margin></Label>
-                    <DatePicker fx:id="newIncomeDate" />
-                    <Label text="Кошелек:">
-                        <HBox.margin>
-                            <Insets left="10.0" />
-                        </HBox.margin></Label>
-                    <ChoiceBox fx:id="selectNewIncomeWallet" prefWidth="150.0" />
-                    <Label text="Категория:">
-                        <HBox.margin>
-                            <Insets left="10.0" />
-                        </HBox.margin></Label>
-                    <ChoiceBox fx:id="selectNewIncomeCategory" prefWidth="150.0" />
-                    <Label text="Сумма:">
-                        <HBox.margin>
-                            <Insets left="10.0" />
-                        </HBox.margin></Label>
-                    <TextField fx:id="newIncomeAmount" promptText="0р.">
-                        <opaqueInsets>
-                            <Insets />
-                        </opaqueInsets>
-                        <HBox.margin>
-                            <Insets />
-                        </HBox.margin></TextField>
-                    <Label layoutX="625.0" layoutY="19.0" text="Комментарий:" />
-                    <TextField fx:id="newIncomeComment" layoutX="667.0" layoutY="17.0" promptText="комментарий">
-                        <opaqueInsets>
-                            <Insets />
-                        </opaqueInsets>
-                    </TextField>
-                    <Button fx:id="incomeAddButton" mnemonicParsing="false" onAction="#addNewIncome" prefHeight="32.0" prefWidth="78.0" text="Добавить">
-                        <opaqueInsets>
-                            <Insets />
-                        </opaqueInsets>
-                        <HBox.margin>
-                            <Insets left="10.0" />
-                        </HBox.margin></Button>
-                </children>
+    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+          AnchorPane.topAnchor="0.0">
+        <TableView fx:id="incomeTable" onKeyPressed="#deleteRows" prefHeight="329.0" prefWidth="600.0"
+                   VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="incomeId" prefWidth="51.999969482421875" text="id"/>
+                <TableColumn fx:id="incomeDate" onEditCommit="#dateEditCommit" prefWidth="171.0" text="Дата"/>
+                <TableColumn fx:id="incomeWallet" minWidth="0.0" onEditCommit="#walletEditCommit" prefWidth="283.0"
+                             text="Кошелёк"/>
+                <TableColumn fx:id="incomeCategory" onEditCommit="#categoryEditCommit" prefWidth="269.0"
+                             text="Категория доходов"/>
+                <TableColumn fx:id="incomeSum" onEditCommit="#sumEditCommit" prefWidth="151.0" text="Сумма"/>
+                <TableColumn fx:id="incomeComment" onEditCommit="#commentEditCommit" prefWidth="276.0"
+                             text="Комментарий"/>
+            </columns>
+        </TableView>
+        <HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="context-menu">
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+            <VBox.margin>
+                <Insets/>
+            </VBox.margin>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <Label text="Дата:">
+                <HBox.margin>
+                    <Insets left="10.0"/>
+                </HBox.margin>
+            </Label>
+            <DatePicker fx:id="newIncomeDate"/>
+            <Label text="Кошелек:">
+                <HBox.margin>
+                    <Insets left="10.0"/>
+                </HBox.margin>
+            </Label>
+            <ChoiceBox fx:id="selectNewIncomeWallet" prefWidth="150.0"/>
+            <Label text="Категория:">
+                <HBox.margin>
+                    <Insets left="10.0"/>
+                </HBox.margin>
+            </Label>
+            <ChoiceBox fx:id="selectNewIncomeCategory" prefWidth="150.0"/>
+            <Label text="Сумма:">
+                <HBox.margin>
+                    <Insets left="10.0"/>
+                </HBox.margin>
+            </Label>
+            <TextField fx:id="newIncomeAmount" promptText="0р.">
                 <opaqueInsets>
-                    <Insets />
+                    <Insets/>
                 </opaqueInsets>
-                <VBox.margin>
-                    <Insets />
-                </VBox.margin>
-                <padding>
-                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                </padding>
-            </HBox>
-        </children>
+                <HBox.margin>
+                    <Insets/>
+                </HBox.margin>
+            </TextField>
+            <Label layoutX="625.0" layoutY="19.0" text="Комментарий:"/>
+            <TextField fx:id="newIncomeComment" layoutX="667.0" layoutY="17.0" promptText="комментарий">
+                <opaqueInsets>
+                    <Insets/>
+                </opaqueInsets>
+            </TextField>
+            <Button fx:id="incomeAddButton" mnemonicParsing="false" onAction="#addNewIncome" prefHeight="32.0"
+                    prefWidth="78.0" text="Добавить">
+                <opaqueInsets>
+                    <Insets/>
+                </opaqueInsets>
+                <HBox.margin>
+                    <Insets left="10.0"/>
+                </HBox.margin>
+            </Button>
+        </HBox>
     </VBox>
 </AnchorPane>

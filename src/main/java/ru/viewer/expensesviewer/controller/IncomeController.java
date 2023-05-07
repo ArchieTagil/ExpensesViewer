@@ -24,7 +24,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.function.UnaryOperator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,8 +37,6 @@ public class IncomeController {
     private Map<Integer, String> incomeCategoryList;
     private ObservableList<String> incomeCategoryObservableList;
 
-    private UnaryOperator<TextFormatter.Change> textFieldOnlyDigitsFilter;
-
     @FXML
     private TableView<IncomeEntity> incomeTable;
     @FXML
@@ -47,15 +44,15 @@ public class IncomeController {
     @FXML
     private TableColumn<IncomeEntity, LocalDate> incomeDate;
     @FXML
-    public TableColumn<IncomeEntity, String> incomeWallet;
+    private TableColumn<IncomeEntity, String> incomeWallet;
     @FXML
-    public TableColumn<IncomeEntity, String> incomeCategory;
+    private TableColumn<IncomeEntity, String> incomeCategory;
     @FXML
-    public TableColumn<IncomeEntity, Double> incomeSum;
+    private TableColumn<IncomeEntity, Double> incomeSum;
     @FXML
-    public TableColumn<IncomeEntity, String> incomeComment;
+    private TableColumn<IncomeEntity, String> incomeComment;
     @FXML
-    public Button incomeAddButton;
+    private Button incomeAddButton;
     @FXML
     private DatePicker newIncomeDate;
     @FXML
@@ -69,32 +66,18 @@ public class IncomeController {
     @FXML
     private AnchorPane incomeAnchorPane;
 
-    public IncomeController() throws SQLException, ClassNotFoundException {
-    }
-
+    @SuppressWarnings("Duplicates")
     @FXML
     private void initialize() throws SQLException {
-        initHotKeys();
         initInsertFieldsSettings();
+        initHotKeys();
         drawIncomeList();
 
         incomeTable.setEditable(true);
         incomeTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         incomeId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        incomeDate.setCellFactory(column -> new TableCell<>() {
-            private final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-            @Override
-            protected void updateItem(LocalDate localDate, boolean b) {
-                super.updateItem(localDate, b);
-                if (localDate == null) {
-                    setText(null);
-                } else {
-                    this.setText(localDate.format(format));
-                }
-
-            }
-        });
+        incomeDate.setCellFactory(MainController.dateCallbackForIncome);
         incomeDate.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateStringConverter()));
         incomeDate.setCellValueFactory(new PropertyValueFactory<>("date"));
 
@@ -103,73 +86,8 @@ public class IncomeController {
 
         incomeCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(incomeCategoryObservableList));
         incomeCategory.setCellValueFactory(new PropertyValueFactory<>("income_category"));
-        incomeSum.setCellFactory(new Callback<>() {
-            @Override
-            public TableCell<IncomeEntity, Double> call(TableColumn<IncomeEntity, Double> incomeEntityDoubleTableColumn) {
-                return new TableCell<>() {
-                    private TextField textField;
 
-                    @Override
-                    public void startEdit() {
-                        super.startEdit();
-                        setText(null);
-                        createTextField();
-                        setGraphic(textField);
-                        textField.setText(getItem().toString());
-                        textField.selectAll();
-                    }
-
-                    @Override
-                    public void cancelEdit() {
-                        super.cancelEdit();
-                        setGraphic(null);
-                        setText(getItem().toString());
-                    }
-
-                    @Override
-                    protected void updateItem(Double aDouble, boolean empty) {
-                        super.updateItem(aDouble, empty);
-                        if (empty) {
-                            setText(null);
-                            setGraphic(null);
-                        } else {
-                            if (isEditing()) {
-                                if (textField != null) {
-                                    textField.setText(getItem().toString());
-                                }
-                                setText(null);
-                                setGraphic(textField);
-                            } else {
-                                setText(getItem().toString());
-                                setGraphic(null);
-                            }
-                        }
-                    }
-
-                    private void createTextField() {
-                        textField = new TextField(getItem().toString());
-                        textField.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
-                            if (keyEvent.getCode() == KeyCode.ENTER) {
-                                commitEdit(Double.parseDouble(textField.getText()));
-                                keyEvent.consume();
-                            }
-                        });
-
-                        textField.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
-                            if (!t1) {
-                                try {
-                                    commitEdit(Double.valueOf(textField.getText()));
-                                } catch (NumberFormatException ignore) {
-                                    cancelEdit();
-                                }
-                            }
-                        });
-
-                        textField.setTextFormatter(new TextFormatter<>(textFieldOnlyDigitsFilter));
-                    }
-                };
-            }
-        });
+        incomeSum.setCellFactory(MainController.amountCallbackForIncome);
         incomeSum.setCellValueFactory(new PropertyValueFactory<>("amount"));
 
         incomeComment.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -180,6 +98,7 @@ public class IncomeController {
         ObservableList<IncomeEntity> observableList = FXCollections.observableArrayList(incomeEntityList);
         incomeTable.setItems(observableList);
     }
+    @SuppressWarnings("Duplicates")
     private void initHotKeys() {
         KeyCodeCombination alt1 = new KeyCodeCombination(KeyCode.DIGIT1, KeyCombination.ALT_DOWN);
         KeyCodeCombination ctrlEnter = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.SHORTCUT_DOWN);
@@ -194,9 +113,10 @@ public class IncomeController {
         incomeAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, filter);
     }
 
+    @SuppressWarnings("Duplicates")
     private void initInsertFieldsSettings() throws SQLException {
         newIncomeDate.setValue(LocalDate.now());
-        walletList = incomeModel.getWalletList();
+        walletList = MainController.getWalletList();
         incomeCategoryList = incomeModel.getIncomeCategoryList();
 
         walletObservableList = FXCollections.observableArrayList(walletList.values());
@@ -205,19 +125,10 @@ public class IncomeController {
         selectNewIncomeWallet.setItems(walletObservableList);
         selectNewIncomeCategory.setItems(incomeCategoryObservableList);
 
-        selectNewIncomeWallet.setValue(incomeModel.getDefaultWallet());
+        selectNewIncomeWallet.setValue(MainController.getDefaultWalletName());
         selectNewIncomeCategory.setValue(incomeModel.getDefaultIncomeCategory());
 
-        textFieldOnlyDigitsFilter = change -> {
-            String text = change.getText();
-
-            if (text.matches("[0-9,/.]*")) {
-                return change;
-            }
-            return null;
-        };
-        TextFormatter<String> textFormatter = new TextFormatter<>(textFieldOnlyDigitsFilter);
-        newIncomeAmount.setTextFormatter(textFormatter);
+        newIncomeAmount.setTextFormatter(MainController.getOnlyDigitsTextFormatter());
     }
 
     public void dateEditCommit(TableColumn.CellEditEvent<IncomeEntity, LocalDate> incomeEntityLocalDateCellEditEvent) throws SQLException {
@@ -227,6 +138,7 @@ public class IncomeController {
         drawIncomeList();
     }
 
+    @SuppressWarnings("Duplicates")
     public void walletEditCommit(TableColumn.CellEditEvent<IncomeEntity, String> incomeEntityStringCellEditEvent) throws SQLException {
         int currentIncomeRowId = incomeEntityStringCellEditEvent.getRowValue().getId();
         double amountInCurrentRow = incomeEntityStringCellEditEvent.getRowValue().getAmount();
@@ -237,16 +149,17 @@ public class IncomeController {
         int newWalletId = getWalletIdByName(incomeEntityStringCellEditEvent.getNewValue());
         int oldWalletId = getWalletIdByName(incomeEntityStringCellEditEvent.getOldValue());
 
-        double oldWalletBalance = incomeModel.getWalletBalance(oldWalletId);
-        double newWalletBalance = incomeModel.getWalletBalance(newWalletId);
+        double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
+        double newWalletBalance = MainController.getWalletBalanceById(newWalletId);
 
-        incomeModel.updateWalletBalance(oldWalletId, oldWalletBalance - amountInCurrentRow);
-        incomeModel.updateWalletBalance(newWalletId, newWalletBalance + amountInCurrentRow);
+        MainController.updateWalletBalanceById(oldWalletId, oldWalletBalance - amountInCurrentRow);
+        MainController.updateWalletBalanceById(newWalletId, newWalletBalance + amountInCurrentRow);
         incomeModel.doEditWalletField(currentIncomeRowId, newWalletId);
         drawIncomeList();
         mainController.initBalance();
     }
 
+    @SuppressWarnings("Duplicates")
     public void categoryEditCommit(TableColumn.CellEditEvent<IncomeEntity, String> incomeEntityStringCellEditEvent) throws SQLException {
         int currentIncomeRowId = incomeEntityStringCellEditEvent.getRowValue().getId();
         int newIncomeCategoryId = incomeCategoryList.entrySet().stream().
@@ -259,13 +172,21 @@ public class IncomeController {
         drawIncomeList();
     }
 
+    @SuppressWarnings("Duplicates")
     public void sumEditCommit(TableColumn.CellEditEvent<IncomeEntity, Double> incomeEntityDoubleCellEditEvent) throws SQLException {
+        int walletId = getWalletIdByName(incomeEntityDoubleCellEditEvent.getRowValue().getWallet_name());
+        double walletBalance = MainController.getWalletBalanceById(walletId);
         int currentIncomeRowId = incomeEntityDoubleCellEditEvent.getRowValue().getId();
+        double oldAmount = incomeEntityDoubleCellEditEvent.getOldValue();
         double newAmount = incomeEntityDoubleCellEditEvent.getNewValue();
+        MainController.updateWalletBalanceById(walletId, walletBalance + (newAmount - oldAmount));
         boolean incomeWasChanged = incomeModel.doEditIncomeAmountField(currentIncomeRowId, newAmount);
         if (!incomeWasChanged) {
             LOGGER.error("Income amount edit error during a change in database.");
             Popup.display("Income amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
+        } else {
+            drawIncomeList();
+            mainController.initBalance();
         }
     }
 
@@ -278,7 +199,9 @@ public class IncomeController {
             Popup.display("Income comment edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
         }
     }
+    @SuppressWarnings("Duplicates")
     public void addNewIncome() throws SQLException {
+        LOGGER.debug("Add was pressed in IncomeController");
         LocalDate date = newIncomeDate.getValue();
         int walletId = walletList.entrySet().stream().filter(s -> s.getValue().equals(selectNewIncomeWallet.getValue())).
                 findFirst().orElseThrow(() -> {
@@ -310,6 +233,7 @@ public class IncomeController {
         this.mainController = mainController;
     }
 
+    @SuppressWarnings("Duplicates")
     public void deleteRows(KeyEvent keyEvent) throws SQLException {
         if (keyEvent.getCode() == KeyCode.DELETE) {
             ObservableList<IncomeEntity> list = incomeTable.getSelectionModel().getSelectedItems();

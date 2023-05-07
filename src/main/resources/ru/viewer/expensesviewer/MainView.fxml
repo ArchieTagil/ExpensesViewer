@@ -9,26 +9,24 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="mainStackPane" alignment="CENTER" prefHeight="413.0" prefWidth="1203.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.MainController">
-   <TabPane prefHeight="400.0" prefWidth="861.0" tabClosingPolicy="UNAVAILABLE">
-     <tabs>
-       <Tab fx:id="incomeTab" text="Доходы">
-               <!-- Income tab include -->
-       </Tab>
-       <Tab text="Расходы">
+<StackPane fx:id="mainStackPane" prefHeight="413.0" prefWidth="1203.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.MainController">
+    <TabPane prefHeight="400.0" prefWidth="861.0" tabClosingPolicy="UNAVAILABLE">
+        <Tab fx:id="incomeTab" text="Доходы">
+            <!-- Income tab include -->
+        </Tab>
+        <Tab fx:id="expensesTab" text="Расходы">
 
-       </Tab>
-       <Tab text="Перемещения">
+        </Tab>
+        <Tab text="Перемещения">
 
-       </Tab>
-       <Tab text="Отчёты">
+        </Tab>
+        <Tab text="Отчёты">
 
-       </Tab>
-         <Tab text="Справочники">
+        </Tab>
+        <Tab text="Справочники">
 
-         </Tab>
-     </tabs>
-   </TabPane>
+        </Tab>
+    </TabPane>
    <Button fx:id="exit" alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#exit" text="Выход" StackPane.alignment="TOP_RIGHT">
       <opaqueInsets>
          <Insets />
@@ -37,42 +35,41 @@
          <Insets bottom="2.0" left="5.0" right="2.0" top="2.0" />
       </StackPane.margin>
    </Button>
-   <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="700.0" StackPane.alignment="TOP_LEFT">
-      <children>
-         <Label text="Кошелёк по умолчанию:" HBox.hgrow="ALWAYS">
-            <HBox.margin>
-               <Insets left="5.0" top="12.0" />
-            </HBox.margin>
-            <font>
-               <Font name="System Bold" size="12.0" />
-            </font>
-         </Label>
-         <Label fx:id="displayWalletName" text="null">
-            <HBox.margin>
-               <Insets left="5.0" top="12.0" />
-            </HBox.margin>
-         </Label>
-         <Label text="Балланс:">
-            <HBox.margin>
-               <Insets left="15.0" top="12.0" />
-            </HBox.margin>
-            <font>
-               <Font name="System Bold" size="12.0" />
-            </font>
-         </Label>
-         <Label fx:id="displayWalletBalance" text="0">
-            <HBox.margin>
-               <Insets left="5.0" top="12.0" />
-            </HBox.margin>
-         </Label>
-         <Label text="р.">
-            <HBox.margin>
-               <Insets left="2.0" top="12.0" />
-            </HBox.margin>
-         </Label>
-      </children>
-      <StackPane.margin>
-         <Insets left="410.0" />
-      </StackPane.margin>
-   </HBox>
+    <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0"
+          prefWidth="700.0" StackPane.alignment="TOP_LEFT">
+        <StackPane.margin>
+            <Insets left="410.0"/>
+        </StackPane.margin>
+        <Label text="Кошелёк по умолчанию:" HBox.hgrow="ALWAYS">
+           <HBox.margin>
+               <Insets left="5.0" top="12.0"/>
+           </HBox.margin>
+           <font>
+               <Font name="System Bold" size="12.0"/>
+           </font>
+        </Label>
+        <Label fx:id="displayWalletName" text="null">
+           <HBox.margin>
+               <Insets left="5.0" top="12.0"/>
+           </HBox.margin>
+        </Label>
+        <Label text="Балланс:">
+           <HBox.margin>
+               <Insets left="15.0" top="12.0"/>
+           </HBox.margin>
+           <font>
+               <Font name="System Bold" size="12.0"/>
+           </font>
+        </Label>
+        <Label fx:id="displayWalletBalance" text="0">
+           <HBox.margin>
+               <Insets left="5.0" top="12.0"/>
+           </HBox.margin>
+        </Label>
+        <Label text="р.">
+           <HBox.margin>
+               <Insets left="2.0" top="12.0"/>
+           </HBox.margin>
+        </Label>
+    </HBox>
 </StackPane>
