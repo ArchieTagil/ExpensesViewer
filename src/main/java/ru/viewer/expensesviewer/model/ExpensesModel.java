@@ -44,7 +44,6 @@ public class ExpensesModel {
             LOGGER.fatal("Can't get expenses list from DB!");
             throw new RuntimeException(e);
         }
-
     }
 
     public Map<Integer, String> getExpensesCategoryList() {
@@ -143,7 +142,6 @@ public class ExpensesModel {
             LOGGER.error("New amount value doesn't sent to database");
             throw new RuntimeException(e);
         }
-
     }
     public boolean doEditExpensesCommentField(int rowId, String newText) {
         try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `expenses` SET `comment` = ? WHERE `expenses_id` = ?;")) {
@@ -155,7 +153,6 @@ public class ExpensesModel {
             LOGGER.error("Can't update `expenses comment` from observable list into DB.");
             throw new RuntimeException(e);
         }
-
     }
 
     @SuppressWarnings("Duplicates")

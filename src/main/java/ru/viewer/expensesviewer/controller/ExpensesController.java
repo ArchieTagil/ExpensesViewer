@@ -2,7 +2,6 @@ package ru.viewer.expensesviewer.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -14,29 +13,20 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.Callback;
 import javafx.util.converter.LocalDateStringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.model.ExpensesModel;
-import ru.viewer.expensesviewer.model.IncomeModel;
 import ru.viewer.expensesviewer.model.objects.ExpenseEntity;
-import ru.viewer.expensesviewer.model.objects.IncomeEntity;
 import ru.viewer.expensesviewer.model.objects.Popup;
-
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.function.UnaryOperator;
 
 public class ExpensesController {
     private MainController mainController;
-    private ExpensesModel expensesModel = new ExpensesModel();
+    private final ExpensesModel expensesModel = new ExpensesModel();
     private static final Logger LOGGER = LogManager.getLogger(ExpensesController.class);
-    private Map<Integer, String> walletList;
-    private ObservableList<String> walletObservableList;
     private Map<Integer, String> expensesCategoryList;
     private ObservableList<String> expensesCategoryObservableList;
     @FXML
@@ -84,7 +74,7 @@ public class ExpensesController {
         expenseDate.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateStringConverter()));
         expenseDate.setCellValueFactory(new PropertyValueFactory<>("date"));
 
-        Wallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(walletObservableList));
+        Wallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(MainController.getWalletObservableList()));
         Wallet.setCellValueFactory(new PropertyValueFactory<>("wallet_name"));
 
         expensesCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(expensesCategoryObservableList));
@@ -109,11 +99,8 @@ public class ExpensesController {
         int currentIncomeRowId = cellEditEvent.getRowValue().getId();
         double amountInCurrentRow = cellEditEvent.getRowValue().getAmount();
 
-        LOGGER.debug("Old wallet name: " + cellEditEvent.getOldValue());
-        LOGGER.debug("New wallet name: " + cellEditEvent.getNewValue());
-
-        int newWalletId = getWalletIdByName(cellEditEvent.getNewValue());
-        int oldWalletId = getWalletIdByName(cellEditEvent.getOldValue());
+        int newWalletId = MainController.getWalletIdByName(cellEditEvent.getNewValue());
+        int oldWalletId = MainController.getWalletIdByName(cellEditEvent.getOldValue());
 
         double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
         double newWalletBalance = MainController.getWalletBalanceById(newWalletId);
@@ -140,7 +127,7 @@ public class ExpensesController {
 
     @SuppressWarnings("Duplicates")
     public void sumEditCommit(TableColumn.CellEditEvent<ExpenseEntity, Double> cellEditEvent) {
-        int walletId = getWalletIdByName(cellEditEvent.getRowValue().getWallet_name());
+        int walletId = MainController.getWalletIdByName(cellEditEvent.getRowValue().getWallet_name());
         double walletBalance = MainController.getWalletBalanceById(walletId);
         int currentExpenseRowId = cellEditEvent.getRowValue().getId();
         double oldAmount = cellEditEvent.getOldValue();
@@ -166,9 +153,9 @@ public class ExpensesController {
         }
     }
 
-    public void addNewExpense(ActionEvent actionEvent) {
+    public void addNewExpense() {
         LocalDate date = expenseDateNewRow.getValue();
-        int walletId = getWalletIdByName(selectExpenseWalletNewRow.getValue());
+        int walletId = MainController.getWalletIdByName(selectExpenseWalletNewRow.getValue());
         int categoryId = getCategoryIdByName(selectExpenseCategoryNewRow.getValue());
 
         double amount = 0;
@@ -178,12 +165,6 @@ public class ExpensesController {
             Popup.display("Wrong amount", "Вы ввели некорретное число.");
         }
         String comment = expenseCommentNewRow.getText();
-        LOGGER.debug("Будет добавлена:");
-        LOGGER.debug("Дата: " + date);
-        LOGGER.debug("Кошелёк: " + walletId);
-        LOGGER.debug("Категория: " + categoryId);
-        LOGGER.debug("Сумма: " + amount);
-        LOGGER.debug("Комментарий: " + comment);
         boolean incomeRowWasAdded = expensesModel.addNewExpensesRow(date, walletId, categoryId, amount, comment);
         if (incomeRowWasAdded) {
             drawExpensesList();
@@ -199,20 +180,12 @@ public class ExpensesController {
         if (keyEvent.getCode() == KeyCode.DELETE) {
             ObservableList<ExpenseEntity> list = expensesTable.getSelectionModel().getSelectedItems();
             for (ExpenseEntity entity : list) {
-                boolean isDeleted = expensesModel.deleteExpense(entity.getId(), getWalletIdByName(entity.getWallet_name()), entity.getAmount());
+                boolean isDeleted = expensesModel.deleteExpense(entity.getId(), MainController.getWalletIdByName(entity.getWallet_name()), entity.getAmount());
                 if (!isDeleted) LOGGER.debug("id: " + entity.getId() + " was failed to delete.");
             }
             mainController.initBalance();
             drawExpensesList();
         }
-    }
-
-    private int getWalletIdByName(String name) {
-        return walletList.entrySet().stream().
-                filter(e -> e.getValue().equals(name)).findFirst().orElseThrow(() -> {
-                    LOGGER.fatal("walletEditCommit gets null");
-                    return new NullPointerException("walletEditCommit gets null");
-                }).getKey();
     }
 
     private int getCategoryIdByName(String name) {
@@ -232,13 +205,10 @@ public class ExpensesController {
     @SuppressWarnings("Duplicates")
     private void initInsertFieldsSettings() {
         expenseDateNewRow.setValue(LocalDate.now());
-        walletList = MainController.getWalletList();
         expensesCategoryList = expensesModel.getExpensesCategoryList();
-
-        walletObservableList = FXCollections.observableArrayList(walletList.values());
         expensesCategoryObservableList = FXCollections.observableArrayList(expensesCategoryList.values());
 
-        selectExpenseWalletNewRow.setItems(walletObservableList);
+        selectExpenseWalletNewRow.setItems(MainController.getWalletObservableList());
         selectExpenseCategoryNewRow.setItems(expensesCategoryObservableList);
 
         selectExpenseWalletNewRow.setValue(MainController.getDefaultWalletName());

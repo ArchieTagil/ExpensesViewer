@@ -38,11 +38,11 @@ public class ExpenseEntity {
     public void setId(int id) {
         this.id = id;
     }
-
+    @SuppressWarnings("unused")
     public LocalDate getDate() {
         return date;
     }
-
+    @SuppressWarnings("unused")
     public void setDate(LocalDate date) {
         this.date = date;
     }
@@ -50,15 +50,15 @@ public class ExpenseEntity {
     public String getWallet_name() {
         return wallet_name;
     }
-
+    @SuppressWarnings("unused")
     public void setWallet_name(String wallet_name) {
         this.wallet_name = wallet_name;
     }
-
+    @SuppressWarnings("unused")
     public String getExpense_category() {
         return expense_category;
     }
-
+    @SuppressWarnings("unused")
     public void setExpense_category(String expense_category) {
         this.expense_category = expense_category;
     }
@@ -66,15 +66,15 @@ public class ExpenseEntity {
     public double getAmount() {
         return amount;
     }
-
+    @SuppressWarnings("unused")
     public void setAmount(double amount) {
         this.amount = amount;
     }
-
+    @SuppressWarnings("unused")
     public String getComment() {
         return comment;
     }
-
+    @SuppressWarnings("unused")
     public void setComment(String comment) {
         this.comment = comment;
     }

@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.sql.*;
 
 public class DbConnection {
+    @SuppressWarnings("FieldCanBeLocal")
     private final Logger LOGGER = LogManager.getLogger(MainModel.class);
     private static DbConnection instance;
     private final Connection connection;

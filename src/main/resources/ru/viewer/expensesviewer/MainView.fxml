@@ -17,7 +17,7 @@
         <Tab fx:id="expensesTab" text="Расходы">
 
         </Tab>
-        <Tab text="Перемещения">
+        <Tab fx:id="movementsTab" text="Перемещения">
 
         </Tab>
         <Tab text="Отчёты">

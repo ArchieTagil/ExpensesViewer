@@ -13,15 +13,12 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.Callback;
 import javafx.util.converter.LocalDateStringConverter;
 import ru.viewer.expensesviewer.model.IncomeModel;
 import ru.viewer.expensesviewer.model.objects.IncomeEntity;
 import ru.viewer.expensesviewer.model.objects.Popup;
-
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
@@ -32,8 +29,6 @@ public class IncomeController {
     private final IncomeModel incomeModel = new IncomeModel();
     private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
     private MainController mainController;
-    private Map<Integer, String> walletList;
-    private ObservableList<String> walletObservableList;
     private Map<Integer, String> incomeCategoryList;
     private ObservableList<String> incomeCategoryObservableList;
 
@@ -81,7 +76,7 @@ public class IncomeController {
         incomeDate.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateStringConverter()));
         incomeDate.setCellValueFactory(new PropertyValueFactory<>("date"));
 
-        incomeWallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(walletObservableList));
+        incomeWallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(MainController.getWalletObservableList()));
         incomeWallet.setCellValueFactory(new PropertyValueFactory<>("wallet_name"));
 
         incomeCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(incomeCategoryObservableList));
@@ -116,13 +111,13 @@ public class IncomeController {
     @SuppressWarnings("Duplicates")
     private void initInsertFieldsSettings() throws SQLException {
         newIncomeDate.setValue(LocalDate.now());
-        walletList = MainController.getWalletList();
+        //walletList = MainController.getWalletList();
         incomeCategoryList = incomeModel.getIncomeCategoryList();
 
-        walletObservableList = FXCollections.observableArrayList(walletList.values());
+        //walletObservableList = FXCollections.observableArrayList(walletList.values());
         incomeCategoryObservableList = FXCollections.observableArrayList(incomeCategoryList.values());
 
-        selectNewIncomeWallet.setItems(walletObservableList);
+        selectNewIncomeWallet.setItems(MainController.getWalletObservableList());
         selectNewIncomeCategory.setItems(incomeCategoryObservableList);
 
         selectNewIncomeWallet.setValue(MainController.getDefaultWalletName());
@@ -146,8 +141,8 @@ public class IncomeController {
         LOGGER.debug("Old wallet name: " + incomeEntityStringCellEditEvent.getOldValue());
         LOGGER.debug("New wallet name: " + incomeEntityStringCellEditEvent.getNewValue());
 
-        int newWalletId = getWalletIdByName(incomeEntityStringCellEditEvent.getNewValue());
-        int oldWalletId = getWalletIdByName(incomeEntityStringCellEditEvent.getOldValue());
+        int newWalletId = MainController.getWalletIdByName(incomeEntityStringCellEditEvent.getNewValue());
+        int oldWalletId = MainController.getWalletIdByName(incomeEntityStringCellEditEvent.getOldValue());
 
         double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
         double newWalletBalance = MainController.getWalletBalanceById(newWalletId);
@@ -174,7 +169,7 @@ public class IncomeController {
 
     @SuppressWarnings("Duplicates")
     public void sumEditCommit(TableColumn.CellEditEvent<IncomeEntity, Double> incomeEntityDoubleCellEditEvent) throws SQLException {
-        int walletId = getWalletIdByName(incomeEntityDoubleCellEditEvent.getRowValue().getWallet_name());
+        int walletId = MainController.getWalletIdByName(incomeEntityDoubleCellEditEvent.getRowValue().getWallet_name());
         double walletBalance = MainController.getWalletBalanceById(walletId);
         int currentIncomeRowId = incomeEntityDoubleCellEditEvent.getRowValue().getId();
         double oldAmount = incomeEntityDoubleCellEditEvent.getOldValue();
@@ -203,7 +198,7 @@ public class IncomeController {
     public void addNewIncome() throws SQLException {
         LOGGER.debug("Add was pressed in IncomeController");
         LocalDate date = newIncomeDate.getValue();
-        int walletId = walletList.entrySet().stream().filter(s -> s.getValue().equals(selectNewIncomeWallet.getValue())).
+        int walletId = MainController.getWalletList().entrySet().stream().filter(s -> s.getValue().equals(selectNewIncomeWallet.getValue())).
                 findFirst().orElseThrow(() -> {
                     LOGGER.fatal("walletEditCommit gets null");
                     return new NullPointerException("walletEditCommit gets null");
@@ -238,18 +233,11 @@ public class IncomeController {
         if (keyEvent.getCode() == KeyCode.DELETE) {
             ObservableList<IncomeEntity> list = incomeTable.getSelectionModel().getSelectedItems();
             for (IncomeEntity entity : list) {
-                boolean isDeleted = incomeModel.deleteIncome(entity.getId(), getWalletIdByName(entity.getWallet_name()), entity.getAmount());
+                boolean isDeleted = incomeModel.deleteIncome(entity.getId(), MainController.getWalletIdByName(entity.getWallet_name()), entity.getAmount());
                 if (!isDeleted) LOGGER.debug("id: " + entity.getId() + " was failed to delete.");
             }
             mainController.initBalance();
             drawIncomeList();
         }
-    }
-    private int getWalletIdByName(String name) {
-        return walletList.entrySet().stream().
-                filter(e -> e.getValue().equals(name)).findFirst().orElseThrow(() -> {
-                    LOGGER.fatal("walletEditCommit gets null");
-                    return new NullPointerException("walletEditCommit gets null");
-                }).getKey();
     }
 }

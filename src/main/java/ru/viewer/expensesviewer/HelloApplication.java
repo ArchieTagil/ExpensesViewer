@@ -11,8 +11,8 @@ import ru.viewer.expensesviewer.controller.IncomeController;
 
 public class HelloApplication extends Application {
     private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
-
     @Override
+    @SuppressWarnings("ConstantConditions")
     public void start(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
         Scene scene = new Scene(loader.load());
