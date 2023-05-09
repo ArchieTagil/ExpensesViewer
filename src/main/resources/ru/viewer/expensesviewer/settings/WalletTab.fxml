@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="incomeAnchorPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.settings.WalletController">
+    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <TableView fx:id="walletListTable" onKeyPressed="#deleteRows" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="walletId" prefWidth="51.999969482421875" text="id" />
+                <TableColumn fx:id="walletName" onEditCommit="#walletEditCommit" minWidth="0.0" prefWidth="283.0" text="Название кошелька" />
+                <TableColumn fx:id="walletBalance" minWidth="0.0" prefWidth="180.0" text="Балланс кошелька" />
+                <TableColumn fx:id="walletDefault" minWidth="0.0" prefWidth="180.0" text="Кошелёк по умолчанию" />
+            </columns>
+        </TableView>
+        <HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="context-menu" VBox.vgrow="NEVER">
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+            <VBox.margin>
+                <Insets />
+            </VBox.margin>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+            <Label layoutX="625.0" layoutY="19.0" text="Добавить кошелёк">
+            <HBox.margin>
+               <Insets left="20.0" />
+            </HBox.margin></Label>
+            <TextField fx:id="newWalletName" layoutX="667.0" layoutY="17.0" promptText="имя кошелька">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+            </TextField>
+            <Button fx:id="walletAdd" onAction="#addNewWallet" mnemonicParsing="false" prefHeight="32.0" prefWidth="78.0" text="Добавить">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+                <HBox.margin>
+                    <Insets left="10.0" />
+                </HBox.margin>
+            </Button>
+        </HBox>
+    </VBox>
+</AnchorPane>

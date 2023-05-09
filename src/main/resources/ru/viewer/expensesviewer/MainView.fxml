@@ -23,7 +23,7 @@
         <Tab text="Отчёты">
 
         </Tab>
-        <Tab text="Справочники">
+        <Tab fx:id="settingsTab" text="Справочники">
 
         </Tab>
     </TabPane>

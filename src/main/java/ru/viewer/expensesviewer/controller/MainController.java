@@ -41,6 +41,8 @@ public class MainController implements Initializable {
     @FXML
     private Tab movementsTab;
     @FXML
+    private Tab settingsTab;
+    @FXML
     private Button exit;
     @FXML
     private StackPane mainStackPane;
@@ -96,6 +98,19 @@ public class MainController implements Initializable {
             movementsController.setMainController(this);
         } catch (IOException e) {
             LOGGER.fatal("MovementsTab.fxml wasn't loaded");
+            throw new RuntimeException(e);
+        }
+
+        try {
+            FXMLLoader settingsLoader = new FXMLLoader();
+            settingsLoader.setLocation(HelloApplication.class.getResource("Settings.fxml"));
+            AnchorPane anchorPaneSettingsTab = settingsLoader.load();
+            settingsTab.setContent(anchorPaneSettingsTab);
+            SettingsController settingsController = settingsLoader.getController();
+            settingsController.setMainController(this);
+        } catch (IOException e) {
+            LOGGER.fatal("SettingsTab.fxml wasn't loaded");
+            LOGGER.info(e.getMessage());
             throw new RuntimeException(e);
         }
     }

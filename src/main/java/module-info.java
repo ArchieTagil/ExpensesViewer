@@ -15,4 +15,6 @@ module ru.viewer.expensesviewer {
     opens ru.viewer.expensesviewer.controller to javafx.fxml;
     exports ru.viewer.expensesviewer.model.objects;
     opens ru.viewer.expensesviewer.model.objects to javafx.fxml;
+    exports ru.viewer.expensesviewer.controller.settings;
+    opens ru.viewer.expensesviewer.controller.settings to javafx.fxml;
 }
