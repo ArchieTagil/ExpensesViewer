@@ -14,15 +14,16 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.LocalDateStringConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.model.IncomeModel;
 import ru.viewer.expensesviewer.model.objects.IncomeEntity;
 import ru.viewer.expensesviewer.model.objects.Popup;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class IncomeController {
 
@@ -109,12 +110,11 @@ public class IncomeController {
     }
 
     @SuppressWarnings("Duplicates")
-    private void initInsertFieldsSettings() throws SQLException {
+    public void initInsertFieldsSettings() throws SQLException {
+        LOGGER.info("initInsertFieldsSettings was invoked");
         newIncomeDate.setValue(LocalDate.now());
-        //walletList = MainController.getWalletList();
         incomeCategoryList = incomeModel.getIncomeCategoryList();
 
-        //walletObservableList = FXCollections.observableArrayList(walletList.values());
         incomeCategoryObservableList = FXCollections.observableArrayList(incomeCategoryList.values());
 
         selectNewIncomeWallet.setItems(MainController.getWalletObservableList());

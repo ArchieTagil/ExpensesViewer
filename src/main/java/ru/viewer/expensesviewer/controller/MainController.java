@@ -24,6 +24,7 @@ import ru.viewer.expensesviewer.model.objects.MovementEntity;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -34,6 +35,7 @@ public class MainController implements Initializable {
     private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
     private static final MainModel mainModel = new MainModel();
     private static ObservableList<String> walletObservableList;
+    private IncomeController incomeController;
     @FXML
     private Tab expensesTab;
     @FXML
@@ -51,7 +53,13 @@ public class MainController implements Initializable {
     @FXML
     public Label displayWalletBalance;
 
-
+    public void init() {
+        try {
+            incomeController.initInsertFieldsSettings();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -70,7 +78,7 @@ public class MainController implements Initializable {
             incomeLoader.setLocation(HelloApplication.class.getResource("IncomeTab.fxml"));
             AnchorPane anchorPaneIncomeTab = incomeLoader.load();
             incomeTab.setContent(anchorPaneIncomeTab);
-            IncomeController incomeController = incomeLoader.getController();
+            incomeController = incomeLoader.getController();
             incomeController.setMainController(this);
         } catch (IOException e) {
             LOGGER.fatal("IncomeTab.fxml wasn't loaded");
@@ -107,7 +115,10 @@ public class MainController implements Initializable {
             AnchorPane anchorPaneSettingsTab = settingsLoader.load();
             settingsTab.setContent(anchorPaneSettingsTab);
             SettingsController settingsController = settingsLoader.getController();
+            LOGGER.info("Setting controller is: " + settingsController);
+            LOGGER.info("main controller is: " + this);
             settingsController.setMainController(this);
+            settingsController.setMainControllerInit();
         } catch (IOException e) {
             LOGGER.fatal("SettingsTab.fxml wasn't loaded");
             LOGGER.info(e.getMessage());
