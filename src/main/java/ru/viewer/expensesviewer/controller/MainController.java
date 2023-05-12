@@ -24,7 +24,6 @@ import ru.viewer.expensesviewer.model.objects.MovementEntity;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -34,8 +33,9 @@ import java.util.function.UnaryOperator;
 public class MainController implements Initializable {
     private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
     private static final MainModel mainModel = new MainModel();
-    private static ObservableList<String> walletObservableList;
     private IncomeController incomeController;
+    private ExpensesController expensesController;
+    private MovementsController movementsController;
     @FXML
     private Tab expensesTab;
     @FXML
@@ -53,17 +53,8 @@ public class MainController implements Initializable {
     @FXML
     public Label displayWalletBalance;
 
-    public void init() {
-        try {
-            incomeController.initInsertFieldsSettings();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        walletObservableList = FXCollections.observableArrayList(getWalletList().values());
         initBalance();
         KeyCodeCombination altQ = new KeyCodeCombination(KeyCode.Q, KeyCombination.ALT_DOWN);
         EventHandler<KeyEvent> filter = event -> {
@@ -90,7 +81,7 @@ public class MainController implements Initializable {
             expensesLoader.setLocation(HelloApplication.class.getResource("ExpensesTab.fxml"));
             AnchorPane anchorPaneExpensesTab = expensesLoader.load();
             expensesTab.setContent(anchorPaneExpensesTab);
-            ExpensesController expensesController = expensesLoader.getController();
+            expensesController = expensesLoader.getController();
             expensesController.setMainController(this);
         } catch (IOException e) {
             LOGGER.fatal("ExpensesTab.fxml wasn't loaded");
@@ -102,7 +93,7 @@ public class MainController implements Initializable {
             movementsLoader.setLocation(HelloApplication.class.getResource("MovementsTab.fxml"));
             AnchorPane anchorPaneMovementsTab = movementsLoader.load();
             movementsTab.setContent(anchorPaneMovementsTab);
-            MovementsController movementsController = movementsLoader.getController();
+            movementsController = movementsLoader.getController();
             movementsController.setMainController(this);
         } catch (IOException e) {
             LOGGER.fatal("MovementsTab.fxml wasn't loaded");
@@ -115,8 +106,6 @@ public class MainController implements Initializable {
             AnchorPane anchorPaneSettingsTab = settingsLoader.load();
             settingsTab.setContent(anchorPaneSettingsTab);
             SettingsController settingsController = settingsLoader.getController();
-            LOGGER.info("Setting controller is: " + settingsController);
-            LOGGER.info("main controller is: " + this);
             settingsController.setMainController(this);
             settingsController.setMainControllerInit();
         } catch (IOException e) {
@@ -429,9 +418,13 @@ public class MainController implements Initializable {
             };
         }
     };
-
+    public void initSelectLists() {
+        incomeController.updateLists();
+        expensesController.updateLists();
+        movementsController.updateLists();
+    }
     public static ObservableList<String> getWalletObservableList() {
-        return walletObservableList;
+        return FXCollections.observableArrayList(getWalletList().values());
     }
     public void exit() {
         System.exit(0);

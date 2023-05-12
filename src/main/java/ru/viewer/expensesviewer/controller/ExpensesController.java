@@ -216,7 +216,11 @@ public class ExpensesController {
 
         expenseAmountNewRow.setTextFormatter(MainController.getOnlyDigitsTextFormatter());
     }
-
+    public void updateLists() {
+        Wallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(MainController.getWalletObservableList()));
+        selectExpenseWalletNewRow.setItems(MainController.getWalletObservableList());
+        selectExpenseWalletNewRow.setValue(MainController.getDefaultWalletName());
+    }
     @SuppressWarnings("Duplicates")
     private void initHotKeys() {
         KeyCodeCombination alt1 = new KeyCodeCombination(KeyCode.DIGIT1, KeyCombination.ALT_DOWN);

@@ -10,14 +10,14 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="incomeAnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.settings.WalletController">
+<AnchorPane fx:id="walletAnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.settings.WalletController">
     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <TableView fx:id="walletListTable" onKeyPressed="#deleteRows" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="walletId" prefWidth="51.999969482421875" text="id" />
-                <TableColumn fx:id="walletName" minWidth="0.0" onEditCommit="#walletEditCommit" prefWidth="283.0" text="Название кошелька" />
-                <TableColumn fx:id="walletBalance" minWidth="0.0" prefWidth="180.0" text="Балланс кошелька" />
-                <TableColumn fx:id="walletDefault" minWidth="0.0" prefWidth="180.0" text="Кошелёк по умолчанию" />
+                <TableColumn fx:id="walletName" minWidth="0.0" onEditCommit="#walletNameEditCommit" prefWidth="283.0" text="Название кошелька" />
+                <TableColumn fx:id="walletBalance" minWidth="0.0" onEditCommit="#walletBalanceEditCommit" prefWidth="180.0" text="Балланс кошелька" />
+                <TableColumn fx:id="walletDefault" minWidth="0.0" onEditCommit="#walletDefaultEditCommit" prefWidth="180.0" text="Кошелёк по умолчанию" />
             </columns>
         </TableView>
         <HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="context-menu" VBox.vgrow="NEVER">

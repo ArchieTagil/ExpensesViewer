@@ -205,8 +205,6 @@ public class MovementsController implements Initializable {
     }
     @SuppressWarnings("Duplicates")
     private void initInsertFieldsSettings() {
-
-        LOGGER.debug("walletList");
         movementDateNewRow.setValue(LocalDate.now());
 
         walletObservableList = FXCollections.observableArrayList(MainController.getWalletList().values());
@@ -223,6 +221,16 @@ public class MovementsController implements Initializable {
         List<MovementEntity> movementEntityList = movementsModel.getMovementsList();
         ObservableList<MovementEntity> observableList = FXCollections.observableArrayList(movementEntityList);
         movementsTable.setItems(observableList);
+    }
+    public void updateLists() {
+        sourceWallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(MainController.getWalletObservableList()));
+        destinationWallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(MainController.getWalletObservableList()));
+
+        sourceWalletNewRow.setItems(MainController.getWalletObservableList());
+        sourceWalletNewRow.setValue(MainController.getDefaultWalletName());
+
+        destinationWalletNewRow.setItems(MainController.getWalletObservableList());
+        destinationWalletNewRow.setValue(MainController.getDefaultWalletName());
     }
     @SuppressWarnings("Duplicates")
     private void initHotKeys() {

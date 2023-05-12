@@ -111,7 +111,6 @@ public class IncomeController {
 
     @SuppressWarnings("Duplicates")
     public void initInsertFieldsSettings() throws SQLException {
-        LOGGER.info("initInsertFieldsSettings was invoked");
         newIncomeDate.setValue(LocalDate.now());
         incomeCategoryList = incomeModel.getIncomeCategoryList();
 
@@ -223,6 +222,11 @@ public class IncomeController {
             Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
             LOGGER.error("income wasn't added");
         }
+    }
+    public void updateLists() {
+        incomeWallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(MainController.getWalletObservableList()));
+        selectNewIncomeWallet.setItems(MainController.getWalletObservableList());
+        selectNewIncomeWallet.setValue(MainController.getDefaultWalletName());
     }
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
