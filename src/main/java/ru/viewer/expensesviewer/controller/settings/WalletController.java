@@ -66,10 +66,7 @@ public class WalletController implements Initializable {
         walletBalance.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         walletBalance.setCellValueFactory(new PropertyValueFactory<>("walletBalance"));
 
-        List<Boolean> listTrueFalse = new ArrayList<>();
-        listTrueFalse.add(Boolean.TRUE);
-        listTrueFalse.add(Boolean.FALSE);
-        walletDefault.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(listTrueFalse)));
+        walletDefault.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(MainController.getTrueFalseList())));
         walletDefault.setCellValueFactory(new PropertyValueFactory<>("walletDefault"));
     }
 
@@ -77,8 +74,7 @@ public class WalletController implements Initializable {
         try (PreparedStatement statement = connection.prepareStatement("INSERT INTO `wallets_list` (wallet_name, wallet_balance, wallet_default) VALUES (?, 0, 0)")) {
             statement.setString(1, newWalletName.getText());
             statement.execute();
-            walletListTable.setItems(getWalletEntityList());
-            mainController.initSelectLists();
+            mainController.updateScreenInfo();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             throw new RuntimeException(e);
@@ -93,7 +89,7 @@ public class WalletController implements Initializable {
             preparedStatement.setString(1, newName);
             preparedStatement.setInt(2, walletId);
             preparedStatement.executeUpdate();
-            mainController.initSelectLists();
+            mainController.updateScreenInfo();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             throw new RuntimeException(e);
@@ -109,8 +105,7 @@ public class WalletController implements Initializable {
             preparedStatement.setDouble(1, newBalance);
             preparedStatement.setInt(2, walletId);
             preparedStatement.executeUpdate();
-            mainController.initSelectLists();
-            mainController.initBalance();
+            mainController.updateScreenInfo();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             throw new RuntimeException(e);
@@ -118,31 +113,44 @@ public class WalletController implements Initializable {
     }
 
     public void walletDefaultEditCommit(TableColumn.CellEditEvent<WalletEntity, Boolean> cellEditEvent) {
-        try (Statement disableCurrentDefaultWallet = connection.createStatement();
-             Statement getCountOfTrue = connection.createStatement();
-             Statement updateDefault = connection.createStatement()
-        ) {
-            int id = cellEditEvent.getRowValue().getWalletId();
-            String sqlCountOfTrue = "SELECT COUNT(*), wallet_id FROM wallets_list WHERE wallet_default = TRUE";
-            ResultSet rs = getCountOfTrue.executeQuery(sqlCountOfTrue);
-            rs.next();
-
-            int oldIdDefaultWallet = rs.getInt(2);
-            int countOfTrue = rs.getInt(1);
+        try (Statement sql = connection.createStatement()) {
+            int walletId = cellEditEvent.getRowValue().getWalletId();
             boolean oldValue = cellEditEvent.getOldValue();
             boolean newValue = cellEditEvent.getNewValue();
+            String sqlSetNewValue = "UPDATE `wallets_list` SET `wallet_default` = " + newValue + " WHERE wallet_id = " + walletId + ";";
 
-            String sqlSetFalse = "UPDATE `wallets_list` SET `wallet_default` = FALSE WHERE wallet_default = " + oldIdDefaultWallet +";";
-            String sqlSetTrue = "UPDATE `wallets_list` SET `wallet_default` = " + newValue + " WHERE wallet_id = " + id + ";";
+            ResultSet rsCountOfTrue = sql.executeQuery("SELECT COUNT(*) FROM wallets_list WHERE wallet_default = TRUE");
+            rsCountOfTrue.next();
+            int countOfTrue = rsCountOfTrue.getInt(1);
+
+            if ((countOfTrue == 0)) {
+                if (newValue == Boolean.FALSE) {
+                    Popup.display("Ошибка", "Должен быть хотя бы один кошелёк по умолчанию!");
+                } else {
+                    sql.executeUpdate(sqlSetNewValue);
+                    mainController.updateScreenInfo();
+                }
+                return;
+            }
+            ResultSet rsIndexOfTrue = sql.executeQuery("SELECT wallet_id FROM wallets_list WHERE wallet_default = TRUE");
+            rsIndexOfTrue.next();
+            int oldIdDefaultWallet = rsIndexOfTrue.getInt(1);
+            LOGGER.debug(oldIdDefaultWallet);
+
+            String sqlSetFalse = "UPDATE `wallets_list` SET `wallet_default` = FALSE WHERE wallet_id = " + oldIdDefaultWallet +";";
 
             if (newValue == Boolean.TRUE && oldValue == Boolean.FALSE && countOfTrue == 1) {
-                disableCurrentDefaultWallet.executeUpdate(sqlSetFalse);
-                updateDefault.executeUpdate(sqlSetTrue);
-            } else if (countOfTrue == 0 && newValue == Boolean.FALSE) {
+                LOGGER.info("Управление галочками вызывается, newValue == Boolean.TRUE && oldValue == Boolean.FALSE && countOfTrue == 1");
+                sql.executeUpdate(sqlSetFalse);
+                sql.executeUpdate(sqlSetNewValue);
+            } else if (countOfTrue > 1 && newValue == Boolean.FALSE) {
+                LOGGER.info("countOfTrue > 1 && newValue == Boolean.FALSE");
+                sql.executeUpdate(sqlSetNewValue);
+            } else if (countOfTrue == 1 && oldIdDefaultWallet == walletId && newValue == Boolean.FALSE) {
+                LOGGER.info("Must Display PopUP");
                 Popup.display("Ошибка", "Должен быть хотя бы один кошелёк по умолчанию!");
             }
-            mainController.initBalance();
-            mainController.initSelectLists();
+            mainController.updateScreenInfo();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -154,11 +162,9 @@ public class WalletController implements Initializable {
             for (WalletEntity entity : list) {
                 deleteWallet(entity.getWalletId());
             }
-            mainController.initBalance();
-            walletListTable.setItems(getWalletEntityList());;
+            mainController.updateScreenInfo();
         }
     }
-
 
     @SuppressWarnings("Duplicates")
     private void initHotKeys() {
@@ -176,7 +182,7 @@ public class WalletController implements Initializable {
     }
     private ObservableList<WalletEntity> getWalletEntityList() {
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM wallets_list");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM `wallets_list`;");
             List<WalletEntity> walletEntityList = new ArrayList<>();
             while (resultSet.next()) {
                 walletEntityList.add(new WalletEntity(
@@ -195,13 +201,14 @@ public class WalletController implements Initializable {
     private void deleteWallet(int id) {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("DELETE FROM `wallets_list` WHERE `wallet_id` = " + id + ";");
-            mainController.initSelectLists();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
-
+    public void updateVisualInformation() {
+        walletListTable.setItems(getWalletEntityList());
+    }
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }

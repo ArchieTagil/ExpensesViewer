@@ -216,10 +216,11 @@ public class ExpensesController {
 
         expenseAmountNewRow.setTextFormatter(MainController.getOnlyDigitsTextFormatter());
     }
-    public void updateLists() {
+    public void updateVisualInformation() {
         Wallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(MainController.getWalletObservableList()));
         selectExpenseWalletNewRow.setItems(MainController.getWalletObservableList());
         selectExpenseWalletNewRow.setValue(MainController.getDefaultWalletName());
+        drawExpensesList();
     }
     @SuppressWarnings("Duplicates")
     private void initHotKeys() {

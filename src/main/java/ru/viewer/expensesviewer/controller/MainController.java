@@ -17,6 +17,8 @@ import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.HelloApplication;
+import ru.viewer.expensesviewer.controller.settings.IncomeCategoryController;
+import ru.viewer.expensesviewer.controller.settings.WalletController;
 import ru.viewer.expensesviewer.model.MainModel;
 import ru.viewer.expensesviewer.model.objects.ExpenseEntity;
 import ru.viewer.expensesviewer.model.objects.IncomeEntity;
@@ -26,6 +28,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
@@ -36,6 +40,7 @@ public class MainController implements Initializable {
     private IncomeController incomeController;
     private ExpensesController expensesController;
     private MovementsController movementsController;
+    private SettingsController settingsController;
     @FXML
     private Tab expensesTab;
     @FXML
@@ -105,7 +110,7 @@ public class MainController implements Initializable {
             settingsLoader.setLocation(HelloApplication.class.getResource("Settings.fxml"));
             AnchorPane anchorPaneSettingsTab = settingsLoader.load();
             settingsTab.setContent(anchorPaneSettingsTab);
-            SettingsController settingsController = settingsLoader.getController();
+            settingsController = settingsLoader.getController();
             settingsController.setMainController(this);
             settingsController.setMainControllerInit();
         } catch (IOException e) {
@@ -121,7 +126,12 @@ public class MainController implements Initializable {
         displayWalletName.setText(defaultWalletName);
         displayWalletBalance.setText(String.valueOf(defaultWalletBalance));
     }
-
+    public static List<Boolean> getTrueFalseList() {
+        List<Boolean> listTrueFalse = new ArrayList<>();
+        listTrueFalse.add(Boolean.TRUE);
+        listTrueFalse.add(Boolean.FALSE);
+        return listTrueFalse;
+    }
     public static TextFormatter<String> getOnlyDigitsTextFormatter() {
         UnaryOperator<TextFormatter.Change> textFieldOnlyDigitsFilter;
         textFieldOnlyDigitsFilter = change -> {
@@ -418,10 +428,16 @@ public class MainController implements Initializable {
             };
         }
     };
-    public void initSelectLists() {
-        incomeController.updateLists();
-        expensesController.updateLists();
-        movementsController.updateLists();
+    public void updateScreenInfo() {
+        WalletController walletController = settingsController.getWalletController();
+        IncomeCategoryController incomeCategoryController = settingsController.getIncomeCategoryController();
+
+        incomeController.updateVisualInformation();
+        expensesController.updateVisualInformation();
+        movementsController.updateVisualInformation();
+        incomeCategoryController.updateVisualInformation();
+        walletController.updateVisualInformation();
+        initBalance();
     }
     public static ObservableList<String> getWalletObservableList() {
         return FXCollections.observableArrayList(getWalletList().values());

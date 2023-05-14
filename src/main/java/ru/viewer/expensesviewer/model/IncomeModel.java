@@ -73,12 +73,19 @@ public class IncomeModel {
         statement.executeUpdate(queryUpdate);
     }
 
-    public String getDefaultIncomeCategory() throws SQLException {
-        Statement statement = connection.createStatement();
-        String getValue = "SELECT `income_category_name` FROM `income_category` WHERE `income_default` = true;";
-        ResultSet resultSet = statement.executeQuery(getValue);
-        resultSet.next();
-        return resultSet.getString("income_category_name");
+    public String getDefaultIncomeCategory() {
+        try (Statement statement = connection.createStatement();) {
+            String getValue = "SELECT `income_category_name` FROM `income_category` WHERE `income_default` = true;";
+            ResultSet resultSet = statement.executeQuery(getValue);
+            if (resultSet.next()) {
+                return resultSet.getString("income_category_name");
+            } else {
+                return "";
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean doEditIncomeAmountField(int id, double amount) throws SQLException {

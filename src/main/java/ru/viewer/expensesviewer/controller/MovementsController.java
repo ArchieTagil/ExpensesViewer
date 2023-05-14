@@ -222,7 +222,7 @@ public class MovementsController implements Initializable {
         ObservableList<MovementEntity> observableList = FXCollections.observableArrayList(movementEntityList);
         movementsTable.setItems(observableList);
     }
-    public void updateLists() {
+    public void updateVisualInformation() {
         sourceWallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(MainController.getWalletObservableList()));
         destinationWallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(MainController.getWalletObservableList()));
 
@@ -231,6 +231,8 @@ public class MovementsController implements Initializable {
 
         destinationWalletNewRow.setItems(MainController.getWalletObservableList());
         destinationWalletNewRow.setValue(MainController.getDefaultWalletName());
+
+        drawMovementsList();
     }
     @SuppressWarnings("Duplicates")
     private void initHotKeys() {

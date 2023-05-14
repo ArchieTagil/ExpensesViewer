@@ -140,17 +140,20 @@ public class IncomeController {
         LOGGER.debug("Old wallet name: " + incomeEntityStringCellEditEvent.getOldValue());
         LOGGER.debug("New wallet name: " + incomeEntityStringCellEditEvent.getNewValue());
 
-        int newWalletId = MainController.getWalletIdByName(incomeEntityStringCellEditEvent.getNewValue());
-        int oldWalletId = MainController.getWalletIdByName(incomeEntityStringCellEditEvent.getOldValue());
+        if (incomeEntityStringCellEditEvent.getOldValue() != null) {
+            int oldWalletId = MainController.getWalletIdByName(incomeEntityStringCellEditEvent.getOldValue());
+            double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
+            MainController.updateWalletBalanceById(oldWalletId, oldWalletBalance - amountInCurrentRow);
+        }
 
-        double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
+        int newWalletId = MainController.getWalletIdByName(incomeEntityStringCellEditEvent.getNewValue());
         double newWalletBalance = MainController.getWalletBalanceById(newWalletId);
 
-        MainController.updateWalletBalanceById(oldWalletId, oldWalletBalance - amountInCurrentRow);
+
         MainController.updateWalletBalanceById(newWalletId, newWalletBalance + amountInCurrentRow);
         incomeModel.doEditWalletField(currentIncomeRowId, newWalletId);
-        drawIncomeList();
-        mainController.initBalance();
+
+        mainController.updateScreenInfo();
     }
 
     @SuppressWarnings("Duplicates")
@@ -217,16 +220,25 @@ public class IncomeController {
         boolean incomeRowWasAdded = incomeModel.addNewIncomeRow(date, walletId, categoryId, amount, comment);
         if (incomeRowWasAdded) {
             drawIncomeList();
-            mainController.initBalance();
+            mainController.updateScreenInfo();
         } else {
             Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
             LOGGER.error("income wasn't added");
         }
     }
-    public void updateLists() {
+    public void updateVisualInformation() {
         incomeWallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(MainController.getWalletObservableList()));
         selectNewIncomeWallet.setItems(MainController.getWalletObservableList());
         selectNewIncomeWallet.setValue(MainController.getDefaultWalletName());
+        try {
+            selectNewIncomeCategory.setItems(FXCollections.observableArrayList(incomeModel.getIncomeCategoryList().values()));
+            selectNewIncomeCategory.setValue(incomeModel.getDefaultIncomeCategory());
+            incomeCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(incomeModel.getIncomeCategoryList().values())));
+            drawIncomeList();
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
     public void setMainController(MainController mainController) {
         this.mainController = mainController;

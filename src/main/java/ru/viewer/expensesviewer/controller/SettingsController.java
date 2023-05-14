@@ -7,6 +7,7 @@ import javafx.scene.control.Tab;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.HelloApplication;
+import ru.viewer.expensesviewer.controller.settings.IncomeCategoryController;
 import ru.viewer.expensesviewer.controller.settings.WalletController;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ public class SettingsController implements Initializable {
     private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
     private MainController mainController;
     private WalletController walletController;
+    private IncomeCategoryController incomeCategoryController;
     @FXML
     private Tab wallet;
     @FXML
@@ -41,9 +43,29 @@ public class SettingsController implements Initializable {
             LOGGER.info(e.getMessage());
             throw new RuntimeException("WalletTab.fxml wasn't loaded");
         }
+
+        try {
+            FXMLLoader IncomeCategoryLoader = new FXMLLoader();
+            IncomeCategoryLoader.setLocation(HelloApplication.class.getResource("settings/IncomeCategoryTab.fxml"));
+            income_category.setContent(IncomeCategoryLoader.load());
+            incomeCategoryController = IncomeCategoryLoader.getController();
+        } catch (IOException e) {
+            LOGGER.fatal("IncomeCategoryTab.fxml wasn't loaded");
+            LOGGER.info(e.getMessage());
+            throw new RuntimeException("IncomeCategoryTab.fxml wasn't loaded");
+        }
+    }
+
+    public WalletController getWalletController() {
+        return walletController;
+    }
+
+    public IncomeCategoryController getIncomeCategoryController() {
+        return incomeCategoryController;
     }
 
     public void setMainControllerInit() {
         walletController.setMainController(mainController);
+        incomeCategoryController.setMainController(mainController);
     }
 }
