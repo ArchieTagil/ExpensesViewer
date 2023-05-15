@@ -66,8 +66,11 @@ public class ExpensesModel {
         try (Statement statement = connection.createStatement()) {
             String getValue = "SELECT `expenses_category_name` FROM `expenses_category` WHERE `expenses_default` = true;";
             ResultSet resultSet = statement.executeQuery(getValue);
-            resultSet.next();
-            return resultSet.getString("expenses_category_name");
+            if (resultSet.next()) {
+                return resultSet.getString("expenses_category_name");
+            } else {
+                return "";
+            }
         } catch (SQLException e) {
             LOGGER.debug("Can't get data from DB about Expenses category default value.");
             throw new RuntimeException(e);

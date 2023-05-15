@@ -16,7 +16,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.viewer.expensesviewer.controller.IncomeController;
 import ru.viewer.expensesviewer.controller.MainController;
 import ru.viewer.expensesviewer.model.DbConnection;
 import ru.viewer.expensesviewer.model.objects.Popup;
@@ -28,14 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class IncomeCategoryController implements Initializable {
-    private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
+public class ExpensesCategoryController implements Initializable {
+    private static final Logger LOGGER = LogManager.getLogger(ExpensesCategoryController.class);
     private final Connection connection = DbConnection.getInstance().getConnection();
     private MainController mainController;
     @FXML
-    private AnchorPane incomeCategoryAnchorPane;
+    private AnchorPane expensesCategoryAnchorPane;
     @FXML
-    private TableView<CategoryEntity> incomeCategoryListTable;
+    private TableView<CategoryEntity> expensesCategoryListTable;
     @FXML
     private TableColumn<CategoryEntity, Integer> categoryId;
     @FXML
@@ -51,9 +50,9 @@ public class IncomeCategoryController implements Initializable {
     @SuppressWarnings("Duplicates")
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initHotKeys();
-        incomeCategoryListTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        incomeCategoryListTable.setEditable(true);
-        incomeCategoryListTable.setItems(getIncomeCategoryEntityList());
+        expensesCategoryListTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        expensesCategoryListTable.setEditable(true);
+        expensesCategoryListTable.setItems(getExpensesCategoryEntityList());
 
         categoryName.setCellFactory(TextFieldTableCell.forTableColumn());
         categoryDefault.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(MainController.getTrueFalseList())));
@@ -65,7 +64,7 @@ public class IncomeCategoryController implements Initializable {
 
     public void deleteRows(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.DELETE) {
-            ObservableList<CategoryEntity> list = incomeCategoryListTable.getSelectionModel().getSelectedItems();
+            ObservableList<CategoryEntity> list = expensesCategoryListTable.getSelectionModel().getSelectedItems();
             for (CategoryEntity entity : list) {
                 deleteCategory(entity.getCategoryId());
             }
@@ -75,7 +74,7 @@ public class IncomeCategoryController implements Initializable {
 
     private void deleteCategory(int categoryId) {
         try(Statement statement = connection.createStatement()) {
-            statement.executeUpdate("DELETE FROM `income_category` WHERE income_category_id = " + categoryId + ";");
+            statement.executeUpdate("DELETE FROM `expenses_category` WHERE expenses_category_id = " + categoryId + ";");
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             throw new RuntimeException(e);
@@ -83,7 +82,7 @@ public class IncomeCategoryController implements Initializable {
     }
 
     public void nameEditCommit(TableColumn.CellEditEvent<CategoryEntity, String> cellEditEvent) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `income_category` SET `income_category_name` = ? WHERE income_category_id = ?;")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `expenses_category` SET `expenses_category_name` = ? WHERE expenses_category_id = ?;")) {
             preparedStatement.setString(1, cellEditEvent.getNewValue());
             preparedStatement.setInt(2, cellEditEvent.getRowValue().getCategoryId());
             preparedStatement.executeUpdate();
@@ -96,12 +95,12 @@ public class IncomeCategoryController implements Initializable {
 
     @SuppressWarnings("Duplicates")
     public void defaultEditCommit(TableColumn.CellEditEvent<CategoryEntity, Boolean> cellEditEvent) {
-        LOGGER.debug("Edit income category default");
+        LOGGER.debug("Edit expenses category default");
         try(Statement statement = connection.createStatement()) {
-            ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM `income_category` WHERE `income_default` = TRUE;");
+            ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM `expenses_category` WHERE `expenses_default` = TRUE;");
             String sqlSetNewValue = "" +
-                    "UPDATE `income_category` SET `income_default` = " + cellEditEvent.getNewValue() + " " +
-                    "WHERE `income_category_id` = " + cellEditEvent.getRowValue().getCategoryId() + ";";
+                    "UPDATE `expenses_category` SET `expenses_default` = " + cellEditEvent.getNewValue() + " " +
+                    "WHERE `expenses_category_id` = " + cellEditEvent.getRowValue().getCategoryId() + ";";
             rs.next();
             int countOfTrue = rs.getInt(1);
             LOGGER.debug(countOfTrue);
@@ -115,11 +114,11 @@ public class IncomeCategoryController implements Initializable {
                 }
                 return;
             }
-            ResultSet getExistingDefaultTrueId = statement.executeQuery("SELECT `income_category_id` FROM income_category WHERE income_default = TRUE");
+            ResultSet getExistingDefaultTrueId = statement.executeQuery("SELECT `expenses_category_id` FROM expenses_category WHERE expenses_default = TRUE");
             getExistingDefaultTrueId.next();
             int existingDefaultTrueId = getExistingDefaultTrueId.getInt(1);
 
-            String sqlSetFalse = "UPDATE `income_category` SET `income_default` = FALSE WHERE `income_category_id` = " + existingDefaultTrueId + ";";
+            String sqlSetFalse = "UPDATE `expenses_category` SET `expenses_default` = FALSE WHERE `expenses_category_id` = " + existingDefaultTrueId + ";";
 
             if (cellEditEvent.getNewValue() == Boolean.TRUE && cellEditEvent.getOldValue() == Boolean.FALSE && countOfTrue == 1) {
                 LOGGER.info("Управление галочками вызывается, newValue == Boolean.TRUE && oldValue == Boolean.FALSE && countOfTrue == 1");
@@ -140,7 +139,7 @@ public class IncomeCategoryController implements Initializable {
     }
 
     public void addNewCategory() {
-        try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `income_category` (income_category_name, income_default) VALUES (?, 0)")) {
+        try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `expenses_category` (expenses_category_name, expenses_default) VALUES (?, 0)")) {
             statement.setString(1, newCategoryName.getText());
             statement.execute();
             mainController.updateScreenInfo();
@@ -150,15 +149,15 @@ public class IncomeCategoryController implements Initializable {
         }
     }
 
-    private ObservableList<CategoryEntity> getIncomeCategoryEntityList() {
+    private ObservableList<CategoryEntity> getExpensesCategoryEntityList() {
         try (Statement statement = connection.createStatement()) {
-            ResultSet rs = statement.executeQuery("SELECT * FROM `income_category`;");
+            ResultSet rs = statement.executeQuery("SELECT * FROM `expenses_category`;");
             List<CategoryEntity> categoryEntityList = new ArrayList<>();
             while (rs.next()) {
                 categoryEntityList.add(new CategoryEntity(
-                        rs.getInt("income_category_id"),
-                        rs.getString("income_category_name"),
-                        rs.getBoolean("income_default")
+                        rs.getInt("expenses_category_id"),
+                        rs.getString("expenses_category_name"),
+                        rs.getBoolean("expenses_default")
                 ));
             }
             return FXCollections.observableArrayList(categoryEntityList);
@@ -169,7 +168,7 @@ public class IncomeCategoryController implements Initializable {
     }
 
     public void updateVisualInformation() {
-        incomeCategoryListTable.setItems(getIncomeCategoryEntityList());
+        expensesCategoryListTable.setItems(getExpensesCategoryEntityList());
     }
 
     public void setMainController(MainController mainController) {
@@ -188,6 +187,6 @@ public class IncomeCategoryController implements Initializable {
                 newCategoryName.requestFocus();
             }
         };
-        incomeCategoryAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, filter);
+        expensesCategoryAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, filter);
     }
 }

@@ -17,6 +17,7 @@ import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.HelloApplication;
+import ru.viewer.expensesviewer.controller.settings.ExpensesCategoryController;
 import ru.viewer.expensesviewer.controller.settings.IncomeCategoryController;
 import ru.viewer.expensesviewer.controller.settings.WalletController;
 import ru.viewer.expensesviewer.model.MainModel;
@@ -431,11 +432,13 @@ public class MainController implements Initializable {
     public void updateScreenInfo() {
         WalletController walletController = settingsController.getWalletController();
         IncomeCategoryController incomeCategoryController = settingsController.getIncomeCategoryController();
+        ExpensesCategoryController expensesCategoryController = settingsController.getExpensesCategoryController();
 
         incomeController.updateVisualInformation();
         expensesController.updateVisualInformation();
         movementsController.updateVisualInformation();
         incomeCategoryController.updateVisualInformation();
+        expensesCategoryController.updateVisualInformation();
         walletController.updateVisualInformation();
         initBalance();
     }

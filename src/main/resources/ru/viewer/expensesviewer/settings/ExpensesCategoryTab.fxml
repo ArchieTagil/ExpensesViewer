@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="expensesCategoryAnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.settings.ExpensesCategoryController">
+    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <TableView fx:id="expensesCategoryListTable" onKeyPressed="#deleteRows" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="categoryId" prefWidth="51.999969482421875" text="id" />
+                <TableColumn fx:id="categoryName" minWidth="0.0" onEditCommit="#nameEditCommit" prefWidth="283.0" text="Название категории" />
+                <TableColumn fx:id="categoryDefault" minWidth="0.0" onEditCommit="#defaultEditCommit" prefWidth="180.0" text="Категория по умолчанию" />
+            </columns>
+        </TableView>
+        <HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="context-menu" VBox.vgrow="NEVER">
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+            <VBox.margin>
+                <Insets />
+            </VBox.margin>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+            <Label layoutX="625.0" layoutY="19.0" text="Добавить категорию">
+            <HBox.margin>
+               <Insets left="10.0" />
+            </HBox.margin></Label>
+            <TextField fx:id="newCategoryName" layoutX="667.0" layoutY="17.0" promptText="имя категории">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+            <HBox.margin>
+               <Insets left="5.0" />
+            </HBox.margin>
+            </TextField>
+            <Button fx:id="categoryAdd" mnemonicParsing="false" onAction="#addNewCategory" prefHeight="32.0" prefWidth="78.0" text="Добавить">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+                <HBox.margin>
+                    <Insets left="10.0" />
+                </HBox.margin>
+            </Button>
+        </HBox>
+    </VBox>
+</AnchorPane>

@@ -1,5 +1,7 @@
 package ru.viewer.expensesviewer.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.controller.IncomeController;
 import ru.viewer.expensesviewer.controller.MainController;
 import ru.viewer.expensesviewer.model.objects.IncomeEntity;
@@ -11,8 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class IncomeModel {
     private final Connection connection = DbConnection.getInstance().getConnection();
@@ -74,7 +74,7 @@ public class IncomeModel {
     }
 
     public String getDefaultIncomeCategory() {
-        try (Statement statement = connection.createStatement();) {
+        try (Statement statement = connection.createStatement()) {
             String getValue = "SELECT `income_category_name` FROM `income_category` WHERE `income_default` = true;";
             ResultSet resultSet = statement.executeQuery(getValue);
             if (resultSet.next()) {

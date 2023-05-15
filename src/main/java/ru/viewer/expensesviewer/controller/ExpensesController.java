@@ -220,6 +220,11 @@ public class ExpensesController {
         Wallet.setCellFactory(ChoiceBoxTableCell.forTableColumn(MainController.getWalletObservableList()));
         selectExpenseWalletNewRow.setItems(MainController.getWalletObservableList());
         selectExpenseWalletNewRow.setValue(MainController.getDefaultWalletName());
+
+        selectExpenseCategoryNewRow.setItems(FXCollections.observableArrayList(expensesModel.getExpensesCategoryList().values()));
+        selectExpenseCategoryNewRow.setValue(expensesModel.getDefaultExpenseCategory());
+
+        expensesCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(expensesModel.getExpensesCategoryList().values())));
         drawExpensesList();
     }
     @SuppressWarnings("Duplicates")

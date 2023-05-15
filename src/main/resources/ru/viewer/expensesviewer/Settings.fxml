@@ -5,31 +5,21 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="settingsAnchorPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.SettingsController">
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.SettingsController">
     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <TabPane tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab fx:id="wallet" text="Кошелёк">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" />
-            </content>
-          </Tab>
-          <Tab fx:id="income_category" text="Категории доходов">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" />
-            </content>
-          </Tab>
-            <Tab fx:id="expenses_category" text="Категории расходов">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" />
-              </content>
-            </Tab>
-            <Tab fx:id="import_export" text="Импорт / Экспорт базы данных">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" />
-              </content>
-            </Tab>
-        </tabs>
+        <Tab fx:id="wallet" text="Кошелёк">
+          <AnchorPane minHeight="0.0" minWidth="0.0"/>
+        </Tab>
+        <Tab fx:id="income_category" text="Категории доходов">
+          <AnchorPane minHeight="0.0" minWidth="0.0"/>
+        </Tab>
+        <Tab fx:id="expenses_category" text="Категории расходов">
+          <AnchorPane minHeight="0.0" minWidth="0.0"/>
+        </Tab>
+        <Tab fx:id="import_export" text="Импорт / Экспорт базы данных">
+          <AnchorPane minHeight="0.0" minWidth="0.0"/>
+        </Tab>
       </TabPane>
     </VBox>
 </AnchorPane>

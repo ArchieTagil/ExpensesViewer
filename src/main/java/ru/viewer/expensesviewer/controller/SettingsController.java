@@ -7,6 +7,7 @@ import javafx.scene.control.Tab;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.HelloApplication;
+import ru.viewer.expensesviewer.controller.settings.ExpensesCategoryController;
 import ru.viewer.expensesviewer.controller.settings.IncomeCategoryController;
 import ru.viewer.expensesviewer.controller.settings.WalletController;
 
@@ -19,6 +20,7 @@ public class SettingsController implements Initializable {
     private MainController mainController;
     private WalletController walletController;
     private IncomeCategoryController incomeCategoryController;
+    private ExpensesCategoryController expensesCategoryController;
     @FXML
     private Tab wallet;
     @FXML
@@ -26,6 +28,7 @@ public class SettingsController implements Initializable {
     @FXML
     private Tab expenses_category;
     @FXML
+    @SuppressWarnings("unused")
     private Tab import_export;
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
@@ -54,6 +57,17 @@ public class SettingsController implements Initializable {
             LOGGER.info(e.getMessage());
             throw new RuntimeException("IncomeCategoryTab.fxml wasn't loaded");
         }
+
+        try {
+            FXMLLoader ExpensesCategoryLoader = new FXMLLoader();
+            ExpensesCategoryLoader.setLocation(HelloApplication.class.getResource("settings/ExpensesCategoryTab.fxml"));
+            expenses_category.setContent(ExpensesCategoryLoader.load());
+            expensesCategoryController = ExpensesCategoryLoader.getController();
+        } catch (IOException e) {
+            LOGGER.fatal("ExpensesCategoryTab.fxml wasn't loaded");
+            LOGGER.info(e.getMessage());
+            throw new RuntimeException("ExpensesCategoryTab.fxml wasn't loaded");
+        }
     }
 
     public WalletController getWalletController() {
@@ -64,8 +78,13 @@ public class SettingsController implements Initializable {
         return incomeCategoryController;
     }
 
+    public ExpensesCategoryController getExpensesCategoryController() {
+        return expensesCategoryController;
+    }
+
     public void setMainControllerInit() {
         walletController.setMainController(mainController);
         incomeCategoryController.setMainController(mainController);
+        expensesCategoryController.setMainController(mainController);
     }
 }
