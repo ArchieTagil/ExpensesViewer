@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.HelloApplication;
 import ru.viewer.expensesviewer.controller.settings.ExpensesCategoryController;
+import ru.viewer.expensesviewer.controller.settings.ImportExportController;
 import ru.viewer.expensesviewer.controller.settings.IncomeCategoryController;
 import ru.viewer.expensesviewer.controller.settings.WalletController;
 
@@ -21,6 +22,7 @@ public class SettingsController implements Initializable {
     private WalletController walletController;
     private IncomeCategoryController incomeCategoryController;
     private ExpensesCategoryController expensesCategoryController;
+    private ImportExportController importExportController;
     @FXML
     private Tab wallet;
     @FXML
@@ -28,7 +30,6 @@ public class SettingsController implements Initializable {
     @FXML
     private Tab expenses_category;
     @FXML
-    @SuppressWarnings("unused")
     private Tab import_export;
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
@@ -68,6 +69,17 @@ public class SettingsController implements Initializable {
             LOGGER.info(e.getMessage());
             throw new RuntimeException("ExpensesCategoryTab.fxml wasn't loaded");
         }
+
+        try {
+            FXMLLoader ImportExportLoader = new FXMLLoader();
+            ImportExportLoader.setLocation(HelloApplication.class.getResource("settings/ImportExportTab.fxml"));
+            import_export.setContent(ImportExportLoader.load());
+            importExportController = ImportExportLoader.getController();
+        } catch (IOException e) {
+            LOGGER.fatal("ImportExportTab.fxml wasn't loaded");
+            LOGGER.info(e.getMessage());
+            throw new RuntimeException("ImportExportTab.fxml wasn't loaded");
+        }
     }
 
     public WalletController getWalletController() {
@@ -86,5 +98,6 @@ public class SettingsController implements Initializable {
         walletController.setMainController(mainController);
         incomeCategoryController.setMainController(mainController);
         expensesCategoryController.setMainController(mainController);
+        importExportController.setMainController(mainController);
     }
 }

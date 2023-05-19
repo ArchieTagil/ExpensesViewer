@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,6 +38,8 @@ import java.util.function.UnaryOperator;
 
 public class MainController implements Initializable {
     private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
+
+    private Stage stage;
     private static final MainModel mainModel = new MainModel();
     private IncomeController incomeController;
     private ExpensesController expensesController;
@@ -447,5 +450,13 @@ public class MainController implements Initializable {
     }
     public void exit() {
         System.exit(0);
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }

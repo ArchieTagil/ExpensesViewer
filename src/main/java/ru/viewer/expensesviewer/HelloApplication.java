@@ -4,10 +4,12 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.controller.IncomeController;
+import ru.viewer.expensesviewer.controller.MainController;
+
+import java.io.IOException;
 
 public class HelloApplication extends Application {
     private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
@@ -21,6 +23,8 @@ public class HelloApplication extends Application {
         } catch (NullPointerException e) {
             LOGGER.error("bootstrap3.css wasn't upload");
         }
+        MainController mainController = loader.getController();
+        mainController.setStage(stage);
         stage.setScene(scene);
         stage.show();
     }
