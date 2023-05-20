@@ -16,7 +16,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.viewer.expensesviewer.controller.IncomeController;
 import ru.viewer.expensesviewer.controller.MainController;
 import ru.viewer.expensesviewer.model.DbConnection;
 import ru.viewer.expensesviewer.model.objects.Popup;
@@ -29,7 +28,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class IncomeCategoryController implements Initializable {
-    private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
+    private static final Logger LOGGER = LogManager.getLogger(IncomeCategoryController.class);
     private final Connection connection = DbConnection.getInstance().getConnection();
     private MainController mainController;
     @FXML

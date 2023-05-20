@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="mainStackPane" prefHeight="413.0" prefWidth="1203.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.MainController">
+<StackPane fx:id="mainStackPane" prefHeight="413.0" prefWidth="1203.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.MainController">
     <TabPane prefHeight="400.0" prefWidth="861.0" tabClosingPolicy="UNAVAILABLE">
         <Tab fx:id="incomeTab" text="Доходы">
             <!-- Income tab include -->
@@ -20,56 +20,70 @@
         <Tab fx:id="movementsTab" text="Перемещения">
 
         </Tab>
-        <Tab text="Отчёты">
+        <Tab fx:id="reportsTab" text="Отчёты">
 
         </Tab>
         <Tab fx:id="settingsTab" text="Справочники">
 
         </Tab>
     </TabPane>
-   <Button fx:id="exit" alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#exit" text="Выход" StackPane.alignment="TOP_RIGHT">
-      <opaqueInsets>
-         <Insets />
-      </opaqueInsets>
-      <StackPane.margin>
-         <Insets bottom="2.0" left="5.0" right="2.0" top="2.0" />
-      </StackPane.margin>
-   </Button>
-    <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0"
-          prefWidth="700.0" StackPane.alignment="TOP_LEFT">
+    <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="700.0" StackPane.alignment="TOP_LEFT">
         <StackPane.margin>
-            <Insets left="410.0"/>
+            <Insets left="410.0" />
         </StackPane.margin>
         <Label text="Кошелёк по умолчанию:" HBox.hgrow="ALWAYS">
            <HBox.margin>
-               <Insets left="5.0" top="12.0"/>
+               <Insets left="5.0" top="12.0" />
            </HBox.margin>
            <font>
-               <Font name="System Bold" size="12.0"/>
+               <Font name="System Bold" size="12.0" />
            </font>
         </Label>
         <Label fx:id="displayWalletName" text="null">
            <HBox.margin>
-               <Insets left="5.0" top="12.0"/>
+               <Insets left="5.0" top="12.0" />
            </HBox.margin>
         </Label>
         <Label text="Балланс:">
            <HBox.margin>
-               <Insets left="15.0" top="12.0"/>
+               <Insets left="15.0" top="12.0" />
            </HBox.margin>
            <font>
-               <Font name="System Bold" size="12.0"/>
+               <Font name="System Bold" size="12.0" />
            </font>
         </Label>
         <Label fx:id="displayWalletBalance" text="0">
            <HBox.margin>
-               <Insets left="5.0" top="12.0"/>
+               <Insets left="5.0" top="12.0" />
            </HBox.margin>
         </Label>
         <Label text="р.">
            <HBox.margin>
-               <Insets left="2.0" top="12.0"/>
+               <Insets left="2.0" top="12.0" />
            </HBox.margin>
         </Label>
     </HBox>
+   <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="32.0" prefWidth="197.0" StackPane.alignment="TOP_RIGHT">
+      <children>
+         <Button fx:id="exit1" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#refresh" prefWidth="100.0" text="Обновить">
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
+            <HBox.margin>
+               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+            </HBox.margin>
+         </Button>
+         <Button fx:id="exit" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exit" prefWidth="100.0" text="Выход">
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
+            <HBox.margin>
+               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+            </HBox.margin>
+         </Button>
+      </children>
+      <StackPane.margin>
+         <Insets right="10.0" />
+      </StackPane.margin>
+   </HBox>
 </StackPane>

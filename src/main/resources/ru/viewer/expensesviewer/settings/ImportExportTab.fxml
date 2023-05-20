@@ -8,54 +8,69 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.settings.ImportExportController">
-   <children>
-      <GridPane prefHeight="283.0" prefWidth="608.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+    <GridPane prefHeight="283.0" prefWidth="608.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
+        <Label text="Эскпорт базы:" GridPane.valignment="BOTTOM">
+            <GridPane.margin>
+                <Insets left="10.0" />
+            </GridPane.margin>
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <Button mnemonicParsing="false" onAction="#fileChooserExport" prefHeight="26.0" text="Обзор" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Label layoutX="20.0" layoutY="41.0" text="Импорт базы:" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+            <padding>
+                <Insets left="10.0" />
+            </padding>
+        </Label>
+        <Button layoutX="314.0" layoutY="69.0" mnemonicParsing="false" onAction="#fileChooserImport" prefHeight="26.0" text="Обзор" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+        <TextField fx:id="textFieldExport" promptText="Укажите путь" GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets left="20.0" right="10.0" />
+            </GridPane.margin>
+        </TextField>
+        <TextField fx:id="textFieldImport" promptText="Выберите файл" GridPane.rowIndex="4">
+            <GridPane.margin>
+                <Insets left="20.0" right="10.0" />
+            </GridPane.margin>
+        </TextField>
+      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
-            <Label text="Эскпорт базы:" GridPane.valignment="BOTTOM">
-               <GridPane.margin>
-                  <Insets left="10.0" />
-               </GridPane.margin>
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font></Label>
-            <Button mnemonicParsing="false" onAction="#fileChooserExport" prefHeight="26.0" text="Обзор" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" onAction="#doExport" prefHeight="26.0" text="Экспорт" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="TOP" />
-            <Label layoutX="20.0" layoutY="41.0" text="Импорт базы:" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-               <padding>
-                  <Insets left="10.0" />
-               </padding>
-            </Label>
-            <Button layoutX="314.0" layoutY="69.0" mnemonicParsing="false" onAction="#fileChooserImport" prefHeight="26.0" text="Обзор" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Button layoutX="314.0" layoutY="105.0" mnemonicParsing="false" onAction="#doImport" prefHeight="26.0" text="Импорт" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="TOP" />
-            <TextField fx:id="textFieldExport" promptText="Укажите путь" GridPane.rowIndex="1">
-               <GridPane.margin>
-                  <Insets left="20.0" right="10.0" />
-               </GridPane.margin>
-            </TextField>
-            <TextField fx:id="textFieldImport" promptText="Выберите файл" GridPane.rowIndex="4">
-               <GridPane.margin>
-                  <Insets left="20.0" right="10.0" />
-               </GridPane.margin>
-            </TextField>
+              <Button mnemonicParsing="false" onAction="#doExport" prefHeight="26.0" text="Экспорт" />
+            <Label fx:id="exportResult">
+               <VBox.margin>
+                  <Insets top="8.0" />
+               </VBox.margin></Label>
          </children>
-      </GridPane>
-   </children>
+      </VBox>
+      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+         <children>
+              <Button mnemonicParsing="false" onAction="#doImport" prefHeight="26.0" text="Импорт" />
+            <Label fx:id="importResult">
+               <VBox.margin>
+                  <Insets top="8.0" />
+               </VBox.margin>
+            </Label>
+         </children>
+      </VBox>
+    </GridPane>
 </AnchorPane>

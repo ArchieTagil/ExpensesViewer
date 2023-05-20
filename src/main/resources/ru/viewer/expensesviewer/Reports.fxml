@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.ReportsController">
+    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TabPane tabClosingPolicy="UNAVAILABLE">
+        <Tab fx:id="tables" text="Таблицы">
+          <AnchorPane minHeight="0.0" minWidth="0.0"/>
+        </Tab>
+        <Tab fx:id="graphics" text="Графики">
+          <AnchorPane minHeight="0.0" minWidth="0.0"/>
+        </Tab>
+      </TabPane>
+    </VBox>
+</AnchorPane>

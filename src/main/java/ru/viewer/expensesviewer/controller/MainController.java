@@ -52,6 +52,8 @@ public class MainController implements Initializable {
     @FXML
     private Tab movementsTab;
     @FXML
+    private Tab reportsTab;
+    @FXML
     private Tab settingsTab;
     @FXML
     private Button exit;
@@ -106,6 +108,16 @@ public class MainController implements Initializable {
             movementsController.setMainController(this);
         } catch (IOException e) {
             LOGGER.fatal("MovementsTab.fxml wasn't loaded");
+            throw new RuntimeException(e);
+        }
+
+        try {
+            FXMLLoader reportsLoader = new FXMLLoader();
+            reportsLoader.setLocation(HelloApplication.class.getResource("Reports.fxml"));
+            AnchorPane anchorPaneReports = reportsLoader.load();
+            reportsTab.setContent(anchorPaneReports);
+        } catch (IOException e) {
+            LOGGER.fatal("Reports.fxml wasn't loaded");
             throw new RuntimeException(e);
         }
 
@@ -433,6 +445,7 @@ public class MainController implements Initializable {
         }
     };
     public void updateScreenInfo() {
+        LOGGER.debug("information was updated");
         WalletController walletController = settingsController.getWalletController();
         IncomeCategoryController incomeCategoryController = settingsController.getIncomeCategoryController();
         ExpensesCategoryController expensesCategoryController = settingsController.getExpensesCategoryController();
@@ -458,5 +471,9 @@ public class MainController implements Initializable {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public void refresh() {
+        this.updateScreenInfo();
     }
 }
