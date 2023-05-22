@@ -4,7 +4,7 @@
         <Console name="ConsoleAppender" target="SYSTEM_OUT">
             <PatternLayout pattern="%highlight{Строка номер: %L: [%d{dd-MMM-yyyy HH:mm}] %level - %F - %msg%n}{FATAL=red, ERROR=magenta, WARN=yellow, INFO=Cyan, DEBUG=green, TRACE=white}" disableAnsi="false"/>
         </Console>
-        <File name="FileAppender" fileName="c:\application-${date:yyyyMMdd}.log" immediateFlush="false" append="true">
+        <File name="FileAppender" fileName="f:\application-${date:yyyyMMdd}.log" immediateFlush="false" append="true">
             <PatternLayout pattern="Строка номер: %L: [%d{dd-MMM-yyyy HH:mm}] %level - %F - %msg%n"/>
         </File>
     </Appenders>

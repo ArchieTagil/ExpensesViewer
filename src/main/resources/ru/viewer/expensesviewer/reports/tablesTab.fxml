@@ -1,11 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.reports.TablesController">
+<AnchorPane fx:id="tablesTab" prefHeight="419.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.reports.TablesController">
    <children>
-      <Label layoutX="161.0" layoutY="68.0" text="Tables" />
+      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox prefHeight="120.0" prefWidth="600.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <RadioButton fx:id="radioIncome" mnemonicParsing="false" selected="true" text="Доходы">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="ReportType" />
+                           </toggleGroup>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </RadioButton>
+                        <RadioButton fx:id="radioExprenses" mnemonicParsing="false" text="Расходы" toggleGroup="$ReportType">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                           <padding>
+                              <Insets top="5.0" />
+                           </padding>
+                        </RadioButton>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </VBox>
+                  <Line endY="55.0" startY="15.0" stroke="#00000030">
+                     <HBox.margin>
+                        <Insets top="10.0" />
+                     </HBox.margin>
+                  </Line>
+                  <HBox alignment="CENTER_LEFT" prefHeight="64.0" prefWidth="1200.0" spacing="5.0">
+                     <children>
+                        <Label text="с:">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Label>
+                        <DatePicker fx:id="dateFrom" />
+                        <Label text="по:" />
+                        <DatePicker fx:id="dateTo" />
+                        <Line endY="55.0" startY="15.0" stroke="#00000030">
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Line>
+                        <VBox alignment="CENTER" prefWidth="142.0" spacing="5.0">
+                           <children>
+                              <Label text="Группировать по:" />
+                              <ChoiceBox fx:id="groupBy" prefWidth="150.0" />
+                           </children>
+                           <HBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <Line endY="55.0" layoutX="420.0" layoutY="6.0" startY="15.0" stroke="#00000030">
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Line>
+                        <VBox alignment="CENTER" prefWidth="142.0" spacing="5.0">
+                           <children>
+                              <Label text="Фильтр кошелька" />
+                              <ChoiceBox fx:id="filterWallet" prefWidth="150.0" />
+                           </children>
+                           <HBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox alignment="CENTER" prefWidth="142.0" spacing="5.0">
+                           <children>
+                              <Label text="Фильтр категории" />
+                              <ChoiceBox fx:id="filterCategory" prefWidth="150.0">
+                                 <VBox.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </VBox.margin>
+                              </ChoiceBox>
+                           </children>
+                           <HBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <Button fx:id="commit" mnemonicParsing="false" onAction="#showReport" prefHeight="37.0" prefWidth="92.0" text="Показать" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+            <TableView prefWidth="1299.0">
+              <columns>
+                <TableColumn prefWidth="42.0" text="id" />
+                <TableColumn prefWidth="120.0" text="Дата" />
+                  <TableColumn prefWidth="104.0" text="Кошелёк" />
+                  <TableColumn prefWidth="149.0" text="Категория" />
+                  <TableColumn prefWidth="76.0" text="Сумма" />
+                  <TableColumn prefWidth="108.0" text="Комментарий" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

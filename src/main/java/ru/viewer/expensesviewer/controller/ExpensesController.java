@@ -99,13 +99,14 @@ public class ExpensesController {
         int currentIncomeRowId = cellEditEvent.getRowValue().getId();
         double amountInCurrentRow = cellEditEvent.getRowValue().getAmount();
 
+        if (cellEditEvent.getOldValue() != null){
+            int oldWalletId = MainController.getWalletIdByName(cellEditEvent.getOldValue());
+            double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
+            MainController.updateWalletBalanceById(oldWalletId, oldWalletBalance + amountInCurrentRow);
+        }
         int newWalletId = MainController.getWalletIdByName(cellEditEvent.getNewValue());
-        int oldWalletId = MainController.getWalletIdByName(cellEditEvent.getOldValue());
-
-        double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
         double newWalletBalance = MainController.getWalletBalanceById(newWalletId);
 
-        MainController.updateWalletBalanceById(oldWalletId, oldWalletBalance + amountInCurrentRow);
         MainController.updateWalletBalanceById(newWalletId, newWalletBalance - amountInCurrentRow);
         expensesModel.doEditWalletField(currentIncomeRowId, newWalletId);
         drawExpensesList();
