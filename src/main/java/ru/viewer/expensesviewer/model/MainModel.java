@@ -1,11 +1,11 @@
 package ru.viewer.expensesviewer.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class MainModel {
     private final Logger LOGGER = LogManager.getLogger(MainModel.class);
@@ -74,5 +74,67 @@ public class MainModel {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public Map<Integer, String> getIncomeCategoryList() {
+        try (Statement statement = connection.createStatement()) {
+            String qGetIncomeList = "SELECT `income_category_id`, `income_category_name` FROM `income_category`;";
+            ResultSet resultSet = statement.executeQuery(qGetIncomeList);
+            Map<Integer, String> incomeCategoryList = new HashMap<>();
+
+            while (resultSet.next()) {
+                incomeCategoryList.put(resultSet.getInt("income_category_id"), resultSet.getString("income_category_name"));
+            }
+            return incomeCategoryList;
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getDefaultIncomeCategory() {
+        try (Statement statement = connection.createStatement()) {
+            String getValue = "SELECT `income_category_name` FROM `income_category` WHERE `income_default` = true;";
+            ResultSet resultSet = statement.executeQuery(getValue);
+            if (resultSet.next()) {
+                return resultSet.getString("income_category_name");
+            } else {
+                return "";
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<Integer, String> getExpensesCategoryList() {
+        try (Statement statement = connection.createStatement()) {
+            String qGetExpensesList = "SELECT `expenses_category_id`, `expenses_category_name` FROM `expenses_category`;";
+            ResultSet resultSet = statement.executeQuery(qGetExpensesList);
+            Map<Integer, String> expensesCategoryList = new HashMap<>();
+
+            while (resultSet.next()) {
+                expensesCategoryList.put(resultSet.getInt("expenses_category_id"), resultSet.getString("expenses_category_name"));
+            }
+            return expensesCategoryList;
+        } catch (SQLException e) {
+            LOGGER.debug("Can't get data from DB about Expenses Category list.");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getDefaultExpensesCategory() {
+        try (Statement statement = connection.createStatement()) {
+            String getValue = "SELECT `expenses_category_name` FROM `expenses_category` WHERE `expenses_default` = true;";
+            ResultSet resultSet = statement.executeQuery(getValue);
+            if (resultSet.next()) {
+                return resultSet.getString("expenses_category_name");
+            } else {
+                return "";
+            }
+        } catch (SQLException e) {
+            LOGGER.debug("Can't get data from DB about Expenses category default value.");
+            throw new RuntimeException(e);
+        }
     }
 }

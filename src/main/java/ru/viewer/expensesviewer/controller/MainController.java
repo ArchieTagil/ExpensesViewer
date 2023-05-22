@@ -183,6 +183,18 @@ public class MainController implements Initializable {
                     return new NullPointerException("walletEditCommit gets null");
                 }).getKey();
     }
+    public static Map<Integer, String> getIncomeCategoryList() {
+        return mainModel.getIncomeCategoryList();
+    }
+    public static String getDefaultIncomeCategory() {
+        return mainModel.getDefaultIncomeCategory();
+    }
+    public static Map<Integer, String> getExpensesCategoryList() {
+        return mainModel.getExpensesCategoryList();
+    }
+    public static String getDefaultExpensesCategory() {
+        return mainModel.getDefaultExpensesCategory();
+    }
     @SuppressWarnings("Duplicates")
     public static Callback<TableColumn<ExpenseEntity, LocalDate>, TableCell<ExpenseEntity, LocalDate>> dateCallbackForExpenses = new Callback<>() {
         @Override
