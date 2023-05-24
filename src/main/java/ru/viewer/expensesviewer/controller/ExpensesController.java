@@ -206,14 +206,16 @@ public class ExpensesController {
     @SuppressWarnings("Duplicates")
     private void initInsertFieldsSettings() {
         expenseDateNewRow.setValue(LocalDate.now());
-        expensesCategoryList = expensesModel.getExpensesCategoryList();
+        //expensesCategoryList = expensesModel.getExpensesCategoryList();
+        expensesCategoryList = MainController.getExpensesCategoryList();
         expensesCategoryObservableList = FXCollections.observableArrayList(expensesCategoryList.values());
 
         selectExpenseWalletNewRow.setItems(MainController.getWalletObservableList());
         selectExpenseCategoryNewRow.setItems(expensesCategoryObservableList);
 
         selectExpenseWalletNewRow.setValue(MainController.getDefaultWalletName());
-        selectExpenseCategoryNewRow.setValue(expensesModel.getDefaultExpenseCategory());
+        //selectExpenseCategoryNewRow.setValue(expensesModel.getDefaultExpenseCategory());
+        selectExpenseCategoryNewRow.setValue(MainController.getDefaultExpensesCategory());
 
         expenseAmountNewRow.setTextFormatter(MainController.getOnlyDigitsTextFormatter());
     }
@@ -222,10 +224,13 @@ public class ExpensesController {
         selectExpenseWalletNewRow.setItems(MainController.getWalletObservableList());
         selectExpenseWalletNewRow.setValue(MainController.getDefaultWalletName());
 
-        selectExpenseCategoryNewRow.setItems(FXCollections.observableArrayList(expensesModel.getExpensesCategoryList().values()));
-        selectExpenseCategoryNewRow.setValue(expensesModel.getDefaultExpenseCategory());
+        //selectExpenseCategoryNewRow.setItems(FXCollections.observableArrayList(expensesModel.getExpensesCategoryList().values()));
+        selectExpenseCategoryNewRow.setItems(FXCollections.observableArrayList(MainController.getExpensesCategoryList().values()));
+        //selectExpenseCategoryNewRow.setValue(expensesModel.getDefaultExpenseCategory());
+        selectExpenseCategoryNewRow.setValue(MainController.getDefaultExpensesCategory());
 
-        expensesCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(expensesModel.getExpensesCategoryList().values())));
+        //expensesCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(expensesModel.getExpensesCategoryList().values())));
+        expensesCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(MainController.getExpensesCategoryList().values())));
         drawExpensesList();
     }
     @SuppressWarnings("Duplicates")

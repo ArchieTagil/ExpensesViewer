@@ -10,9 +10,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class IncomeModel {
     private final Connection connection = DbConnection.getInstance().getConnection();
@@ -60,34 +58,6 @@ public class IncomeModel {
         String queryUpdate = "UPDATE `income` set `income_category_id` = " + newIncomeCategoryId + " WHERE `income_id` = " + id;
         statement.executeUpdate(queryUpdate);
     }
-
-    //Закомментировать при рефакторинге
-    public Map<Integer, String> getIncomeCategoryList() throws SQLException {
-        Statement statement = connection.createStatement();
-        String qGetIncomeList = "SELECT `income_category_id`, `income_category_name` FROM `income_category`;";
-        ResultSet resultSet = statement.executeQuery(qGetIncomeList);
-        Map<Integer, String> incomeCategoryList = new HashMap<>();
-
-        while (resultSet.next()) {
-            incomeCategoryList.put(resultSet.getInt("income_category_id"), resultSet.getString("income_category_name"));
-        }
-        return incomeCategoryList;
-    }
-    public String getDefaultIncomeCategory() {
-        try (Statement statement = connection.createStatement()) {
-            String getValue = "SELECT `income_category_name` FROM `income_category` WHERE `income_default` = true;";
-            ResultSet resultSet = statement.executeQuery(getValue);
-            if (resultSet.next()) {
-                return resultSet.getString("income_category_name");
-            } else {
-                return "";
-            }
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
-    //до сюда комментировать.
 
     public boolean doEditIncomeAmountField(int id, double amount) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `income` SET `amount` = ? WHERE `income_id` = ?;");

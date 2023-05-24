@@ -17,6 +17,7 @@ public class ReportsController implements Initializable {
     @FXML
     private Tab tables;
     @FXML
+    @SuppressWarnings("unused")
     private Tab graphics;
 
     @Override

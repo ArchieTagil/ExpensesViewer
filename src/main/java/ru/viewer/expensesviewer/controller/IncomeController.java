@@ -110,9 +110,9 @@ public class IncomeController {
     }
 
     @SuppressWarnings("Duplicates")
-    public void initInsertFieldsSettings() throws SQLException {
+    public void initInsertFieldsSettings() {
         newIncomeDate.setValue(LocalDate.now());
-        incomeCategoryList = incomeModel.getIncomeCategoryList();
+        incomeCategoryList = MainController.getIncomeCategoryList();
 
         incomeCategoryObservableList = FXCollections.observableArrayList(incomeCategoryList.values());
 
@@ -120,7 +120,7 @@ public class IncomeController {
         selectNewIncomeCategory.setItems(incomeCategoryObservableList);
 
         selectNewIncomeWallet.setValue(MainController.getDefaultWalletName());
-        selectNewIncomeCategory.setValue(incomeModel.getDefaultIncomeCategory());
+        selectNewIncomeCategory.setValue(MainController.getDefaultIncomeCategory());
 
         newIncomeAmount.setTextFormatter(MainController.getOnlyDigitsTextFormatter());
     }
@@ -231,9 +231,9 @@ public class IncomeController {
         selectNewIncomeWallet.setItems(MainController.getWalletObservableList());
         selectNewIncomeWallet.setValue(MainController.getDefaultWalletName());
         try {
-            selectNewIncomeCategory.setItems(FXCollections.observableArrayList(incomeModel.getIncomeCategoryList().values()));
-            selectNewIncomeCategory.setValue(incomeModel.getDefaultIncomeCategory());
-            incomeCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(incomeModel.getIncomeCategoryList().values())));
+            selectNewIncomeCategory.setItems(FXCollections.observableArrayList(MainController.getIncomeCategoryList().values()));
+            selectNewIncomeCategory.setValue(MainController.getDefaultIncomeCategory());
+            incomeCategory.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(MainController.getIncomeCategoryList().values())));
             drawIncomeList();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());

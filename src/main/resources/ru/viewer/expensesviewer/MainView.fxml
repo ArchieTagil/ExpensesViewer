@@ -63,27 +63,28 @@
            </HBox.margin>
         </Label>
     </HBox>
-   <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="32.0" prefWidth="197.0" StackPane.alignment="TOP_RIGHT">
-      <children>
-         <Button fx:id="exit1" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#refresh" prefWidth="100.0" text="Обновить">
-            <opaqueInsets>
-               <Insets />
-            </opaqueInsets>
-            <HBox.margin>
-               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-            </HBox.margin>
-         </Button>
-         <Button fx:id="exit" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exit" prefWidth="100.0" text="Выход">
-            <opaqueInsets>
-               <Insets />
-            </opaqueInsets>
-            <HBox.margin>
-               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-            </HBox.margin>
-         </Button>
-      </children>
-      <StackPane.margin>
-         <Insets right="10.0" />
-      </StackPane.margin>
-   </HBox>
+    <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="32.0" prefWidth="197.0"
+          StackPane.alignment="TOP_RIGHT">
+        <StackPane.margin>
+            <Insets right="10.0"/>
+        </StackPane.margin>
+        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0"
+                mnemonicParsing="false" onAction="#refresh" prefWidth="100.0" text="Обновить">
+           <opaqueInsets>
+               <Insets/>
+           </opaqueInsets>
+           <HBox.margin>
+               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+           </HBox.margin>
+        </Button>
+        <Button fx:id="exit" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exit"
+                prefWidth="100.0" text="Выход">
+           <opaqueInsets>
+               <Insets/>
+           </opaqueInsets>
+           <HBox.margin>
+               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+           </HBox.margin>
+        </Button>
+    </HBox>
 </StackPane>

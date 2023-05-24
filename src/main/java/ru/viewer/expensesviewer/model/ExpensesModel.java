@@ -10,9 +10,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ExpensesModel {
     private final Connection connection = DbConnection.getInstance().getConnection();
@@ -42,37 +40,6 @@ public class ExpensesModel {
             return expensesEntityList;
         } catch (SQLException e) {
             LOGGER.fatal("Can't get expenses list from DB!");
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Map<Integer, String> getExpensesCategoryList() {
-        try (Statement statement = connection.createStatement()) {
-            String qGetExpensesList = "SELECT `expenses_category_id`, `expenses_category_name` FROM `expenses_category`;";
-            ResultSet resultSet = statement.executeQuery(qGetExpensesList);
-            Map<Integer, String> expensesCategoryList = new HashMap<>();
-
-            while (resultSet.next()) {
-                expensesCategoryList.put(resultSet.getInt("expenses_category_id"), resultSet.getString("expenses_category_name"));
-            }
-            return expensesCategoryList;
-        } catch (SQLException e) {
-            LOGGER.debug("Can't get data from DB about Expenses Category list.");
-            throw new RuntimeException(e);
-        }
-    }
-
-    public String getDefaultExpenseCategory() {
-        try (Statement statement = connection.createStatement()) {
-            String getValue = "SELECT `expenses_category_name` FROM `expenses_category` WHERE `expenses_default` = true;";
-            ResultSet resultSet = statement.executeQuery(getValue);
-            if (resultSet.next()) {
-                return resultSet.getString("expenses_category_name");
-            } else {
-                return "";
-            }
-        } catch (SQLException e) {
-            LOGGER.debug("Can't get data from DB about Expenses category default value.");
             throw new RuntimeException(e);
         }
     }
