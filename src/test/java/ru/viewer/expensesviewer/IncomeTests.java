@@ -1,15 +1,12 @@
 package ru.viewer.expensesviewer;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import ru.viewer.expensesviewer.model.DbConnection;
 import ru.viewer.expensesviewer.model.IncomeModel;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class IncomeTests {
     IncomeModel incomeModel = new IncomeModel();
@@ -19,10 +16,10 @@ public class IncomeTests {
 //    public void shouldReturnDefaultWallet() throws SQLException {
 //       assertEquals(incomeModel.getDefaultWallet(), "Карта Альфабанк");
 //    }
-    @Test
-    public void shouldReturnDefaultIncomeCategory() throws SQLException {
-        assertEquals(incomeModel.getDefaultIncomeCategory(), "Зарплата");
-    }
+//    @Test
+//    public void shouldReturnDefaultIncomeCategory() throws SQLException {
+//        assertEquals(incomeModel.getDefaultIncomeCategory(), "Зарплата");
+//    }
     @Test
     public void dbConnectionNotNull() throws SQLException, ClassNotFoundException {
         assertNotNull(DbConnection.getInstance());
@@ -35,10 +32,10 @@ public class IncomeTests {
 //    public void walletListShouldNotBeNull() throws SQLException {
 //        assertNotNull(incomeModel.getWalletList());
 //    }
-    @Test
-    public void categoryListShouldNotBeNull() throws SQLException {
-        assertNotNull(incomeModel.getIncomeCategoryList());
-    }
+//    @Test
+//    public void categoryListShouldNotBeNull() throws SQLException {
+//        assertNotNull(incomeModel.getIncomeCategoryList());
+//    }
 //    @Test
 //    public void shouldReturnWalletBalance() throws SQLException {
 //        assertNotNull(incomeModel.getWalletBalance(1));

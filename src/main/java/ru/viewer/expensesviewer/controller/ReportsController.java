@@ -17,7 +17,6 @@ public class ReportsController implements Initializable {
     @FXML
     private Tab tables;
     @FXML
-    @SuppressWarnings("unused")
     private Tab graphics;
 
     @Override
@@ -28,6 +27,16 @@ public class ReportsController implements Initializable {
             tables.setContent(tablesLoader.load());
         } catch (IOException e) {
             LOGGER.fatal("tablesTab.fxml wasn't loaded");
+            LOGGER.info(e.getMessage());
+            throw new RuntimeException();
+        }
+
+        try {
+            FXMLLoader graphicsLoader = new FXMLLoader();
+            graphicsLoader.setLocation(HelloApplication.class.getResource("reports/graphicsTab.fxml"));
+            graphics.setContent(graphicsLoader.load());
+        } catch (IOException e) {
+            LOGGER.fatal("graphics.fxml wasn't loaded");
             LOGGER.info(e.getMessage());
             throw new RuntimeException();
         }
