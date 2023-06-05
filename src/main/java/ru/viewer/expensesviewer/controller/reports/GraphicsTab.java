@@ -2,12 +2,16 @@ package ru.viewer.expensesviewer.controller.reports;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.*;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.model.DbConnection;
@@ -53,20 +57,38 @@ public class GraphicsTab implements Initializable {
     }
 
     public void expensesPieChart(LocalDate from, LocalDate to) {
+        LOGGER.debug("function called");
         try (Statement statement = connection.createStatement()) {
-            String query = "SELECT ";
+            ObservableList<PieChart.Data> observableList = FXCollections.observableArrayList();
+            String query = "SELECT expenses_category_name, SUM(amount) AS amount \n" +
+                    "FROM `expenses`\n" +
+                    "    JOIN expenses_category on expenses.expenses_category_id = expenses_category.expenses_category_id\n" +
+                    "WHERE date BETWEEN '" + from + "' AND '" + to + "'\n" +
+                    "GROUP BY expenses_category_name;";
             ResultSet resultSet = statement.executeQuery(query);
-
-            ObservableList<PieChart.Data> observableList = FXCollections.observableArrayList(
-                    new PieChart.Data("Iphone 5S", 13),
-                    new PieChart.Data("Samsung Grand", 25),
-                    new PieChart.Data("MOTO G", 10),
-                    new PieChart.Data("Nokia Lumia", 22)
-            );
+            while (resultSet.next()) {
+                observableList.add(new PieChart.Data(resultSet.getString("expenses_category_name"), resultSet.getInt("amount")));
+            }
 
             PieChart pieChart = new PieChart(observableList);
             pieChart.setPrefHeight(350);
             pieChart.setPrefWidth(700);
+
+            final Label caption = new Label("");
+            caption.setTextFill(Color.DARKORANGE);
+            caption.setStyle("-fx-font: 24 arial;");
+            for (PieChart.Data data : observableList) {
+                data.getNode().addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        LOGGER.debug(data.getPieValue());
+                        caption.setTranslateX(e.getSceneX());
+                        caption.setTranslateY(e.getSceneY());
+                        caption.setText("Dynamic Label");
+                    }
+                });
+            }
+
             anchorPane.getChildren().add(pieChart);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -75,7 +97,7 @@ public class GraphicsTab implements Initializable {
     }
 
     public void incomePerMonth(LocalDate from, LocalDate to) {
-        String query = "SELECT DATE_FORMAT(income.date, '%Y-%b') AS date, SUM(income.amount) AS amount FROM income WHERE date BETWEEN '" + from + "' AND '" + to + "' GROUP BY DATE_FORMAT(income.date, '%Y-%m') ORDER BY  income.date;";
+        String query = "SELECT DATE_FORMAT(income.date, '%Y-%b') AS date, SUM(income.amount) AS amount FROM income WHERE date BETWEEN '" + from + "' AND '" + to + "' GROUP BY date ORDER BY  income.date;";
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
 
