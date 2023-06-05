@@ -2,14 +2,13 @@ package ru.viewer.expensesviewer.controller.reports;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.*;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +45,7 @@ public class GraphicsTab implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList list = FXCollections.observableArrayList();
+        ObservableList<String> list = FXCollections.observableArrayList();
         list.add("Доходы по месяцам");
         list.add("Расходы за период по категориям");
         graphType.setItems(list);
@@ -78,17 +77,9 @@ public class GraphicsTab implements Initializable {
             caption.setTextFill(Color.DARKORANGE);
             caption.setStyle("-fx-font: 24 arial;");
             for (PieChart.Data data : observableList) {
-                data.getNode().addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        LOGGER.debug(data.getPieValue());
-                        caption.setTranslateX(e.getSceneX());
-                        caption.setTranslateY(e.getSceneY());
-                        caption.setText("Dynamic Label");
-                    }
-                });
+                Tooltip tooltip = new Tooltip(data.getName() + ": " + data.getPieValue());
+                Tooltip.install(data.getNode(), tooltip);
             }
-
             anchorPane.getChildren().add(pieChart);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -106,7 +97,7 @@ public class GraphicsTab implements Initializable {
 
             CategoryAxis xAxis = new CategoryAxis();
             NumberAxis yAxis = new NumberAxis();
-            LineChart<String, Number> lineChart = new LineChart(xAxis, yAxis);
+            LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
             lineChart.setPrefHeight(350);
             lineChart.setPrefWidth(900);
 
