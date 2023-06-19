@@ -1,7 +1,6 @@
 module ru.viewer.expensesviewer {
     requires javafx.controls;
     requires javafx.fxml;
-    requires spring.jdbc;
     requires java.sql;
     requires mysql.connector.j;
     requires org.apache.logging.log4j;

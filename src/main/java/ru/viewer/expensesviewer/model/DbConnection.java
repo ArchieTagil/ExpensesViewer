@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DbConnection {
-    Properties config = new Properties();
+    private static Properties config = new Properties();
     @SuppressWarnings("FieldCanBeLocal")
     private final Logger LOGGER = LogManager.getLogger(MainModel.class);
     private static DbConnection instance;
@@ -20,6 +20,7 @@ public class DbConnection {
     private DbConnection() {
         try {
             config.load(new FileInputStream("src/main/resources/ru/viewer/expensesviewer/config.properties"));
+            //config.load(new FileInputStream("./config.properties"));
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(config.getProperty("dbHost"));
         } catch (ClassNotFoundException | SQLException | IOException e) {
@@ -35,5 +36,9 @@ public class DbConnection {
 
     public Connection getConnection() {
         return instance.connection;
+    }
+
+    public static Properties getConfig() {
+        return config;
     }
 }

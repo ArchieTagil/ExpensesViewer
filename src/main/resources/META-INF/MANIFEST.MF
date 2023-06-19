@@ -1,3 +1,10 @@
 Manifest-Version: 1.0
 Main-Class: ru.viewer.expensesviewer.HelloApplication
+Class-Path: libs\spring-jdbc-5.3.0.jar libs\spring-jcl-5.3.0.jar libs\lo
+ g4j-api-2.20.0.jar libs\spring-beans-5.3.0.jar libs\protobuf-java-3.21.
+ 9.jar libs\spring-core-5.3.0.jar libs\spring-tx-5.3.0.jar libs\javafx-s
+ wt.jar libs\javafx.web.jar libs\javafx.base.jar libs\javafx.fxml.jar li
+ bs\javafx.media.jar libs\javafx.swing.jar libs\javafx.controls.jar libs
+ \javafx.graphics.jar libs\log4j-core-2.20.0.jar libs\mysql-connector-j-
+ 8.0.32.jar
 

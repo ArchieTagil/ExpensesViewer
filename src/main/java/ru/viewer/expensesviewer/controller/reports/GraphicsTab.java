@@ -88,7 +88,7 @@ public class GraphicsTab implements Initializable {
     }
 
     public void incomePerMonth(LocalDate from, LocalDate to) {
-        String query = "SELECT DATE_FORMAT(income.date, '%Y-%b') AS date, SUM(income.amount) AS amount FROM income WHERE date BETWEEN '" + from + "' AND '" + to + "' GROUP BY date ORDER BY  income.date;";
+        String query = "SELECT DATE_FORMAT(income.date, '%Y-%b') AS date, SUM(income.amount) AS amount FROM income WHERE date BETWEEN '" + from + "' AND '" + to + "' GROUP BY DATE_FORMAT(income.date, '%Y-%b') ORDER BY income.date;";
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
 

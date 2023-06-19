@@ -8,6 +8,7 @@ import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.controller.MainController;
+import ru.viewer.expensesviewer.model.DbConnection;
 
 import java.io.*;
 
@@ -42,7 +43,8 @@ public class ImportExportController {
     public void doExport() {
         if (textFieldExport.getText() != null) {
             try {
-                Process process = Runtime.getRuntime().exec("cmd /C mysqldump -P 3306 -h localhost -u root -p12345678 simpleexpensesmanager");
+                //Process process = Runtime.getRuntime().exec("cmd /C mysqldump -P 3306 -h localhost -u root -p12345678 simpleexpensesmanager");
+                Process process = Runtime.getRuntime().exec(DbConnection.getConfig().getProperty("exportCommand"));
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 FileWriter fileWriter = new FileWriter(textFieldExport.getText(), true);
 
@@ -66,7 +68,8 @@ public class ImportExportController {
     public void doImport() {
         if (textFieldImport.getText() != null) {
             try {
-                Process process = Runtime.getRuntime().exec("cmd.exe /c mysql -u root -p12345678 simpleexpensesmanager < " + textFieldImport.getText());
+                //Process process = Runtime.getRuntime().exec("cmd.exe /c mysql -u root -p12345678 simpleexpensesmanager" + " < " + textFieldImport.getText());
+                Process process = Runtime.getRuntime().exec(DbConnection.getConfig().getProperty("importCommand") + " < " + textFieldImport.getText());
                 int processStatus = process.waitFor();
                 if (processStatus == 0) {
                     importResult.setTextFill(Color.GREEN);
