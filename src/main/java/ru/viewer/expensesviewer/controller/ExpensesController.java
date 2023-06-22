@@ -157,23 +157,25 @@ public class ExpensesController {
     public void addNewExpense() {
         expensesCategoryList = MainController.getExpensesCategoryList();
         LocalDate date = expenseDateNewRow.getValue();
-        int walletId = MainController.getWalletIdByName(selectExpenseWalletNewRow.getValue());
-        int categoryId = getCategoryIdByName(selectExpenseCategoryNewRow.getValue());
+        if (selectExpenseWalletNewRow.getValue() != null && selectExpenseCategoryNewRow.getValue() != null) {
+            int walletId = MainController.getWalletIdByName(selectExpenseWalletNewRow.getValue());
+            int categoryId = getCategoryIdByName(selectExpenseCategoryNewRow.getValue());
 
-        double amount = 0;
-        try {
-            amount = Double.parseDouble(expenseAmountNewRow.getText());
-        } catch (RuntimeException NumberFormatException) {
-            Popup.display("Wrong amount", "Вы ввели некорретное число.");
-        }
-        String comment = expenseCommentNewRow.getText();
-        boolean incomeRowWasAdded = expensesModel.addNewExpensesRow(date, walletId, categoryId, amount, comment);
-        if (incomeRowWasAdded) {
-            drawExpensesList();
-            mainController.initBalance();
-        } else {
-            Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
-            LOGGER.error("income wasn't added");
+            double amount = 0;
+            try {
+                amount = Double.parseDouble(expenseAmountNewRow.getText());
+            } catch (RuntimeException NumberFormatException) {
+                Popup.display("Wrong amount", "Вы ввели некорретное число.");
+            }
+            String comment = expenseCommentNewRow.getText();
+            boolean incomeRowWasAdded = expensesModel.addNewExpensesRow(date, walletId, categoryId, amount, comment);
+            if (incomeRowWasAdded) {
+                drawExpensesList();
+                mainController.initBalance();
+            } else {
+                Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
+                LOGGER.error("income wasn't added");
+            }
         }
     }
 
@@ -182,8 +184,12 @@ public class ExpensesController {
         if (keyEvent.getCode() == KeyCode.DELETE) {
             ObservableList<ExpenseEntity> list = expensesTable.getSelectionModel().getSelectedItems();
             for (ExpenseEntity entity : list) {
-                boolean isDeleted = expensesModel.deleteExpense(entity.getId(), MainController.getWalletIdByName(entity.getWallet_name()), entity.getAmount());
-                if (!isDeleted) LOGGER.debug("id: " + entity.getId() + " was failed to delete.");
+                if (entity.getWallet_name() != null) {
+                    boolean isDeleted = expensesModel.deleteExpense(entity.getId(), MainController.getWalletIdByName(entity.getWallet_name()), entity.getAmount());
+                    if (!isDeleted) LOGGER.debug("id: " + entity.getId() + " was failed to delete.");
+                } else {
+                    expensesModel.justDeleteExpense(entity.getId());
+                }
             }
             mainController.initBalance();
             drawExpensesList();

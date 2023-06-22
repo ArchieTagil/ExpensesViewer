@@ -145,4 +145,13 @@ public class ExpensesModel {
             throw new RuntimeException(e);
         }
     }
+
+    public void justDeleteExpense(int id) {
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate("DELETE FROM `expenses` WHERE `expenses_id` = " + id + ";");
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
 }
