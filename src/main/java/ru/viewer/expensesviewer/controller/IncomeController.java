@@ -249,8 +249,13 @@ public class IncomeController {
         if (keyEvent.getCode() == KeyCode.DELETE) {
             ObservableList<IncomeEntity> list = incomeTable.getSelectionModel().getSelectedItems();
             for (IncomeEntity entity : list) {
-                boolean isDeleted = incomeModel.deleteIncome(entity.getId(), MainController.getWalletIdByName(entity.getWallet_name()), entity.getAmount());
-                if (!isDeleted) LOGGER.debug("id: " + entity.getId() + " was failed to delete.");
+                if (entity.getWallet_name() != null) {
+                    boolean isDeleted = incomeModel.deleteIncome(entity.getId(), MainController.getWalletIdByName(entity.getWallet_name()), entity.getAmount());
+                    if (!isDeleted) LOGGER.debug("id: " + entity.getId() + " was failed to delete.");
+                } else {
+                    incomeModel.justDeleteIncome(entity.getId());
+                }
+
             }
             mainController.initBalance();
             drawIncomeList();

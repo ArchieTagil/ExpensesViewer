@@ -113,4 +113,12 @@ public class IncomeModel {
             return false;
         }
     }
+
+    public void justDeleteIncome(int id) {
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate("DELETE FROM `income` WHERE `income_id` = " + id + ";");
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
 }
