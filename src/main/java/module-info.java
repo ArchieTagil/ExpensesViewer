@@ -4,6 +4,7 @@ module ru.viewer.expensesviewer {
     requires java.sql;
     requires mysql.connector.j;
     requires org.apache.logging.log4j;
+    //requires rt;
 
     opens ru.viewer.expensesviewer to javafx.fxml;
     exports ru.viewer.expensesviewer;

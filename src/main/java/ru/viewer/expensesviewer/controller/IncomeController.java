@@ -198,17 +198,17 @@ public class IncomeController {
     }
     @SuppressWarnings("Duplicates")
     public void addNewIncome() throws SQLException {
-        LOGGER.debug("Add was pressed in IncomeController");
+        incomeCategoryList = MainController.getIncomeCategoryList();
         LocalDate date = newIncomeDate.getValue();
         int walletId = MainController.getWalletList().entrySet().stream().filter(s -> s.getValue().equals(selectNewIncomeWallet.getValue())).
                 findFirst().orElseThrow(() -> {
-                    LOGGER.fatal("walletEditCommit gets null");
-                    return new NullPointerException("walletEditCommit gets null");
+                    LOGGER.fatal("Wallet field gets null");
+                    return new NullPointerException("Wallet field gets null");
                 }).getKey();
         int categoryId = incomeCategoryList.entrySet().stream().filter(s -> s.getValue().equals(selectNewIncomeCategory.getValue())).
                 findFirst().orElseThrow(() -> {
-                    LOGGER.fatal("categoryEditCommit gets null");
-                    return new NullPointerException("categoryEditCommit get null");
+                    LOGGER.fatal("Category field gets null");
+                    return new NullPointerException("Category field get null");
                 }).getKey();
         double amount = 0;
         try {
