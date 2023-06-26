@@ -99,16 +99,18 @@ public class ExpensesController {
         int currentIncomeRowId = cellEditEvent.getRowValue().getId();
         double amountInCurrentRow = cellEditEvent.getRowValue().getAmount();
 
-        if (cellEditEvent.getOldValue() != null){
-            int oldWalletId = MainController.getWalletIdByName(cellEditEvent.getOldValue());
-            double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
-            MainController.updateWalletBalanceById(oldWalletId, oldWalletBalance + amountInCurrentRow);
-        }
-        int newWalletId = MainController.getWalletIdByName(cellEditEvent.getNewValue());
-        double newWalletBalance = MainController.getWalletBalanceById(newWalletId);
+        if (!MainController.getWalletObservableList().isEmpty() && cellEditEvent.getNewValue() != null) {
+            if (cellEditEvent.getOldValue() != null){
+                int oldWalletId = MainController.getWalletIdByName(cellEditEvent.getOldValue());
+                double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
+                MainController.updateWalletBalanceById(oldWalletId, oldWalletBalance + amountInCurrentRow);
+            }
+            int newWalletId = MainController.getWalletIdByName(cellEditEvent.getNewValue());
+            double newWalletBalance = MainController.getWalletBalanceById(newWalletId);
 
-        MainController.updateWalletBalanceById(newWalletId, newWalletBalance - amountInCurrentRow);
-        expensesModel.doEditWalletField(currentIncomeRowId, newWalletId);
+            MainController.updateWalletBalanceById(newWalletId, newWalletBalance - amountInCurrentRow);
+            expensesModel.doEditWalletField(currentIncomeRowId, newWalletId);
+        }
         drawExpensesList();
         mainController.initBalance();
     }
@@ -116,13 +118,16 @@ public class ExpensesController {
     @SuppressWarnings("Duplicates")
     public void categoryEditCommit(TableColumn.CellEditEvent<ExpenseEntity, String> cellEditEvent) {
         int currentExpenseRowId = cellEditEvent.getRowValue().getId();
-        int newExpenseCategoryId = expensesCategoryList.entrySet().stream().
-                filter(e -> e.getValue().equals(cellEditEvent.getNewValue())).
-                findFirst().orElseThrow(() -> {
-                    LOGGER.fatal("categoryEditCommit gets null");
-                    return new NullPointerException("categoryEditCommit get null");
-                }).getKey();
-        expensesModel.doEditExpensesCategoryField(currentExpenseRowId, newExpenseCategoryId);
+        expensesCategoryList = MainController.getExpensesCategoryList();
+        if (!expensesCategoryList.isEmpty() && cellEditEvent.getNewValue() != null) {
+            int newExpenseCategoryId = expensesCategoryList.entrySet().stream().
+                    filter(e -> e.getValue().equals(cellEditEvent.getNewValue())).
+                    findFirst().orElseThrow(() -> {
+                        LOGGER.fatal("categoryEditCommit gets null");
+                        return new NullPointerException("categoryEditCommit get null");
+                    }).getKey();
+            expensesModel.doEditExpensesCategoryField(currentExpenseRowId, newExpenseCategoryId);
+        }
         drawExpensesList();
     }
 

@@ -137,21 +137,20 @@ public class IncomeController {
         int currentIncomeRowId = incomeEntityStringCellEditEvent.getRowValue().getId();
         double amountInCurrentRow = incomeEntityStringCellEditEvent.getRowValue().getAmount();
 
-        LOGGER.debug("Old wallet name: " + incomeEntityStringCellEditEvent.getOldValue());
-        LOGGER.debug("New wallet name: " + incomeEntityStringCellEditEvent.getNewValue());
+        if (!MainController.getWalletObservableList().isEmpty() && incomeEntityStringCellEditEvent.getNewValue() != null) {
+            if (incomeEntityStringCellEditEvent.getOldValue() != null) {
+                int oldWalletId = MainController.getWalletIdByName(incomeEntityStringCellEditEvent.getOldValue());
+                double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
+                MainController.updateWalletBalanceById(oldWalletId, oldWalletBalance - amountInCurrentRow);
+            }
 
-        if (incomeEntityStringCellEditEvent.getOldValue() != null) {
-            int oldWalletId = MainController.getWalletIdByName(incomeEntityStringCellEditEvent.getOldValue());
-            double oldWalletBalance = MainController.getWalletBalanceById(oldWalletId);
-            MainController.updateWalletBalanceById(oldWalletId, oldWalletBalance - amountInCurrentRow);
+            int newWalletId = MainController.getWalletIdByName(incomeEntityStringCellEditEvent.getNewValue());
+            double newWalletBalance = MainController.getWalletBalanceById(newWalletId);
+
+
+            MainController.updateWalletBalanceById(newWalletId, newWalletBalance + amountInCurrentRow);
+            incomeModel.doEditWalletField(currentIncomeRowId, newWalletId);
         }
-
-        int newWalletId = MainController.getWalletIdByName(incomeEntityStringCellEditEvent.getNewValue());
-        double newWalletBalance = MainController.getWalletBalanceById(newWalletId);
-
-
-        MainController.updateWalletBalanceById(newWalletId, newWalletBalance + amountInCurrentRow);
-        incomeModel.doEditWalletField(currentIncomeRowId, newWalletId);
 
         mainController.updateScreenInfo();
     }
@@ -159,13 +158,16 @@ public class IncomeController {
     @SuppressWarnings("Duplicates")
     public void categoryEditCommit(TableColumn.CellEditEvent<IncomeEntity, String> incomeEntityStringCellEditEvent) throws SQLException {
         int currentIncomeRowId = incomeEntityStringCellEditEvent.getRowValue().getId();
-        int newIncomeCategoryId = incomeCategoryList.entrySet().stream().
-                filter(e -> e.getValue().equals(incomeEntityStringCellEditEvent.getNewValue())).
-                findFirst().orElseThrow(() -> {
-                    LOGGER.fatal("categoryEditCommit gets null");
-                    return new NullPointerException("categoryEditCommit get null");
-                }).getKey();
-        incomeModel.doEditIncomeCategoryField(currentIncomeRowId, newIncomeCategoryId);
+        incomeCategoryList = MainController.getIncomeCategoryList();
+        if (!incomeCategoryList.isEmpty() && incomeEntityStringCellEditEvent.getNewValue() != null) {
+            int newIncomeCategoryId = incomeCategoryList.entrySet().stream().
+                    filter(e -> e.getValue().equals(incomeEntityStringCellEditEvent.getNewValue())).
+                    findFirst().orElseThrow(() -> {
+                        LOGGER.fatal("categoryEditCommit gets null");
+                        return new NullPointerException("categoryEditCommit get null");
+                    }).getKey();
+            incomeModel.doEditIncomeCategoryField(currentIncomeRowId, newIncomeCategoryId);
+        }
         drawIncomeList();
     }
 
