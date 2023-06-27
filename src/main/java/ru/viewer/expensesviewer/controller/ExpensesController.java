@@ -91,7 +91,7 @@ public class ExpensesController {
         LocalDate newDate = cellEditEvent.getNewValue();
         int id = cellEditEvent.getRowValue().getId();
         expensesModel.updateExpenseRowDate(id, newDate);
-        drawExpensesList();
+        mainController.updateScreenInfo();
     }
 
     @SuppressWarnings("Duplicates")
@@ -111,7 +111,7 @@ public class ExpensesController {
             MainController.updateWalletBalanceById(newWalletId, newWalletBalance - amountInCurrentRow);
             expensesModel.doEditWalletField(currentIncomeRowId, newWalletId);
         }
-        drawExpensesList();
+        mainController.updateScreenInfo();
         mainController.initBalance();
     }
 
@@ -128,7 +128,7 @@ public class ExpensesController {
                     }).getKey();
             expensesModel.doEditExpensesCategoryField(currentExpenseRowId, newExpenseCategoryId);
         }
-        drawExpensesList();
+        mainController.updateScreenInfo();
     }
 
     @SuppressWarnings("Duplicates")
@@ -144,7 +144,7 @@ public class ExpensesController {
             LOGGER.error("Expense amount edit error during a change in database.");
             Popup.display("Expense amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
         } else {
-            drawExpensesList();
+            mainController.updateScreenInfo();
             mainController.initBalance();
         }
     }
@@ -175,7 +175,7 @@ public class ExpensesController {
             String comment = expenseCommentNewRow.getText();
             boolean incomeRowWasAdded = expensesModel.addNewExpensesRow(date, walletId, categoryId, amount, comment);
             if (incomeRowWasAdded) {
-                drawExpensesList();
+                mainController.updateScreenInfo();
                 mainController.initBalance();
             } else {
                 Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
@@ -197,7 +197,7 @@ public class ExpensesController {
                 }
             }
             mainController.initBalance();
-            drawExpensesList();
+            mainController.updateScreenInfo();
         }
     }
 

@@ -129,7 +129,7 @@ public class IncomeController {
         LocalDate newDate = incomeEntityLocalDateCellEditEvent.getNewValue();
         int id = incomeEntityLocalDateCellEditEvent.getRowValue().getId();
         incomeModel.updateIncomeDate(id, newDate);
-        drawIncomeList();
+        mainController.updateScreenInfo();
     }
 
     @SuppressWarnings("Duplicates")
@@ -168,7 +168,7 @@ public class IncomeController {
                     }).getKey();
             incomeModel.doEditIncomeCategoryField(currentIncomeRowId, newIncomeCategoryId);
         }
-        drawIncomeList();
+        mainController.updateScreenInfo();
     }
 
     @SuppressWarnings("Duplicates")
@@ -184,7 +184,7 @@ public class IncomeController {
             LOGGER.error("Income amount edit error during a change in database.");
             Popup.display("Income amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
         } else {
-            drawIncomeList();
+            mainController.updateScreenInfo();
             mainController.initBalance();
         }
     }
@@ -222,7 +222,6 @@ public class IncomeController {
             String comment = newIncomeComment.getText();
             boolean incomeRowWasAdded = incomeModel.addNewIncomeRow(date, walletId, categoryId, amount, comment);
             if (incomeRowWasAdded) {
-                drawIncomeList();
                 mainController.updateScreenInfo();
             } else {
                 Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
@@ -262,7 +261,7 @@ public class IncomeController {
 
             }
             mainController.initBalance();
-            drawIncomeList();
+            mainController.updateScreenInfo();
         }
     }
 }

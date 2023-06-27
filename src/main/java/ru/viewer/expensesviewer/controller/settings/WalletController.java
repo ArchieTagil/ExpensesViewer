@@ -140,11 +140,9 @@ public class WalletController implements Initializable {
             String sqlSetFalse = "UPDATE `wallets_list` SET `wallet_default` = FALSE WHERE wallet_id = " + oldIdDefaultWallet +";";
 
             if (newValue == Boolean.TRUE && oldValue == Boolean.FALSE && countOfTrue == 1) {
-                LOGGER.info("Управление галочками вызывается, newValue == Boolean.TRUE && oldValue == Boolean.FALSE && countOfTrue == 1");
                 sql.executeUpdate(sqlSetFalse);
                 sql.executeUpdate(sqlSetNewValue);
             } else if (countOfTrue > 1 && newValue == Boolean.FALSE) {
-                LOGGER.info("countOfTrue > 1 && newValue == Boolean.FALSE");
                 sql.executeUpdate(sqlSetNewValue);
             } else if (countOfTrue == 1 && oldIdDefaultWallet == walletId && newValue == Boolean.FALSE) {
                 LOGGER.info("Must Display PopUP");
