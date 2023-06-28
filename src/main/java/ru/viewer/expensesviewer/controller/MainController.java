@@ -18,6 +18,7 @@ import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.HelloApplication;
+import ru.viewer.expensesviewer.controller.reports.TablesController;
 import ru.viewer.expensesviewer.controller.settings.ExpensesCategoryController;
 import ru.viewer.expensesviewer.controller.settings.IncomeCategoryController;
 import ru.viewer.expensesviewer.controller.settings.WalletController;
@@ -44,6 +45,7 @@ public class MainController implements Initializable {
     private IncomeController incomeController;
     private ExpensesController expensesController;
     private MovementsController movementsController;
+    private ReportsController reportsController;
     private SettingsController settingsController;
     @FXML
     private Tab expensesTab;
@@ -116,6 +118,7 @@ public class MainController implements Initializable {
             reportsLoader.setLocation(HelloApplication.class.getResource("Reports.fxml"));
             AnchorPane anchorPaneReports = reportsLoader.load();
             reportsTab.setContent(anchorPaneReports);
+            reportsController = reportsLoader.getController();
         } catch (IOException e) {
             LOGGER.fatal("Reports.fxml wasn't loaded");
             throw new RuntimeException(e);
@@ -461,6 +464,7 @@ public class MainController implements Initializable {
         WalletController walletController = settingsController.getWalletController();
         IncomeCategoryController incomeCategoryController = settingsController.getIncomeCategoryController();
         ExpensesCategoryController expensesCategoryController = settingsController.getExpensesCategoryController();
+        TablesController tablesController = reportsController.getTablesController();
 
         incomeController.updateVisualInformation();
         expensesController.updateVisualInformation();
@@ -468,6 +472,7 @@ public class MainController implements Initializable {
         incomeCategoryController.updateVisualInformation();
         expensesCategoryController.updateVisualInformation();
         walletController.updateVisualInformation();
+        tablesController.initDynamicSelectFields();
         initBalance();
     }
     public static ObservableList<String> getWalletObservableList() {

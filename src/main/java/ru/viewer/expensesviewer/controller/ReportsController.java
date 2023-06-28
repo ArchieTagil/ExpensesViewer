@@ -7,6 +7,7 @@ import javafx.scene.control.Tab;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.HelloApplication;
+import ru.viewer.expensesviewer.controller.reports.TablesController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,6 +15,7 @@ import java.util.ResourceBundle;
 
 public class ReportsController implements Initializable {
     private static final Logger LOGGER = LogManager.getLogger(IncomeController.class);
+    private TablesController tablesController;
     @FXML
     private Tab tables;
     @FXML
@@ -25,6 +27,7 @@ public class ReportsController implements Initializable {
             FXMLLoader tablesLoader = new FXMLLoader();
             tablesLoader.setLocation(HelloApplication.class.getResource("reports/tablesTab.fxml"));
             tables.setContent(tablesLoader.load());
+            tablesController = tablesLoader.getController();
         } catch (IOException e) {
             LOGGER.fatal("tablesTab.fxml wasn't loaded");
             LOGGER.info(e.getMessage());
@@ -40,5 +43,9 @@ public class ReportsController implements Initializable {
             LOGGER.info(e.getMessage());
             throw new RuntimeException();
         }
+    }
+
+    public TablesController getTablesController() {
+        return tablesController;
     }
 }

@@ -72,11 +72,12 @@ public class TablesController implements Initializable {
         groupBy.setValue(groupByList.get(0));
 
         selectIncome();
+        initDynamicSelectFields();
 
-        ObservableList<String> listWallet = FXCollections.observableArrayList(MainController.getWalletList().values());
-        listWallet.add(0, "Без фильтра");
-        filterWallet.setItems(listWallet);
-        filterWallet.setValue(listWallet.get(0));
+//        ObservableList<String> listWallet = FXCollections.observableArrayList(MainController.getWalletList().values());
+//        listWallet.add(0, "Без фильтра");
+//        filterWallet.setItems(listWallet);
+//        filterWallet.setValue(listWallet.get(0));
     }
 
     public void showReport() {
@@ -105,5 +106,18 @@ public class TablesController implements Initializable {
         filterCategory.setItems(listExpensesCategory);
         filterCategory.setValue(listExpensesCategory.get(0));
         isReportTypeExpenses = true;
+    }
+
+    public void initDynamicSelectFields() {
+        ObservableList<String> listWallet = FXCollections.observableArrayList(MainController.getWalletList().values());
+        listWallet.add(0, "Без фильтра");
+        filterWallet.setItems(listWallet);
+        filterWallet.setValue(listWallet.get(0));
+
+        if (isReportTypeExpenses) {
+            selectExpenses();
+        } else {
+            selectIncome();
+        }
     }
 }
