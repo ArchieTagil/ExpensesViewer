@@ -460,7 +460,6 @@ public class MainController implements Initializable {
         }
     };
     public void updateScreenInfo() {
-        LOGGER.debug("information was updated");
         WalletController walletController = settingsController.getWalletController();
         IncomeCategoryController incomeCategoryController = settingsController.getIncomeCategoryController();
         ExpensesCategoryController expensesCategoryController = settingsController.getExpensesCategoryController();

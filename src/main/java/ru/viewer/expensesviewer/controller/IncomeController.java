@@ -222,6 +222,8 @@ public class IncomeController {
             String comment = newIncomeComment.getText();
             boolean incomeRowWasAdded = incomeModel.addNewIncomeRow(date, walletId, categoryId, amount, comment);
             if (incomeRowWasAdded) {
+                newIncomeAmount.setText("");
+                newIncomeComment.setText("");
                 mainController.updateScreenInfo();
             } else {
                 Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");

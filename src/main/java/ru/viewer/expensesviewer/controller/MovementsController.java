@@ -197,6 +197,8 @@ public class MovementsController implements Initializable {
         boolean incomeRowWasAdded = movementsModel.addNewMovement(date, sourceWalletId, destinationWalletId, amount, comment);
         if (incomeRowWasAdded) {
             drawMovementsList();
+            movementAmountNewRow.setText("");
+            movementCommentNewRow.setText("");
             mainController.initBalance();
         } else {
             Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");

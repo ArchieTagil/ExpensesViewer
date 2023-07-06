@@ -175,6 +175,8 @@ public class ExpensesController {
             String comment = expenseCommentNewRow.getText();
             boolean incomeRowWasAdded = expensesModel.addNewExpensesRow(date, walletId, categoryId, amount, comment);
             if (incomeRowWasAdded) {
+                expenseAmountNewRow.setText("");
+                expenseCommentNewRow.setText("");
                 mainController.updateScreenInfo();
                 mainController.initBalance();
             } else {

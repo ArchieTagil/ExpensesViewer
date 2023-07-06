@@ -142,6 +142,7 @@ public class IncomeCategoryController implements Initializable {
         try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `income_category` (income_category_name, income_default) VALUES (?, 0)")) {
             statement.setString(1, newCategoryName.getText());
             statement.execute();
+            newCategoryName.setText("");
             mainController.updateScreenInfo();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());

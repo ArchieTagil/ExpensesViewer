@@ -142,6 +142,7 @@ public class ExpensesCategoryController implements Initializable {
         try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `expenses_category` (expenses_category_name, expenses_default) VALUES (?, 0)")) {
             statement.setString(1, newCategoryName.getText());
             statement.execute();
+            newCategoryName.setText("");
             mainController.updateScreenInfo();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());

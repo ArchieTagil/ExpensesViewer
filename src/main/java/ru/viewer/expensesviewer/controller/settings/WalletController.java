@@ -74,6 +74,7 @@ public class WalletController implements Initializable {
         try (PreparedStatement statement = connection.prepareStatement("INSERT INTO `wallets_list` (wallet_name, wallet_balance, wallet_default) VALUES (?, 0, 0)")) {
             statement.setString(1, newWalletName.getText());
             statement.execute();
+            newWalletName.setText("");
             mainController.updateScreenInfo();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
