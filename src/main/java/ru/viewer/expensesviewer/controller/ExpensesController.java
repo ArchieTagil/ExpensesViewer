@@ -162,27 +162,29 @@ public class ExpensesController {
     public void addNewExpense() {
         expensesCategoryList = MainController.getExpensesCategoryList();
         LocalDate date = expenseDateNewRow.getValue();
-        if (selectExpenseWalletNewRow.getValue() != null && selectExpenseCategoryNewRow.getValue() != null) {
+        if (selectExpenseWalletNewRow.getValue() != null && selectExpenseCategoryNewRow.getValue() != null
+            && selectExpenseWalletNewRow.getValue() != "" && selectExpenseCategoryNewRow.getValue() != "") {
             int walletId = MainController.getWalletIdByName(selectExpenseWalletNewRow.getValue());
             int categoryId = getCategoryIdByName(selectExpenseCategoryNewRow.getValue());
 
-            double amount = 0;
             try {
-                amount = Double.parseDouble(expenseAmountNewRow.getText());
+                double amount = Double.parseDouble(expenseAmountNewRow.getText());
+                String comment = expenseCommentNewRow.getText();
+                boolean incomeRowWasAdded = expensesModel.addNewExpensesRow(date, walletId, categoryId, amount, comment);
+                if (incomeRowWasAdded) {
+                    expenseAmountNewRow.setText("");
+                    expenseCommentNewRow.setText("");
+                    mainController.updateScreenInfo();
+                    mainController.initBalance();
+                } else {
+                    Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
+                    LOGGER.error("income wasn't added");
+                }
             } catch (RuntimeException NumberFormatException) {
                 Popup.display("Wrong amount", "Вы ввели некорретное число.");
             }
-            String comment = expenseCommentNewRow.getText();
-            boolean incomeRowWasAdded = expensesModel.addNewExpensesRow(date, walletId, categoryId, amount, comment);
-            if (incomeRowWasAdded) {
-                expenseAmountNewRow.setText("");
-                expenseCommentNewRow.setText("");
-                mainController.updateScreenInfo();
-                mainController.initBalance();
-            } else {
-                Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
-                LOGGER.error("income wasn't added");
-            }
+        } else {
+            Popup.display("Ошибка добвления", "Кошелёк и категория не должны быть пустыми!");
         }
     }
 

@@ -100,15 +100,14 @@ public class MovementsController implements Initializable {
                         entity.getAmount());
                 if (!isDeleted) LOGGER.debug("id: " + entity.getId() + " was failed to delete.");
             }
-            mainController.initBalance();
-            drawMovementsList();
+            mainController.updateScreenInfo();
         }
     }
     public void dateEditCommit(TableColumn.CellEditEvent<MovementEntity, LocalDate> cellEditEvent) {
         LocalDate newDate = cellEditEvent.getNewValue();
         int id = cellEditEvent.getRowValue().getId();
         movementsModel.updateExpenseRowDate(id, newDate);
-        drawMovementsList();
+        mainController.updateScreenInfo();
     }
     @SuppressWarnings("Duplicates")
     public void walletSourceEditCommit(TableColumn.CellEditEvent<MovementEntity, String> cellEditEvent) {
@@ -118,15 +117,18 @@ public class MovementsController implements Initializable {
         int oldSourceWalletId = MainController.getWalletIdByName(cellEditEvent.getOldValue());
         int newSourceWalletId = MainController.getWalletIdByName(cellEditEvent.getNewValue());
 
-        double oldWalletBalance = MainController.getWalletBalanceById(oldSourceWalletId);
-        double newWalletBalance = MainController.getWalletBalanceById(newSourceWalletId);
+        if (!cellEditEvent.getRowValue().getWallet_credit_name().equals(cellEditEvent.getNewValue())) {
+            double oldWalletBalance = MainController.getWalletBalanceById(oldSourceWalletId);
+            double newWalletBalance = MainController.getWalletBalanceById(newSourceWalletId);
 
-        MainController.updateWalletBalanceById(oldSourceWalletId, oldWalletBalance + amountInCurrentRow); //в источник возвращаем сумму
-        MainController.updateWalletBalanceById(newSourceWalletId, newWalletBalance - amountInCurrentRow); //из нового кошелька вычитаем сумму в пользу кошелька назначения
+            MainController.updateWalletBalanceById(oldSourceWalletId, oldWalletBalance + amountInCurrentRow); //в источник возвращаем сумму
+            MainController.updateWalletBalanceById(newSourceWalletId, newWalletBalance - amountInCurrentRow); //из нового кошелька вычитаем сумму в пользу кошелька назначения
 
-        movementsModel.doEditWalletField(currentMovementRowId, newSourceWalletId, "wallet_debit_id");
-        drawMovementsList();
-        mainController.initBalance();
+            movementsModel.doEditWalletField(currentMovementRowId, newSourceWalletId, "wallet_debit_id");
+        } else {
+            Popup.display("Ошибка добавления", "Кошелёк источник не может быть таким же, как кошелёк добавления");
+        }
+        mainController.updateScreenInfo();
     }
     @SuppressWarnings("Duplicates")
     public void walletDestinationEditCommit(TableColumn.CellEditEvent<MovementEntity, String> cellEditEvent) {
@@ -136,15 +138,18 @@ public class MovementsController implements Initializable {
         int oldDestinationWalletId = MainController.getWalletIdByName(cellEditEvent.getOldValue());
         int newDestinationWalletId = MainController.getWalletIdByName(cellEditEvent.getNewValue());
 
-        double oldWalletBalance = MainController.getWalletBalanceById(oldDestinationWalletId);
-        double newWalletBalance = MainController.getWalletBalanceById(newDestinationWalletId);
+        if (!cellEditEvent.getRowValue().getWallet_debit_name().equals(cellEditEvent.getNewValue())) {
+            double oldWalletBalance = MainController.getWalletBalanceById(oldDestinationWalletId);
+            double newWalletBalance = MainController.getWalletBalanceById(newDestinationWalletId);
 
-        MainController.updateWalletBalanceById(oldDestinationWalletId, oldWalletBalance - amountInCurrentRow);
-        MainController.updateWalletBalanceById(newDestinationWalletId, newWalletBalance + amountInCurrentRow);
+            MainController.updateWalletBalanceById(oldDestinationWalletId, oldWalletBalance - amountInCurrentRow);
+            MainController.updateWalletBalanceById(newDestinationWalletId, newWalletBalance + amountInCurrentRow);
 
-        movementsModel.doEditWalletField(currentMovementRowId, newDestinationWalletId, "wallet_credit_id");
-        drawMovementsList();
-        mainController.initBalance();
+            movementsModel.doEditWalletField(currentMovementRowId, newDestinationWalletId, "wallet_credit_id");
+        } else {
+            Popup.display("Ошибка добавления", "Кошелёк источник не может быть таким же, как кошелёк добавления");
+        }
+        mainController.updateScreenInfo();
     }
     @SuppressWarnings("Duplicates")
     public void sumEditCommit(TableColumn.CellEditEvent<MovementEntity, Double> cellEditEvent) {
@@ -168,8 +173,7 @@ public class MovementsController implements Initializable {
             LOGGER.error("Movement amount edit error during a change in database.");
             Popup.display("Movement amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
         } else {
-            drawMovementsList();
-            mainController.initBalance();
+            mainController.updateScreenInfo();
         }
     }
     public void commentEditCommit(TableColumn.CellEditEvent<MovementEntity, String> cellEditEvent) {
@@ -187,23 +191,26 @@ public class MovementsController implements Initializable {
         int sourceWalletId = MainController.getWalletIdByName(sourceWalletNewRow.getValue());
         int destinationWalletId = MainController.getWalletIdByName(destinationWalletNewRow.getValue());
 
-        double amount = 0;
-        try {
-            amount = Double.parseDouble(movementAmountNewRow.getText());
-        } catch (RuntimeException NumberFormatException) {
-            Popup.display("Wrong amount", "Вы ввели некорретное число.");
-        }
-        String comment = movementCommentNewRow.getText();
-        boolean incomeRowWasAdded = movementsModel.addNewMovement(date, sourceWalletId, destinationWalletId, amount, comment);
-        if (incomeRowWasAdded) {
-            drawMovementsList();
-            movementAmountNewRow.setText("");
-            movementCommentNewRow.setText("");
-            mainController.initBalance();
+        if (sourceWalletId != destinationWalletId) {
+            try {
+                double amount = Double.parseDouble(movementAmountNewRow.getText());
+                String comment = movementCommentNewRow.getText();
+                boolean incomeRowWasAdded = movementsModel.addNewMovement(date, sourceWalletId, destinationWalletId, amount, comment);
+                if (incomeRowWasAdded) {
+                    movementAmountNewRow.setText("");
+                    movementCommentNewRow.setText("");
+                    mainController.updateScreenInfo();
+                } else {
+                    Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
+                    LOGGER.error("income wasn't added");
+                }
+            } catch (RuntimeException NumberFormatException) {
+                Popup.display("Wrong amount", "Вы ввели некорретное число.");
+            }
         } else {
-            Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
-            LOGGER.error("income wasn't added");
+            Popup.display("Ошибка добавления", "Нельзя сделать перемещение на один и тот же кошелёк");
         }
+
     }
     @SuppressWarnings("Duplicates")
     private void initInsertFieldsSettings() {

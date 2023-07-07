@@ -202,7 +202,8 @@ public class IncomeController {
     public void addNewIncome() throws SQLException {
         incomeCategoryList = MainController.getIncomeCategoryList();
         LocalDate date = newIncomeDate.getValue();
-        if (selectNewIncomeWallet.getValue() != null && selectNewIncomeCategory.getValue() != null) {
+        if (selectNewIncomeWallet.getValue() != null && selectNewIncomeCategory.getValue() != null
+            && selectNewIncomeCategory.getValue() != "" && selectNewIncomeWallet.getValue() != "") {
             int walletId = MainController.getWalletList().entrySet().stream().filter(s -> s.getValue().equals(selectNewIncomeWallet.getValue())).
                     findFirst().orElseThrow(() -> {
                         LOGGER.fatal("Wallet field gets null");
@@ -213,22 +214,23 @@ public class IncomeController {
                         LOGGER.fatal("Category field gets null");
                         return new NullPointerException("Category field get null");
                     }).getKey();
-            double amount = 0;
             try {
-                amount = Double.parseDouble(newIncomeAmount.getText());
+                double amount = Double.parseDouble(newIncomeAmount.getText());
+                String comment = newIncomeComment.getText();
+                boolean incomeRowWasAdded = incomeModel.addNewIncomeRow(date, walletId, categoryId, amount, comment);
+                if (incomeRowWasAdded) {
+                    newIncomeAmount.setText("");
+                    newIncomeComment.setText("");
+                    mainController.updateScreenInfo();
+                } else {
+                    Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
+                    LOGGER.error("income wasn't added");
+                }
             } catch (RuntimeException NumberFormatException) {
                 Popup.display("Wrong amount", "Вы ввели некорретное число.");
             }
-            String comment = newIncomeComment.getText();
-            boolean incomeRowWasAdded = incomeModel.addNewIncomeRow(date, walletId, categoryId, amount, comment);
-            if (incomeRowWasAdded) {
-                newIncomeAmount.setText("");
-                newIncomeComment.setText("");
-                mainController.updateScreenInfo();
-            } else {
-                Popup.display("Income wasn't added", "Упс, что то пошло не так, запис не была добавлена в БД");
-                LOGGER.error("income wasn't added");
-            }
+        } else {
+            Popup.display("Ошибка добвления", "Кошелёк и категория не должны быть пустыми!");
         }
     }
     public void updateVisualInformation() {
