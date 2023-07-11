@@ -22,39 +22,92 @@ public class TableModel {
     public List<IncomeEntity> getReportList(LocalDate from, LocalDate to, String walletName, String categoryName, String groupByValue, boolean isReportTypeExpensive) {
         if (walletName.equals("Без фильтра")) walletName = "%";
         if (categoryName.equals("Без фильтра")) categoryName = "%";
+        String selectIncomeString = "";
+        String selectExpensesString = "";
 
         switch (groupByValue) {
             case "Дате": {
                 groupByValue = "date";
+                selectIncomeString = "" +
+                        "ANY_VALUE(income_id) id, " +
+                        "income.date AS date, " +
+                        "ANY_VALUE(wallets_list.wallet_name) wallet, " +
+                        "ANY_VALUE(income_category_name) category, " +
+                        "SUM(amount) AS amount, " +
+                        "ANY_VALUE(income.comment) comment ";
+                selectExpensesString = "" +
+                        "ANY_VALUE(expenses_id) id, " +
+                        "expenses.date AS date, " +
+                        "ANY_VALUE(wallets_list.wallet_name) wallet, " +
+                        "ANY_VALUE(expenses_category_name) category, " +
+                        "SUM(amount) AS amount, " +
+                        "ANY_VALUE(expenses.comment) comment ";
                 break;
             }
             case "Кошельку": {
                 groupByValue = "wallet";
+                selectIncomeString = "" +
+                        "ANY_VALUE(income_id) id, " +
+                        "ANY_VALUE(income.date) date, " +
+                        "wallets_list.wallet_name AS wallet, " +
+                        "ANY_VALUE(income_category_name) category, " +
+                        "SUM(amount) AS amount, " +
+                        "ANY_VALUE(income.comment) comment ";
+                selectExpensesString = "" +
+                        "ANY_VALUE(expenses_id) id, " +
+                        "ANY_VALUE(expenses.date) date, " +
+                        "wallets_list.wallet_name AS wallet, " +
+                        "ANY_VALUE(expenses_category_name) category, " +
+                        "SUM(amount) AS amount, " +
+                        "ANY_VALUE(expenses.comment) comment ";
                 break;
             }
             case "Категории": {
                 groupByValue = "category";
+                selectIncomeString = "" +
+                        "ANY_VALUE(income_id) id, " +
+                        "ANY_VALUE(income.date) date, " +
+                        "ANY_VALUE(wallets_list.wallet_name) wallet, " +
+                        "income_category_name AS category, " +
+                        "SUM(amount) AS amount, " +
+                        "ANY_VALUE(income.comment) comment ";
+                selectExpensesString = "" +
+                        "ANY_VALUE(expenses_id) id, " +
+                        "ANY_VALUE(expenses.date) date, " +
+                        "ANY_VALUE(wallets_list.wallet_name) wallet, " +
+                        "expenses_category_name AS category, " +
+                        "SUM(amount) AS amount, " +
+                        "ANY_VALUE(expenses.comment) comment ";
+
                 break;
             }
             default: {
                 groupByValue = "";
+                selectIncomeString = "" +
+                        "income_id AS id, " +
+                        "income.date AS date, " +
+                        "wallets_list.wallet_name AS wallet, " +
+                        "income_category_name AS category, " +
+                        "amount AS amount, " +
+                        "income.comment AS comment ";
+                selectExpensesString = "" +
+                        "expenses_id AS id, " +
+                        "expenses.date AS date, " +
+                        "wallets_list.wallet_name AS wallet, " +
+                        "expenses_category_name AS category, " +
+                        "amount AS amount, " +
+                        "expenses.comment AS comment ";
             }
         }
 
         String qGroupBy = !groupByValue.equals("") ? " GROUP BY " + groupByValue + ";" : ";";
-        String qAmount = !groupByValue.equals("") ? "SUM(amount) AS amount, " : "amount AS amount, ";
 
         try (Statement reportStatement = connection.createStatement()) {
             String queryGetAllIncome;
             if (!isReportTypeExpensive) {
                 queryGetAllIncome = "SELECT " +
-                        "income_id AS id, " +
-                        "income.date AS date, " +
-                        "wallets_list.wallet_name AS wallet, " +
-                        "income_category_name AS category, " +
-                        //qAmount1 + " income.amount " + qAmount2 + " AS amount " +
-                        qAmount +
-                        " income.comment AS comment FROM income " +
+                        selectIncomeString +
+                        "FROM income " +
                         "LEFT JOIN wallets_list on wallets_list.wallet_id = income.wallet_id " +
                         "LEFT JOIN income_category on income.income_category_id = income_category.income_category_id " +
                         "WHERE wallets_list.wallet_name LIKE '" + walletName + "' " +
@@ -63,12 +116,8 @@ public class TableModel {
                         qGroupBy;
             } else {
                 queryGetAllIncome = "SELECT " +
-                        "expenses_id AS id, " +
-                        "expenses.date AS date, " +
-                        "wallets_list.wallet_name AS wallet, " +
-                        "expenses_category_name AS category, " +
-                        qAmount +
-                        " expenses.comment AS comment FROM expenses " +
+                        selectExpensesString +
+                        "FROM expenses " +
                         "LEFT JOIN wallets_list on wallets_list.wallet_id = expenses.debit_wallet_id " +
                         "LEFT JOIN expenses_category on expenses.expenses_category_id = expenses_category.expenses_category_id " +
                         "WHERE wallets_list.wallet_name LIKE '" + walletName + "' " +

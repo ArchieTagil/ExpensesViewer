@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:mysql://localhost:3306/simpleexpensesmanager</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="MySQL-1868@185.86.145.71" uuid="0dbc5574-ee03-40df-8172-637414081acf">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://185.86.145.71:3306/MySQL-1868</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
