@@ -22,7 +22,9 @@ public class TableModel {
     public List<IncomeEntity> getReportList(LocalDate from, LocalDate to, String walletName, String categoryName, String groupByValue, boolean isReportTypeExpensive) {
         if (walletName.equals("Без фильтра")) walletName = "%";
         if (categoryName.equals("Без фильтра")) categoryName = "%";
+        @SuppressWarnings("UnusedAssignment")
         String selectIncomeString = "";
+        @SuppressWarnings("UnusedAssignment")
         String selectExpensesString = "";
 
         switch (groupByValue) {
@@ -104,7 +106,7 @@ public class TableModel {
 
         try (Statement reportStatement = connection.createStatement(); Statement totalStatement = connection.createStatement()) {
             String queryGetAllIncome;
-            String queryTotal = "";
+            String queryTotal;
             if (!isReportTypeExpensive) {
                 queryGetAllIncome = "SELECT " +
                         selectIncomeString +

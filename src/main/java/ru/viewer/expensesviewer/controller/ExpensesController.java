@@ -163,7 +163,7 @@ public class ExpensesController {
         expensesCategoryList = MainController.getExpensesCategoryList();
         LocalDate date = expenseDateNewRow.getValue();
         if (selectExpenseWalletNewRow.getValue() != null && selectExpenseCategoryNewRow.getValue() != null
-            && selectExpenseWalletNewRow.getValue() != "" && selectExpenseCategoryNewRow.getValue() != "") {
+            && !selectExpenseWalletNewRow.getValue().equals("") && !selectExpenseCategoryNewRow.getValue().equals("")) {
             int walletId = MainController.getWalletIdByName(selectExpenseWalletNewRow.getValue());
             int categoryId = getCategoryIdByName(selectExpenseCategoryNewRow.getValue());
 

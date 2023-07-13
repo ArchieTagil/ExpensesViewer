@@ -203,7 +203,7 @@ public class IncomeController {
         incomeCategoryList = MainController.getIncomeCategoryList();
         LocalDate date = newIncomeDate.getValue();
         if (selectNewIncomeWallet.getValue() != null && selectNewIncomeCategory.getValue() != null
-            && selectNewIncomeCategory.getValue() != "" && selectNewIncomeWallet.getValue() != "") {
+            && !selectNewIncomeCategory.getValue().equals("") && !selectNewIncomeWallet.getValue().equals("")) {
             int walletId = MainController.getWalletList().entrySet().stream().filter(s -> s.getValue().equals(selectNewIncomeWallet.getValue())).
                     findFirst().orElseThrow(() -> {
                         LOGGER.fatal("Wallet field gets null");

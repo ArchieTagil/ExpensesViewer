@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DbConnection {
-    private static Properties config = new Properties();
+    private static final Properties config = new Properties();
     @SuppressWarnings("FieldCanBeLocal")
     private final Logger LOGGER = LogManager.getLogger(MainModel.class);
     private static DbConnection instance;
