@@ -88,8 +88,10 @@ public class GraphicsTab implements Initializable {
     }
 
     public void incomePerMonth(LocalDate from, LocalDate to) {
-        String query = "SELECT DATE_FORMAT(income.date, '%Y-%b') AS date, SUM(income.amount) AS amount FROM income WHERE date BETWEEN '" + from + "' AND '" + to + "' GROUP BY DATE_FORMAT(income.date, '%Y-%b') ORDER BY income.date;";
+        //String query = "SELECT DATE_FORMAT(income.date, '%Y-%b') AS date, SUM(income.amount) AS amount FROM income WHERE date BETWEEN '" + from + "' AND '" + to + "' GROUP BY DATE_FORMAT(income.date, '%Y-%b') ORDER BY income.date;";
+        String query = "SELECT ANY_VALUE(DATE_FORMAT(income.date, '%Y-%b')) date, SUM(income.amount) AS amount FROM income WHERE date BETWEEN '" + from + "' AND '" + to + "' GROUP BY YEAR(income.date), MONTH(income.date) ORDER BY YEAR(income.date), MONTH(income.date);";
         try (Statement statement = connection.createStatement()) {
+            LOGGER.debug(query);
             ResultSet resultSet = statement.executeQuery(query);
 
             XYChart.Series<String, Number> series = new XYChart.Series<>();

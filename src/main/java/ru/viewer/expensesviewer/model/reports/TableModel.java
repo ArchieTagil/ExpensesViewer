@@ -100,10 +100,11 @@ public class TableModel {
             }
         }
 
-        String qGroupBy = !groupByValue.equals("") ? " GROUP BY " + groupByValue + ";" : ";";
+        String qGroupBy = !groupByValue.equals("") ? " GROUP BY " + groupByValue : "";
 
-        try (Statement reportStatement = connection.createStatement()) {
+        try (Statement reportStatement = connection.createStatement(); Statement totalStatement = connection.createStatement()) {
             String queryGetAllIncome;
+            String queryTotal = "";
             if (!isReportTypeExpensive) {
                 queryGetAllIncome = "SELECT " +
                         selectIncomeString +
@@ -113,7 +114,13 @@ public class TableModel {
                         "WHERE wallets_list.wallet_name LIKE '" + walletName + "' " +
                         "AND income_category_name LIKE '" + categoryName + "' " +
                         "AND (date BETWEEN '" + from + "' AND '" + to + "')" +
-                        qGroupBy;
+                        qGroupBy + ";";
+                queryTotal = "SELECT SUM(amount) AS amount from income " +
+                        "LEFT JOIN wallets_list on wallets_list.wallet_id = income.wallet_id " +
+                        "LEFT JOIN income_category on income.income_category_id = income_category.income_category_id " +
+                        "WHERE wallets_list.wallet_name LIKE '" + walletName + "' " +
+                        "AND income_category_name LIKE '" + categoryName + "' " +
+                        "AND (date BETWEEN '" + from + "' AND '" + to + "')";
             } else {
                 queryGetAllIncome = "SELECT " +
                         selectExpensesString +
@@ -123,12 +130,24 @@ public class TableModel {
                         "WHERE wallets_list.wallet_name LIKE '" + walletName + "' " +
                         "AND expenses_category_name LIKE '" + categoryName + "' " +
                         "AND (date BETWEEN '" + from + "' AND '" + to + "')" +
-                        qGroupBy;
+                        qGroupBy + ";";
+                queryTotal = "SELECT SUM(amount) AS amount from expenses " +
+                        "LEFT JOIN wallets_list on wallets_list.wallet_id = expenses.debit_wallet_id " +
+                        "LEFT JOIN expenses_category on expenses.expenses_category_id = expenses_category.expenses_category_id " +
+                        "WHERE wallets_list.wallet_name LIKE '" + walletName + "' " +
+                        "AND expenses_category_name LIKE '" + categoryName + "' " +
+                        "AND (date BETWEEN '" + from + "' AND '" + to + "')";
+
             }
             ResultSet resultSet = reportStatement.executeQuery(queryGetAllIncome);
             List<IncomeEntity> resultList = new ArrayList<>();
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+            ResultSet totalResultSet = totalStatement.executeQuery(queryTotal);
+            totalResultSet.next();
+            double total = totalResultSet.getDouble("amount");
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LOGGER.debug(queryGetAllIncome);
             while (resultSet.next()) {
                 resultList.add(new IncomeEntity(
                         resultSet.getInt("id"),
@@ -139,6 +158,8 @@ public class TableModel {
                         resultSet.getString("comment")
                 ));
             }
+            LOGGER.debug(resultList);
+            resultList.add(new IncomeEntity(0, null, "", "Итого:", total, ""));
             return resultList;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());

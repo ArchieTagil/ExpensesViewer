@@ -73,11 +73,6 @@ public class TablesController implements Initializable {
 
         selectIncome();
         initDynamicSelectFields();
-
-//        ObservableList<String> listWallet = FXCollections.observableArrayList(MainController.getWalletList().values());
-//        listWallet.add(0, "Без фильтра");
-//        filterWallet.setItems(listWallet);
-//        filterWallet.setValue(listWallet.get(0));
     }
 
     public void showReport() {
