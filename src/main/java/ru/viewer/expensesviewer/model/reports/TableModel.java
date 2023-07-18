@@ -149,7 +149,6 @@ public class TableModel {
             double total = totalResultSet.getDouble("amount");
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LOGGER.debug(queryGetAllIncome);
             while (resultSet.next()) {
                 resultList.add(new IncomeEntity(
                         resultSet.getInt("id"),
@@ -160,7 +159,6 @@ public class TableModel {
                         resultSet.getString("comment")
                 ));
             }
-            LOGGER.debug(resultList);
             resultList.add(new IncomeEntity(0, null, "", "Итого:", total, ""));
             return resultList;
         } catch (SQLException e) {
