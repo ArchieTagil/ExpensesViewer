@@ -69,7 +69,7 @@ public class ImportExportController {
         if (textFieldImport.getText() != null) {
             try {
                 //Process process = Runtime.getRuntime().exec("cmd.exe /c mysql -u root -p12345678 simpleexpensesmanager" + " < " + textFieldImport.getText());
-                Process process = Runtime.getRuntime().exec(DbConnection.getConfig().getProperty("importCommand") + " < " + textFieldImport.getText());
+                Process process = Runtime.getRuntime().exec(DbConnection.getConfig().getProperty("importCommand") + " < \"" + textFieldImport.getText() + "\"");
                 int processStatus = process.waitFor();
                 if (processStatus == 0) {
                     importResult.setTextFill(Color.GREEN);

@@ -19,8 +19,8 @@ public class DbConnection {
 
     private DbConnection() {
         try {
-            config.load(new FileInputStream("src/main/resources/ru/viewer/expensesviewer/config.properties"));
-            //config.load(new FileInputStream("./config.properties"));
+            //config.load(new FileInputStream("src/main/resources/ru/viewer/expensesviewer/config.properties"));
+            config.load(new FileInputStream("./config.properties"));
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(config.getProperty("dbHost"));
         } catch (ClassNotFoundException | SQLException | IOException e) {
