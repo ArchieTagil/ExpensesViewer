@@ -93,12 +93,15 @@ public class MovementsController implements Initializable {
         if (keyEvent.getCode() == KeyCode.DELETE) {
             ObservableList<MovementEntity> list = movementsTable.getSelectionModel().getSelectedItems();
             for (MovementEntity entity : list) {
-                boolean isDeleted = movementsModel.deleteMovement(
-                        entity.getId(),
-                        MainController.getWalletIdByName(entity.getWallet_debit_name()),
-                        MainController.getWalletIdByName(entity.getWallet_credit_name()),
-                        entity.getAmount());
-                if (!isDeleted) LOGGER.debug("id: " + entity.getId() + " was failed to delete.");
+                if (entity.getWallet_debit_name() != null && entity.getWallet_credit_name() != null) {
+                    movementsModel.deleteMovement(
+                            entity.getId(),
+                            MainController.getWalletIdByName(entity.getWallet_debit_name()),
+                            MainController.getWalletIdByName(entity.getWallet_credit_name()),
+                            entity.getAmount());
+                } else {
+                    movementsModel.deleteMovement(entity.getId());
+                }
             }
             mainController.updateScreenInfo();
         }

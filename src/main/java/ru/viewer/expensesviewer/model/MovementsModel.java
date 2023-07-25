@@ -77,28 +77,30 @@ public class MovementsModel {
     }
 
     @SuppressWarnings("Duplicates")
-    public boolean deleteMovement(int id, int sourceWalletId, int destinationWalletId, double amount) {
+    public void deleteMovement(int id, int sourceWalletId, int destinationWalletId, double amount) {
         double sourceWalletOldBalance = MainController.getWalletBalanceById(sourceWalletId);
         double destinationWalletOldBalance = MainController.getWalletBalanceById(destinationWalletId);
 
-        int sourceWalletBalanceWasUpdated = MainController.updateWalletBalanceById(sourceWalletId, sourceWalletOldBalance + amount);
-        int destinationWalletBalanceWasUpdated = MainController.updateWalletBalanceById(destinationWalletId, destinationWalletOldBalance - amount);
+        MainController.updateWalletBalanceById(sourceWalletId, sourceWalletOldBalance + amount);
+        MainController.updateWalletBalanceById(destinationWalletId, destinationWalletOldBalance - amount);
 
         try (Statement statement = connection.createStatement()) {
             String query = "DELETE FROM `movements` WHERE `movements_id` = " + id + ";";
-            int result = statement.executeUpdate(query);
-            if (sourceWalletBalanceWasUpdated > 0 && result > 0 && destinationWalletBalanceWasUpdated > 0) {
-                return true;
-            } else {
-                if (sourceWalletBalanceWasUpdated <=0 || destinationWalletBalanceWasUpdated <= 0) LOGGER.error("Метод удаления перемещения выполнился с ошибкой, балланс не был обновлён после удаления. ID = " + id);
-                if (result <= 0) LOGGER.error("Метод удаления перемещения выполнился с ошибкой, строка не была удалена из БД. ID = " + id);
-                return false;
-            }
+            statement.executeUpdate(query);
         } catch (SQLException e) {
-            LOGGER.error("Row wasn't delete because SQL function in Movement model wasn't execute properly.");
-            throw new RuntimeException(e);
+            LOGGER.error(e.getMessage());
         }
     }
+
+    public void deleteMovement(int id) {
+        try (Statement statement = connection.createStatement()) {
+            String query = "DELETE FROM `movements` WHERE `movements_id` = " + id + ";";
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
+
     @SuppressWarnings("Duplicates")
     public void updateExpenseRowDate(int id, LocalDate newDate) {
         String sql = "UPDATE `movements` SET `date` = ? WHERE `movements_id` = ?;";
