@@ -116,42 +116,42 @@ public class MovementsController implements Initializable {
     public void walletSourceEditCommit(TableColumn.CellEditEvent<MovementEntity, String> cellEditEvent) {
         int currentMovementRowId = cellEditEvent.getRowValue().getId();
         double amountInCurrentRow = cellEditEvent.getRowValue().getAmount();
-
-        int oldSourceWalletId = MainController.getWalletIdByName(cellEditEvent.getOldValue());
         int newSourceWalletId = MainController.getWalletIdByName(cellEditEvent.getNewValue());
 
-        if (!cellEditEvent.getRowValue().getWallet_credit_name().equals(cellEditEvent.getNewValue())) {
-            double oldWalletBalance = MainController.getWalletBalanceById(oldSourceWalletId);
-            double newWalletBalance = MainController.getWalletBalanceById(newSourceWalletId);
+        if (cellEditEvent.getOldValue() != null) {
+            int oldSourceWalletId = MainController.getWalletIdByName(cellEditEvent.getOldValue());
+            if (!cellEditEvent.getRowValue().getWallet_credit_name().equals(cellEditEvent.getNewValue())) {
+                double oldWalletBalance = MainController.getWalletBalanceById(oldSourceWalletId);
+                double newWalletBalance = MainController.getWalletBalanceById(newSourceWalletId);
 
-            MainController.updateWalletBalanceById(oldSourceWalletId, oldWalletBalance + amountInCurrentRow); //в источник возвращаем сумму
-            MainController.updateWalletBalanceById(newSourceWalletId, newWalletBalance - amountInCurrentRow); //из нового кошелька вычитаем сумму в пользу кошелька назначения
-
-            movementsModel.doEditWalletField(currentMovementRowId, newSourceWalletId, "wallet_debit_id");
-        } else {
-            Popup.display("Ошибка добавления", "Кошелёк источник не может быть таким же, как кошелёк добавления");
+                MainController.updateWalletBalanceById(oldSourceWalletId, oldWalletBalance + amountInCurrentRow); //в источник возвращаем сумму
+                MainController.updateWalletBalanceById(newSourceWalletId, newWalletBalance - amountInCurrentRow); //из нового кошелька вычитаем сумму в пользу кошелька назначения
+            } else {
+                Popup.display("Ошибка добавления", "Кошелёк источник не может быть таким же, как кошелёк добавления");
+            }
         }
+        movementsModel.doEditWalletField(currentMovementRowId, newSourceWalletId, "wallet_debit_id");
         mainController.updateScreenInfo();
     }
     @SuppressWarnings("Duplicates")
     public void walletDestinationEditCommit(TableColumn.CellEditEvent<MovementEntity, String> cellEditEvent) {
         int currentMovementRowId = cellEditEvent.getRowValue().getId();
         double amountInCurrentRow = cellEditEvent.getRowValue().getAmount();
-
-        int oldDestinationWalletId = MainController.getWalletIdByName(cellEditEvent.getOldValue());
         int newDestinationWalletId = MainController.getWalletIdByName(cellEditEvent.getNewValue());
 
-        if (!cellEditEvent.getRowValue().getWallet_debit_name().equals(cellEditEvent.getNewValue())) {
-            double oldWalletBalance = MainController.getWalletBalanceById(oldDestinationWalletId);
-            double newWalletBalance = MainController.getWalletBalanceById(newDestinationWalletId);
+        if (cellEditEvent.getOldValue() != null) {
+            int oldDestinationWalletId = MainController.getWalletIdByName(cellEditEvent.getOldValue());
+            if (!cellEditEvent.getRowValue().getWallet_debit_name().equals(cellEditEvent.getNewValue())) {
+                double oldWalletBalance = MainController.getWalletBalanceById(oldDestinationWalletId);
+                double newWalletBalance = MainController.getWalletBalanceById(newDestinationWalletId);
 
-            MainController.updateWalletBalanceById(oldDestinationWalletId, oldWalletBalance - amountInCurrentRow);
-            MainController.updateWalletBalanceById(newDestinationWalletId, newWalletBalance + amountInCurrentRow);
-
-            movementsModel.doEditWalletField(currentMovementRowId, newDestinationWalletId, "wallet_credit_id");
-        } else {
-            Popup.display("Ошибка добавления", "Кошелёк источник не может быть таким же, как кошелёк добавления");
+                MainController.updateWalletBalanceById(oldDestinationWalletId, oldWalletBalance - amountInCurrentRow);
+                MainController.updateWalletBalanceById(newDestinationWalletId, newWalletBalance + amountInCurrentRow);
+            } else {
+                Popup.display("Ошибка добавления", "Кошелёк источник не может быть таким же, как кошелёк добавления");
+            }
         }
+        movementsModel.doEditWalletField(currentMovementRowId, newDestinationWalletId, "wallet_credit_id");
         mainController.updateScreenInfo();
     }
     @SuppressWarnings("Duplicates")

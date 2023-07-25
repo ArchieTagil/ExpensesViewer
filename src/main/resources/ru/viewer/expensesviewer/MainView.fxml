@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="mainStackPane" prefHeight="500.0" prefWidth="1300.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.MainController">
+<StackPane fx:id="mainStackPane" prefHeight="500.0" prefWidth="1300.0" style="-fx-spacing: 20;" stylesheets="@bootstrap3.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.MainController">
     <TabPane prefHeight="400.0" prefWidth="861.0" tabClosingPolicy="UNAVAILABLE">
         <Tab fx:id="incomeTab" text="Доходы">
             <!-- Income tab include -->
@@ -67,7 +67,7 @@
         <StackPane.margin>
             <Insets right="10.0" />
         </StackPane.margin>
-      <Label alignment="CENTER" contentDisplay="CENTER" text="v. 1.2" />
+      <Label alignment="CENTER" contentDisplay="CENTER" text="v. 1.3" />
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#refresh" prefWidth="100.0" text="Обновить">
            <opaqueInsets>
                <Insets />
