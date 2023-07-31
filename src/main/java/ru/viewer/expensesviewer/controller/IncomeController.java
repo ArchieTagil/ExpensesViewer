@@ -173,20 +173,21 @@ public class IncomeController {
 
     @SuppressWarnings("Duplicates")
     public void sumEditCommit(TableColumn.CellEditEvent<IncomeEntity, Double> incomeEntityDoubleCellEditEvent) throws SQLException {
-        int walletId = MainController.getWalletIdByName(incomeEntityDoubleCellEditEvent.getRowValue().getWallet_name());
-        double walletBalance = MainController.getWalletBalanceById(walletId);
-        int currentIncomeRowId = incomeEntityDoubleCellEditEvent.getRowValue().getId();
-        double oldAmount = incomeEntityDoubleCellEditEvent.getOldValue();
-        double newAmount = incomeEntityDoubleCellEditEvent.getNewValue();
-        MainController.updateWalletBalanceById(walletId, walletBalance + (newAmount - oldAmount));
-        boolean incomeWasChanged = incomeModel.doEditIncomeAmountField(currentIncomeRowId, newAmount);
-        if (!incomeWasChanged) {
-            LOGGER.error("Income amount edit error during a change in database.");
-            Popup.display("Income amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
-        } else {
-            mainController.updateScreenInfo();
-            mainController.initBalance();
+        if (incomeEntityDoubleCellEditEvent.getRowValue().getWallet_name() != null && incomeEntityDoubleCellEditEvent.getRowValue().getIncome_category() != null) {
+            int walletId = MainController.getWalletIdByName(incomeEntityDoubleCellEditEvent.getRowValue().getWallet_name());
+            double walletBalance = MainController.getWalletBalanceById(walletId);
+            int currentIncomeRowId = incomeEntityDoubleCellEditEvent.getRowValue().getId();
+            double oldAmount = incomeEntityDoubleCellEditEvent.getOldValue();
+            double newAmount = incomeEntityDoubleCellEditEvent.getNewValue();
+            MainController.updateWalletBalanceById(walletId, walletBalance + (newAmount - oldAmount));
+            boolean incomeWasChanged = incomeModel.doEditIncomeAmountField(currentIncomeRowId, newAmount);
+            if (!incomeWasChanged) {
+                LOGGER.error("Income amount edit error during a change in database.");
+                Popup.display("Income amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
+            }
         }
+        mainController.updateScreenInfo();
+        mainController.initBalance();
     }
 
     public void commentEditCommit(TableColumn.CellEditEvent<IncomeEntity, String> incomeEntityStringCellEditEvent) throws SQLException {

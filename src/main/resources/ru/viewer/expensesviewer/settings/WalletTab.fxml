@@ -12,7 +12,7 @@
 
 <AnchorPane fx:id="walletAnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.viewer.expensesviewer.controller.settings.WalletController">
     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <TableView fx:id="walletListTable" onKeyPressed="#deleteRows" VBox.vgrow="ALWAYS">
+        <TableView fx:id="walletListTable" maxWidth="1.7976931348623157E308" onKeyPressed="#deleteRows" prefHeight="2000.0" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="walletId" prefWidth="51.999969482421875" text="id" />
                 <TableColumn fx:id="walletName" minWidth="0.0" onEditCommit="#walletNameEditCommit" prefWidth="283.0" text="Название кошелька" />

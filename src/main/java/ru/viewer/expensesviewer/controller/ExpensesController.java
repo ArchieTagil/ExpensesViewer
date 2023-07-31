@@ -133,20 +133,21 @@ public class ExpensesController {
 
     @SuppressWarnings("Duplicates")
     public void sumEditCommit(TableColumn.CellEditEvent<ExpenseEntity, Double> cellEditEvent) {
-        int walletId = MainController.getWalletIdByName(cellEditEvent.getRowValue().getWallet_name());
-        double walletBalance = MainController.getWalletBalanceById(walletId);
-        int currentExpenseRowId = cellEditEvent.getRowValue().getId();
-        double oldAmount = cellEditEvent.getOldValue();
-        double newAmount = cellEditEvent.getNewValue();
-        MainController.updateWalletBalanceById(walletId, walletBalance - (newAmount - oldAmount));
-        boolean expenseWasChanged = expensesModel.doEditExpenseAmountField(currentExpenseRowId, newAmount);
-        if (!expenseWasChanged) {
-            LOGGER.error("Expense amount edit error during a change in database.");
-            Popup.display("Expense amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
-        } else {
-            mainController.updateScreenInfo();
-            mainController.initBalance();
+        if (cellEditEvent.getRowValue().getWallet_name() != null && cellEditEvent.getRowValue().getExpense_category() != null) {
+            int walletId = MainController.getWalletIdByName(cellEditEvent.getRowValue().getWallet_name());
+            double walletBalance = MainController.getWalletBalanceById(walletId);
+            int currentExpenseRowId = cellEditEvent.getRowValue().getId();
+            double oldAmount = cellEditEvent.getOldValue();
+            double newAmount = cellEditEvent.getNewValue();
+            MainController.updateWalletBalanceById(walletId, walletBalance - (newAmount - oldAmount));
+            boolean expenseWasChanged = expensesModel.doEditExpenseAmountField(currentExpenseRowId, newAmount);
+            if (!expenseWasChanged) {
+                LOGGER.error("Expense amount edit error during a change in database.");
+                Popup.display("Expense amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
+            }
         }
+        mainController.updateScreenInfo();
+        mainController.initBalance();
     }
 
     public void commentEditCommit(TableColumn.CellEditEvent<ExpenseEntity, String> cellEditEvent) {
