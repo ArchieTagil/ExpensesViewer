@@ -117,7 +117,7 @@ public class TableModel {
                         "AND income_category_name LIKE '" + categoryName + "' " +
                         "AND (date BETWEEN '" + from + "' AND '" + to + "') " +
                         qGroupBy + " ORDER BY income.income_id;";
-                queryTotal = "SELECT SUM(amount) AS amount from income " +
+                queryTotal = "SELECT TRUNCATE(SUM(amount), 2) AS amount from income " +
                         "LEFT JOIN wallets_list on wallets_list.wallet_id = income.wallet_id " +
                         "LEFT JOIN income_category on income.income_category_id = income_category.income_category_id " +
                         "WHERE wallets_list.wallet_name LIKE '" + walletName + "' " +
@@ -133,7 +133,7 @@ public class TableModel {
                         "AND expenses_category_name LIKE '" + categoryName + "' " +
                         "AND (date BETWEEN '" + from + "' AND '" + to + "') " +
                         qGroupBy + " ORDER BY expenses.expenses_id;";
-                queryTotal = "SELECT SUM(amount) AS amount from expenses " +
+                queryTotal = "SELECT TRUNCATE(SUM(amount), 2) AS amount from expenses " +
                         "LEFT JOIN wallets_list on wallets_list.wallet_id = expenses.debit_wallet_id " +
                         "LEFT JOIN expenses_category on expenses.expenses_category_id = expenses_category.expenses_category_id " +
                         "WHERE wallets_list.wallet_name LIKE '" + walletName + "' " +
@@ -141,7 +141,6 @@ public class TableModel {
                         "AND (date BETWEEN '" + from + "' AND '" + to + "');";
 
             }
-            LOGGER.debug(queryGetAllIncome);
             ResultSet resultSet = reportStatement.executeQuery(queryGetAllIncome);
             List<IncomeEntity> resultList = new ArrayList<>();
 

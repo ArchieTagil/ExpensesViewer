@@ -67,7 +67,7 @@
         <StackPane.margin>
             <Insets right="10.0" />
         </StackPane.margin>
-      <Label alignment="CENTER" contentDisplay="CENTER" text="v. 1.32" />
+      <Label alignment="CENTER" contentDisplay="CENTER" text="v. 1.33" />
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#refresh" prefWidth="100.0" text="Обновить">
            <opaqueInsets>
                <Insets />
