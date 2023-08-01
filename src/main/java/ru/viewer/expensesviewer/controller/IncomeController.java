@@ -216,7 +216,8 @@ public class IncomeController {
                         return new NullPointerException("Category field get null");
                     }).getKey();
             try {
-                double amount = Double.parseDouble(newIncomeAmount.getText());
+                String amountText = newIncomeAmount.getText();
+                double amount = Double.parseDouble(amountText.replace(',', '.'));
                 String comment = newIncomeComment.getText();
                 boolean incomeRowWasAdded = incomeModel.addNewIncomeRow(date, walletId, categoryId, amount, comment);
                 if (incomeRowWasAdded) {

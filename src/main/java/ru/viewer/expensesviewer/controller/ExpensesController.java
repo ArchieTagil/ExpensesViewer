@@ -169,7 +169,8 @@ public class ExpensesController {
             int categoryId = getCategoryIdByName(selectExpenseCategoryNewRow.getValue());
 
             try {
-                double amount = Double.parseDouble(expenseAmountNewRow.getText());
+                String amountText = expenseAmountNewRow.getText().replace(',', '.');
+                double amount = Double.parseDouble(amountText);
                 String comment = expenseCommentNewRow.getText();
                 boolean incomeRowWasAdded = expensesModel.addNewExpensesRow(date, walletId, categoryId, amount, comment);
                 if (incomeRowWasAdded) {
@@ -185,7 +186,7 @@ public class ExpensesController {
                 Popup.display("Wrong amount", "Вы ввели некорретное число.");
             }
         } else {
-            Popup.display("Ошибка добвления", "Кошелёк и категория не должны быть пустыми!");
+            Popup.display("Ошибка добавления", "Кошелёк и категория не должны быть пустыми!");
         }
     }
 
