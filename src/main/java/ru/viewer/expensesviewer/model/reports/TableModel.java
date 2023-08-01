@@ -35,14 +35,14 @@ public class TableModel {
                         "income.date AS date, " +
                         "ANY_VALUE(wallets_list.wallet_name) wallet, " +
                         "ANY_VALUE(income_category_name) category, " +
-                        "SUM(amount) AS amount, " +
+                        "TRUNCATE(SUM(amount), 2) AS amount, " +
                         "ANY_VALUE(income.comment) comment ";
                 selectExpensesString = "" +
                         "ANY_VALUE(expenses_id) id, " +
                         "expenses.date AS date, " +
                         "ANY_VALUE(wallets_list.wallet_name) wallet, " +
                         "ANY_VALUE(expenses_category_name) category, " +
-                        "SUM(amount) AS amount, " +
+                        "TRUNCATE(SUM(amount), 2) AS amount, " +
                         "ANY_VALUE(expenses.comment) comment ";
                 break;
             }
@@ -53,14 +53,14 @@ public class TableModel {
                         "ANY_VALUE(income.date) date, " +
                         "wallets_list.wallet_name AS wallet, " +
                         "ANY_VALUE(income_category_name) category, " +
-                        "SUM(amount) AS amount, " +
+                        "TRUNCATE(SUM(amount), 2) AS amount, " +
                         "ANY_VALUE(income.comment) comment ";
                 selectExpensesString = "" +
                         "ANY_VALUE(expenses_id) id, " +
                         "ANY_VALUE(expenses.date) date, " +
                         "wallets_list.wallet_name AS wallet, " +
                         "ANY_VALUE(expenses_category_name) category, " +
-                        "SUM(amount) AS amount, " +
+                        "TRUNCATE(SUM(amount), 2) AS amount, " +
                         "ANY_VALUE(expenses.comment) comment ";
                 break;
             }
@@ -71,14 +71,14 @@ public class TableModel {
                         "ANY_VALUE(income.date) date, " +
                         "ANY_VALUE(wallets_list.wallet_name) wallet, " +
                         "income_category_name AS category, " +
-                        "SUM(amount) AS amount, " +
+                        "TRUNCATE(SUM(amount), 2) AS amount, " +
                         "ANY_VALUE(income.comment) comment ";
                 selectExpensesString = "" +
                         "ANY_VALUE(expenses_id) id, " +
                         "ANY_VALUE(expenses.date) date, " +
                         "ANY_VALUE(wallets_list.wallet_name) wallet, " +
                         "expenses_category_name AS category, " +
-                        "SUM(amount) AS amount, " +
+                        "TRUNCATE(SUM(amount), 2) AS amount, " +
                         "ANY_VALUE(expenses.comment) comment ";
 
                 break;
@@ -90,14 +90,14 @@ public class TableModel {
                         "income.date AS date, " +
                         "wallets_list.wallet_name AS wallet, " +
                         "income_category_name AS category, " +
-                        "amount AS amount, " +
+                        "TRUNCATE(amount,2) AS amount, " +
                         "income.comment AS comment ";
                 selectExpensesString = "" +
                         "expenses_id AS id, " +
                         "expenses.date AS date, " +
                         "wallets_list.wallet_name AS wallet, " +
                         "expenses_category_name AS category, " +
-                        "amount AS amount, " +
+                        "TRUNCATE(amount,2) AS amount, " +
                         "expenses.comment AS comment ";
             }
         }
