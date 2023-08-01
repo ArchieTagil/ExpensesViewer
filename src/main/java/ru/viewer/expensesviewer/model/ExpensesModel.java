@@ -21,7 +21,7 @@ public class ExpensesModel {
         try (Statement statement = connection.createStatement()) {
             String queryGetAllExpenses = "SELECT expenses.expenses_id, expenses.date, wallets_list.wallet_name, expenses_category.expenses_category_name, expenses.amount, expenses.comment FROM expenses\n" +
                     "        LEFT JOIN wallets_list on wallets_list.wallet_id = expenses.debit_wallet_id\n" +
-                    "        LEFT JOIN expenses_category on expenses.expenses_category_id = expenses_category.expenses_category_id ORDER BY `expenses_id` DESC;";
+                    "        LEFT JOIN expenses_category on expenses.expenses_category_id = expenses_category.expenses_category_id ORDER BY `date` DESC, `expenses_id` DESC;";
 
             ResultSet resultSet = statement.executeQuery(queryGetAllExpenses);
             List<ExpenseEntity> expensesEntityList = new ArrayList<>();

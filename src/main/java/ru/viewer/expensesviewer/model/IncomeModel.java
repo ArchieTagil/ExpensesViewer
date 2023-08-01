@@ -20,7 +20,7 @@ public class IncomeModel {
         Statement statement = connection.createStatement();
         String queryGetAllIncome = "SELECT income_id, income.date, wallets_list.wallet_name, income_category_name, income.amount, income.comment FROM income\n" +
                 "        LEFT JOIN wallets_list on wallets_list.wallet_id = income.wallet_id\n" +
-                "        LEFT JOIN income_category on income.income_category_id = income_category.income_category_id ORDER BY `income_id` DESC;";
+                "        LEFT JOIN income_category on income.income_category_id = income_category.income_category_id ORDER BY `date` DESC, `income_id` DESC;";
 
         ResultSet resultSet = statement.executeQuery(queryGetAllIncome);
         List<IncomeEntity> incomeEntityList = new ArrayList<>();
