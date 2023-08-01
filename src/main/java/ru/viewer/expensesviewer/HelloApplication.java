@@ -1,9 +1,11 @@
 package ru.viewer.expensesviewer;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.viewer.expensesviewer.controller.IncomeController;
@@ -42,6 +44,7 @@ public class HelloApplication extends Application {
         }).start();
         stage.setScene(scene);
         stage.show();
+        stage.setOnCloseRequest(windowEvent -> System.exit(0));
     }
 
     public static void main(String[] args) {
