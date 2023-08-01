@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MainModel {
@@ -38,9 +39,9 @@ public class MainModel {
     public Map<Integer, String> getWalletList() {
         try (Statement statement = connection.createStatement()) {
 
-            String qGetWalletList = "SELECT `wallet_id`, `wallet_name` FROM `wallets_list`;";
+            String qGetWalletList = "SELECT `wallet_id`, `wallet_name` FROM `wallets_list` ORDER BY `wallet_name` ASC;";
             ResultSet resultSet = statement.executeQuery(qGetWalletList);
-            Map<Integer, String> walletList = new HashMap<>();
+            Map<Integer, String> walletList = new LinkedHashMap<>();
 
             while (resultSet.next()) {
                 walletList.put(resultSet.getInt("wallet_id"), resultSet.getString("wallet_name"));
@@ -78,9 +79,9 @@ public class MainModel {
 
     public Map<Integer, String> getIncomeCategoryList() {
         try (Statement statement = connection.createStatement()) {
-            String qGetIncomeList = "SELECT `income_category_id`, `income_category_name` FROM `income_category`;";
+            String qGetIncomeList = "SELECT `income_category_id`, `income_category_name` FROM `income_category` ORDER BY `income_category_name` ASC;";
             ResultSet resultSet = statement.executeQuery(qGetIncomeList);
-            Map<Integer, String> incomeCategoryList = new HashMap<>();
+            Map<Integer, String> incomeCategoryList = new LinkedHashMap<>();
 
             while (resultSet.next()) {
                 incomeCategoryList.put(resultSet.getInt("income_category_id"), resultSet.getString("income_category_name"));
@@ -109,9 +110,9 @@ public class MainModel {
 
     public Map<Integer, String> getExpensesCategoryList() {
         try (Statement statement = connection.createStatement()) {
-            String qGetExpensesList = "SELECT `expenses_category_id`, `expenses_category_name` FROM `expenses_category`;";
+            String qGetExpensesList = "SELECT `expenses_category_id`, `expenses_category_name` FROM `expenses_category` ORDER BY `expenses_category_name` ASC;";
             ResultSet resultSet = statement.executeQuery(qGetExpensesList);
-            Map<Integer, String> expensesCategoryList = new HashMap<>();
+            Map<Integer, String> expensesCategoryList = new LinkedHashMap<>();
 
             while (resultSet.next()) {
                 expensesCategoryList.put(resultSet.getInt("expenses_category_id"), resultSet.getString("expenses_category_name"));

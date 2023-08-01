@@ -152,7 +152,7 @@ public class IncomeCategoryController implements Initializable {
 
     private ObservableList<CategoryEntity> getIncomeCategoryEntityList() {
         try (Statement statement = connection.createStatement()) {
-            ResultSet rs = statement.executeQuery("SELECT * FROM `income_category`;");
+            ResultSet rs = statement.executeQuery("SELECT * FROM `income_category` ORDER BY `income_category_name`;");
             List<CategoryEntity> categoryEntityList = new ArrayList<>();
             while (rs.next()) {
                 categoryEntityList.add(new CategoryEntity(

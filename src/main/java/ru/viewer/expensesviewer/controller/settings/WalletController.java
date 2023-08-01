@@ -181,7 +181,7 @@ public class WalletController implements Initializable {
     }
     private ObservableList<WalletEntity> getWalletEntityList() {
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM `wallets_list`;");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM `wallets_list` ORDER BY `wallet_name`;");
             List<WalletEntity> walletEntityList = new ArrayList<>();
             while (resultSet.next()) {
                 walletEntityList.add(new WalletEntity(
