@@ -25,6 +25,7 @@ import ru.viewer.expensesviewer.model.objects.settings.WalletEntity;
 
 import java.net.URL;
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -63,7 +64,7 @@ public class WalletController implements Initializable {
         walletName.setCellFactory(TextFieldTableCell.forTableColumn());
         walletName.setCellValueFactory(new PropertyValueFactory<>("walletName"));
 
-        walletBalance.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        walletBalance.setCellFactory(MainController.amountCallbackForWallet);
         walletBalance.setCellValueFactory(new PropertyValueFactory<>("walletBalance"));
 
         walletDefault.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(MainController.getTrueFalseList())));
@@ -181,7 +182,10 @@ public class WalletController implements Initializable {
     }
     private ObservableList<WalletEntity> getWalletEntityList() {
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM `wallets_list` ORDER BY `wallet_name`;");
+            ResultSet resultSet = statement.executeQuery(
+                    "SELECT wallet_id, wallet_name, TRUNCATE(wallet_balance,2) AS wallet_balance, wallet_default " +
+                            "FROM `wallets_list` ORDER BY `wallet_name`;" +
+                            "");
             List<WalletEntity> walletEntityList = new ArrayList<>();
             while (resultSet.next()) {
                 walletEntityList.add(new WalletEntity(

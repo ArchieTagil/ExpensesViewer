@@ -26,6 +26,8 @@ import ru.viewer.expensesviewer.model.MainModel;
 import ru.viewer.expensesviewer.model.objects.ExpenseEntity;
 import ru.viewer.expensesviewer.model.objects.IncomeEntity;
 import ru.viewer.expensesviewer.model.objects.MovementEntity;
+import ru.viewer.expensesviewer.model.objects.Popup;
+import ru.viewer.expensesviewer.model.objects.settings.WalletEntity;
 
 import java.io.IOException;
 import java.net.URL;
@@ -265,7 +267,11 @@ public class MainController implements Initializable {
                     textField = new TextField(getItem().toString());
                     textField.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
                         if (keyEvent.getCode() == KeyCode.ENTER) {
-                            commitEdit(Double.parseDouble(textField.getText()));
+                            try {
+                                commitEdit(Double.parseDouble(textField.getText().replace(',', '.')));
+                            } catch (NumberFormatException e) {
+                                Popup.display("Ошибка ввода данных", "Вы ввели некорректное число.");
+                            }
                             keyEvent.consume();
                         }
                     });
@@ -285,6 +291,79 @@ public class MainController implements Initializable {
             };
         }
     };
+
+    public static Callback<TableColumn<WalletEntity, Double>, TableCell<WalletEntity, Double>> amountCallbackForWallet = new Callback<>() {
+        @Override
+        public TableCell<WalletEntity, Double> call(TableColumn<WalletEntity, Double> walletColumn) {
+            return new TableCell<>() {
+                private TextField textField;
+
+                @Override
+                public void startEdit() {
+                    super.startEdit();
+                    setText(null);
+                    createTextField();
+                    setGraphic(textField);
+                    textField.setText(getItem().toString());
+                    textField.selectAll();
+                }
+
+                @Override
+                public void cancelEdit() {
+                    super.cancelEdit();
+                    setGraphic(null);
+                    setText(getItem().toString());
+                }
+
+                @Override
+                protected void updateItem(Double aDouble, boolean empty) {
+                    super.updateItem(aDouble, empty);
+                    if (empty) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        if (isEditing()) {
+                            if (textField != null) {
+                                textField.setText(getItem().toString());
+                            }
+                            setText(null);
+                            setGraphic(textField);
+                        } else {
+                            setText(getItem().toString());
+                            setGraphic(null);
+                        }
+                    }
+                }
+
+                private void createTextField() {
+                    textField = new TextField(getItem().toString());
+                    textField.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+                        if (keyEvent.getCode() == KeyCode.ENTER) {
+                            try {
+                                commitEdit(Double.parseDouble(textField.getText().replace(',', '.')));
+                            } catch (NumberFormatException e) {
+                                Popup.display("Ошибка ввода данных", "Вы ввели некорректное число.");
+                            }
+                            keyEvent.consume();
+                        }
+                    });
+
+                    textField.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
+                        if (!t1) {
+                            try {
+                                commitEdit(Double.valueOf(textField.getText()));
+                            } catch (NumberFormatException ignore) {
+                                cancelEdit();
+                            }
+                        }
+                    });
+
+                    textField.setTextFormatter(MainController.getOnlyDigitsTextFormatter());
+                }
+            };
+        }
+    };
+
     @SuppressWarnings("Duplicates")
     public static Callback<TableColumn<IncomeEntity, LocalDate>, TableCell<IncomeEntity, LocalDate>> dateCallbackForIncome = new Callback<>() {
         @Override
@@ -352,7 +431,12 @@ public class MainController implements Initializable {
                     textField = new TextField(getItem().toString());
                     textField.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
                         if (keyEvent.getCode() == KeyCode.ENTER) {
-                            commitEdit(Double.parseDouble(textField.getText()));
+                            String amountText = textField.getText();
+                            try {
+                                commitEdit(Double.parseDouble(amountText.replace(",", ".")));
+                            } catch (NumberFormatException e) {
+                                Popup.display("Ошибка ввода данных", "Вы ввели некорректное число.");
+                            }
                             keyEvent.consume();
                         }
                     });
@@ -439,7 +523,11 @@ public class MainController implements Initializable {
                     textField = new TextField(getItem().toString());
                     textField.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
                         if (keyEvent.getCode() == KeyCode.ENTER) {
-                            commitEdit(Double.parseDouble(textField.getText()));
+                            try {
+                                commitEdit(Double.parseDouble(textField.getText().replace(',', '.')));
+                            } catch (NumberFormatException e) {
+                                Popup.display("Ошибка ввода данных", "Вы ввели некорректное число");
+                            }
                             keyEvent.consume();
                         }
                     });

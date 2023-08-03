@@ -160,24 +160,25 @@ public class MovementsController implements Initializable {
 
         double oldAmountInCurrentRow = cellEditEvent.getOldValue();
         double newAmountInCurrentRow = cellEditEvent.getNewValue();
-        double difference = newAmountInCurrentRow - oldAmountInCurrentRow;
+        if (cellEditEvent.getRowValue().getWallet_debit_name() != null && cellEditEvent.getRowValue().getWallet_credit_name() != null) {
+            double difference = newAmountInCurrentRow - oldAmountInCurrentRow;
 
-        int sourceWalletId = MainController.getWalletIdByName(cellEditEvent.getRowValue().getWallet_debit_name());
-        int destinationWalletId = MainController.getWalletIdByName(cellEditEvent.getRowValue().getWallet_credit_name());
+            int sourceWalletId = MainController.getWalletIdByName(cellEditEvent.getRowValue().getWallet_debit_name());
+            int destinationWalletId = MainController.getWalletIdByName(cellEditEvent.getRowValue().getWallet_credit_name());
 
-        double sourceWalletBalance = MainController.getWalletBalanceById(sourceWalletId);
-        double destinationWalletBalance = MainController.getWalletBalanceById(destinationWalletId);
+            double sourceWalletBalance = MainController.getWalletBalanceById(sourceWalletId);
+            double destinationWalletBalance = MainController.getWalletBalanceById(destinationWalletId);
 
-        MainController.updateWalletBalanceById(sourceWalletId, sourceWalletBalance - difference);
-        MainController.updateWalletBalanceById(destinationWalletId, destinationWalletBalance + difference);
+            MainController.updateWalletBalanceById(sourceWalletId, sourceWalletBalance - difference);
+            MainController.updateWalletBalanceById(destinationWalletId, destinationWalletBalance + difference);
 
-        boolean amountWasChanged = movementsModel.doEditMovementAmountField(currentMovementRowId, newAmountInCurrentRow);
-        if (!amountWasChanged) {
-            LOGGER.error("Movement amount edit error during a change in database.");
-            Popup.display("Movement amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
-        } else {
-            mainController.updateScreenInfo();
-        }
+            boolean amountWasChanged = movementsModel.doEditMovementAmountField(currentMovementRowId, newAmountInCurrentRow);
+            if (!amountWasChanged) {
+                LOGGER.error("Movement amount edit error during a change in database.");
+                Popup.display("Movement amount edit error", "Упс, что то пошло не так, не удалось изменить данные в БД");
+            }
+        } else cellEditEvent.getRowValue().setAmount(oldAmountInCurrentRow);
+        mainController.updateScreenInfo();
     }
     public void commentEditCommit(TableColumn.CellEditEvent<MovementEntity, String> cellEditEvent) {
         int currentMovementRowId = cellEditEvent.getRowValue().getId();

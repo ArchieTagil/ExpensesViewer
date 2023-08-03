@@ -26,7 +26,7 @@ public class MainModel {
 
     public double defaultWalletBalance() {
         try (Statement statement = connection.createStatement()) {
-            String query = "SELECT `wallet_balance` FROM wallets_list WHERE wallet_default = 1;";
+            String query = "SELECT TRUNCATE(wallet_balance,2) AS wallet_balance FROM wallets_list WHERE wallet_default = 1;";
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) return resultSet.getDouble("wallet_balance");
             return 0;
@@ -54,7 +54,7 @@ public class MainModel {
     }
     public double getWalletBalanceById(int id) {
         try (Statement statement = connection.createStatement()){
-            String query = "SELECT `wallet_balance` FROM `wallets_list` WHERE wallet_id = " + id + ";";
+            String query = "SELECT TRUNCATE(`wallet_balance`, 2) AS wallet_balance FROM `wallets_list` WHERE wallet_id = " + id + ";";
             ResultSet resultSet = statement.executeQuery(query);
             double currentWalletBalance = 0;
             if (resultSet.next()) currentWalletBalance = resultSet.getDouble("wallet_balance");
@@ -72,6 +72,7 @@ public class MainModel {
             preparedStatementUpdateWalletBalance.setInt(2, id);
             return preparedStatementUpdateWalletBalance.executeUpdate();
         } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
             throw new RuntimeException(e);
         }
 

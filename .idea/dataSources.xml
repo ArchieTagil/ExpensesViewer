@@ -15,5 +15,12 @@
       <jdbc-url>jdbc:mysql://185.86.145.71:3306/MySQL-1868</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="db4free.net" uuid="a8b6a015-cbbe-4b4f-b1fa-27b3f9806aa9">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://db4free.net:3306/expensesviewer</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
