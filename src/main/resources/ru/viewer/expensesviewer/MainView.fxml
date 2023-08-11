@@ -57,17 +57,19 @@
                <Insets left="5.0" top="12.0" />
            </HBox.margin>
         </Label>
+        <!--
         <Label text="р.">
            <HBox.margin>
                <Insets left="2.0" top="12.0" />
            </HBox.margin>
         </Label>
+        -->
     </HBox>
     <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="36.0" prefWidth="261.0" StackPane.alignment="TOP_RIGHT">
         <StackPane.margin>
             <Insets right="10.0" />
         </StackPane.margin>
-      <Label alignment="CENTER" contentDisplay="CENTER" text="v. 1.34" />
+      <Label alignment="CENTER" contentDisplay="CENTER" text="v. 1.35" />
         <Button alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#refresh" prefWidth="100.0" text="Обновить">
            <opaqueInsets>
                <Insets />

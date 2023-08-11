@@ -13,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.viewer.expensesviewer.controller.MainController;
 import ru.viewer.expensesviewer.model.DbConnection;
 import ru.viewer.expensesviewer.model.reports.TableModel;
 
@@ -56,7 +57,6 @@ public class GraphicsTab implements Initializable {
     }
 
     public void expensesPieChart(LocalDate from, LocalDate to) {
-        LOGGER.debug("function called");
         try (Statement statement = connection.createStatement()) {
             ObservableList<PieChart.Data> observableList = FXCollections.observableArrayList();
             String query = "SELECT expenses_category_name, SUM(amount) AS amount \n" +
@@ -91,7 +91,6 @@ public class GraphicsTab implements Initializable {
         //String query = "SELECT DATE_FORMAT(income.date, '%Y-%b') AS date, SUM(income.amount) AS amount FROM income WHERE date BETWEEN '" + from + "' AND '" + to + "' GROUP BY DATE_FORMAT(income.date, '%Y-%b') ORDER BY income.date;";
         String query = "SELECT ANY_VALUE(DATE_FORMAT(income.date, '%Y-%b')) date, SUM(income.amount) AS amount FROM income WHERE date BETWEEN '" + from + "' AND '" + to + "' GROUP BY YEAR(income.date), MONTH(income.date) ORDER BY YEAR(income.date), MONTH(income.date);";
         try (Statement statement = connection.createStatement()) {
-            LOGGER.debug(query);
             ResultSet resultSet = statement.executeQuery(query);
 
             XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -108,6 +107,14 @@ public class GraphicsTab implements Initializable {
             }
 
             lineChart.getData().add(series);
+
+            for (XYChart.Series<String, Number> lineData : lineChart.getData()) {
+                for (XYChart.Data<String, Number> amount : lineData.getData()) {
+                    Tooltip tooltip = new Tooltip(amount.getXValue() + ": \"" + MainController.decimalFormat.format(amount.getYValue()) + "\"");
+                    Tooltip.install(amount.getNode(), tooltip);
+                }
+            }
+
             anchorPane.getChildren().add(lineChart);
         } catch (SQLException e) {
             throw new RuntimeException(e);

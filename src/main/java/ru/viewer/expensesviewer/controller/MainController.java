@@ -31,12 +31,11 @@ import ru.viewer.expensesviewer.model.objects.settings.WalletEntity;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 public class MainController implements Initializable {
@@ -67,10 +66,10 @@ public class MainController implements Initializable {
     public Label displayWalletName;
     @FXML
     public Label displayWalletBalance;
+    public static DecimalFormat decimalFormat;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        initBalance();
         KeyCodeCombination altQ = new KeyCodeCombination(KeyCode.Q, KeyCombination.ALT_DOWN);
         EventHandler<KeyEvent> filter = event -> {
             if (altQ.match(event)) {
@@ -78,6 +77,11 @@ public class MainController implements Initializable {
             }
         };
         mainStackPane.addEventFilter(KeyEvent.KEY_PRESSED, filter);
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols(new Locale("en", "EN"));
+        dfs.setGroupingSeparator(' ');
+        dfs.setDecimalSeparator('.');
+        decimalFormat = new DecimalFormat("###,###.00", dfs);
+        initBalance();
 
         try {
             FXMLLoader incomeLoader = new FXMLLoader();
@@ -145,7 +149,7 @@ public class MainController implements Initializable {
         String defaultWalletName = mainModel.getDefaultWalletName();
         double defaultWalletBalance = mainModel.defaultWalletBalance();
         displayWalletName.setText(defaultWalletName);
-        displayWalletBalance.setText(String.valueOf(defaultWalletBalance));
+        displayWalletBalance.setText(MainController.decimalFormat.format(defaultWalletBalance) + "р.");
     }
     public static List<Boolean> getTrueFalseList() {
         List<Boolean> listTrueFalse = new ArrayList<>();
@@ -240,7 +244,7 @@ public class MainController implements Initializable {
                 public void cancelEdit() {
                     super.cancelEdit();
                     setGraphic(null);
-                    setText(getItem().toString());
+                    setText(MainController.decimalFormat.format(getItem()) + "р.");
                 }
 
                 @Override
@@ -252,12 +256,12 @@ public class MainController implements Initializable {
                     } else {
                         if (isEditing()) {
                             if (textField != null) {
-                                textField.setText(getItem().toString());
+                                textField.setText(MainController.decimalFormat.format(getItem()) + "р.");
                             }
                             setText(null);
                             setGraphic(textField);
                         } else {
-                            setText(getItem().toString());
+                            setText(MainController.decimalFormat.format(getItem()) + "р.");
                             setGraphic(null);
                         }
                     }
@@ -312,7 +316,7 @@ public class MainController implements Initializable {
                 public void cancelEdit() {
                     super.cancelEdit();
                     setGraphic(null);
-                    setText(getItem().toString());
+                    setText(MainController.decimalFormat.format(getItem()) + "р.");
                 }
 
                 @Override
@@ -324,12 +328,12 @@ public class MainController implements Initializable {
                     } else {
                         if (isEditing()) {
                             if (textField != null) {
-                                textField.setText(getItem().toString());
+                                textField.setText(MainController.decimalFormat.format(getItem()) + "р.");
                             }
                             setText(null);
                             setGraphic(textField);
                         } else {
-                            setText(getItem().toString());
+                            setText(MainController.decimalFormat.format(getItem()) + "р.");
                             setGraphic(null);
                         }
                     }
@@ -404,7 +408,7 @@ public class MainController implements Initializable {
                 public void cancelEdit() {
                     super.cancelEdit();
                     setGraphic(null);
-                    setText(getItem().toString());
+                    setText(MainController.decimalFormat.format(getItem()) + "р.");
                 }
 
                 @Override
@@ -416,12 +420,12 @@ public class MainController implements Initializable {
                     } else {
                         if (isEditing()) {
                             if (textField != null) {
-                                textField.setText(getItem().toString());
+                                textField.setText(MainController.decimalFormat.format(getItem()) + "р.");
                             }
                             setText(null);
                             setGraphic(textField);
                         } else {
-                            setText(getItem().toString());
+                            setText(MainController.decimalFormat.format(getItem()) + "р.");
                             setGraphic(null);
                         }
                     }
@@ -496,7 +500,7 @@ public class MainController implements Initializable {
                 public void cancelEdit() {
                     super.cancelEdit();
                     setGraphic(null);
-                    setText(getItem().toString());
+                    setText(MainController.decimalFormat.format(getItem()) + "р.");
                 }
 
                 @Override
@@ -508,12 +512,12 @@ public class MainController implements Initializable {
                     } else {
                         if (isEditing()) {
                             if (textField != null) {
-                                textField.setText(getItem().toString());
+                                textField.setText(MainController.decimalFormat.format(getItem()) + "р.");
                             }
                             setText(null);
                             setGraphic(textField);
                         } else {
-                            setText(getItem().toString());
+                            setText(MainController.decimalFormat.format(getItem()) + "р.");
                             setGraphic(null);
                         }
                     }
